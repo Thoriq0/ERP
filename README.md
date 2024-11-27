@@ -1,5 +1,8 @@
 # Project Laravel + Inertia + React
 
+## Deskripsi Project
+Ini adalah project tugas akhir yang dikembangkan sebagai bagian dari kerja sama dengan mitra **PT Global Edutek Solusindo**. Project ini mengimplementasikan framework **Laravel** di sisi backend dan **Inertia.js** bersama **React** di sisi frontend. Aplikasi ini bertujuan untuk menyediakan sistem yang efisien dan interaktif dengan arsitektur yang modern dan dapat dikembangkan lebih lanjut sesuai kebutuhan.
+
 ## Steps to run the project
 
 1. **Clone the repository**:
