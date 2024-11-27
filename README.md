@@ -66,4 +66,5 @@
 - Pastikan sudah menginstal PHP, Composer, Node.js, npm/yarn.
 - File-file yang di-ignore, seperti `.env`, `node_modules`, dan `vendor`, tidak akan ter-clone ke repository. Pastikan untuk menginstal dependensi yang diperlukan dengan menjalankan `composer install` dan `npm install` atau `yarn install` setelah clone.
 - Jangan lupa untuk menyesuaikan konfigurasi `.env` sesuai dengan lokal.
+- Jalankan Vite atau Webpack dan Laravel secara bersamaan (npm run dev & php artisan serve)
 
