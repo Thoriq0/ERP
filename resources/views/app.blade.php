@@ -10,6 +10,10 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- flowbite -->
+        <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+        <!-- end flowbite -->
+        
         <!-- Scripts -->
         @routes
         @viteReactRefresh

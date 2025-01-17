@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.custom-scrollbar::-webkit-scrollbar {
+    @apply w-[6px]; /* Lebar scrollbar */
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-[#e5e7eb] rounded-[4px];
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-[#717680] rounded-[4px];
+}
