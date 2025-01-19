@@ -4,12 +4,12 @@ import LineChart from '@/Components/LineChartFinance';
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function DashboardFinance({auth}) {
+export default function DashboardFinance({auth, title}) {
     return (
         <DashboardFinanceLayout auth={auth}>
             <Head title="Dashboard" />
             <div className="ml-14 md:ml-0">
-                <h1 className="text-xl font-bold">Dashboard</h1>
+                <h1 className="text-xl font-bold">{title}</h1>
                 <div className='h-px bg-[#C8C6C6] mt-2'></div>
             </div>
 

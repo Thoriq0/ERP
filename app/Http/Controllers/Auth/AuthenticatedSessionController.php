@@ -33,7 +33,20 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        if(Auth::user()->role == 'admin'){
+            return redirect('/admin/dashboard');
+        }else if(Auth::user()->role == 'fnc'){
+            return redirect('/finance/dashboard');
+        }else if(Auth::user()->role == 'hr'){
+            return redirect('/hr/dashboard');
+        }else if(Auth::user()->role == 'wrhs'){
+            return redirect('/wrhs/dashboard');
+        }else{
+            return abort(404, 'Not Found');
+        }
+        // return redirect('/unauthorized');
+
+        // return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**
@@ -42,11 +55,10 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
+    
         return redirect('/');
     }
 }

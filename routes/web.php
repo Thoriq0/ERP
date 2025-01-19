@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\finance\FinanceController;
+use App\Http\Controllers\hr\HumanResourceController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\warehouse\WarehouseController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -9,11 +13,36 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('DashboardHumanResource');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
+
+    // Admin
+    Route::middleware('rolechecking:admin')->group(function(){
+        // view
+        Route::get('/admin/dashboard', [AdminController::class, 'view'])->name('admin.dashboard');
+    });
+
+    // Finance (fnc)
+    Route::middleware('rolechecking:fnc')->group(function(){
+        // view
+        Route::get('/finance/dashboard', [FinanceController::class, 'view'])->name('finance.dashboard');      
+    });
+
+    // Human Resource (hr)
+    Route::middleware('rolechecking:hr')->group(function(){
+        // view
+        Route::get('/hr/dashboard', [HumanResourceController::class, 'view'])->name('hr.dashboard');
+    });
+
+    // Warehouse/Inventory (wrhs)
+    Route::middleware('rolechecking:wrhs')->group(function(){
+        // view
+        Route::get('/wrhs/dashboard', [WarehouseController::class, 'view'])->name('wrhs.dashboard');
+    });
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
