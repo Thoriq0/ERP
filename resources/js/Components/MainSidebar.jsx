@@ -83,7 +83,7 @@ export default function FlexibleSidebar({ title, menuItems, logo, dropdownMenus,
                                 </svg>
                             </button>
                             {openDropdowns[dropdown.title] && (
-                                <div className="pl-6 space-y-2">
+                                <div className="pl-6 space-y-2 ml-2">
                                     {dropdown.items.map((subItem) => (
                                         <Link
                                             key={subItem.path}
