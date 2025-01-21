@@ -1,10 +1,8 @@
 import React from "react";
-import Sidebar from "@/Components/SidebarAdmin";
 
 export default function AuthenticatedLayout({ header, children }) {
     return (
         <div className="flex">
-            <Sidebar />
             <div className="ml-64 w-full">
                 {header && (
                     <header className="bg-white shadow dark:bg-gray-800">
