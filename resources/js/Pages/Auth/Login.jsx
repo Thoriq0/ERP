@@ -104,10 +104,18 @@ export default function Login({ status, canResetPassword }) {
                 </div>
                 <div className='h-px bg-white my-3'></div>           
 
-                <div className="mt-4 flex flex-col-reverse items-center justify-end">
+                <div className="mt-4 flex flex-col items-center justify-end">
                     <PrimaryButton className="m-5" disabled={processing}>
                         Login
                     </PrimaryButton>
+                    <p className='text-white'>Don't have an account?   
+                        <Link
+                            href={route('register')}
+                            className="rounded-md text-sm ml-2 text-white underline"
+                        >
+                            Sign Up
+                        </Link>
+                    </p>
                 </div>
             </form>
         </LoginLayout>
