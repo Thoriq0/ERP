@@ -5,7 +5,7 @@ import { FaWarehouse, FaUsersCog, FaTruck, FaMoneyBillWave } from "react-icons/f
 
 export default function DashboardAdminLayout({ children, auth }) {
     const menuItems = [
-        { name: "Dashboard", path: "/", icon: <HiChartPie /> },
+        { name: "Dashboard", path: "/admin/dashboard", icon: <HiChartPie /> },
         { name: "User Warehouse", path: "/user", icon: <HiUser /> },
         { name: "Warehouse", path: "/warehouse", icon: <FaWarehouse /> },
     ];
@@ -15,41 +15,41 @@ export default function DashboardAdminLayout({ children, auth }) {
             title: "Inventory",
             icon: <HiInbox />,
             items: [
-                { name: "Inbound", path: "/inventory/inbound" },
-                { name: "Outbound", path: "/inventory/outbound" },
-                { name: "Stock", path: "/inventory/stock" },
-                { name: "Shipment", path: "/inventory/shipment" },
-                { name: "Reports", path: "/inventory/reports" },
+                { name: "Inbound", path: "/admin/inbound" },
+                { name: "Outbound", path: "/admin/outbound" },
+                { name: "Stock", path: "/admin/stock" },
+                { name: "Shipment", path: "/admin/shipment" },
+                { name: "Reports", path: "/admin/reports" },
             ],
         },
         {
             title: "Logistic",
             icon: <FaTruck />,
             items: [
-                { name: "Stock List", path: "/inventory/stock" },
-                { name: "Add Item", path: "/inventory/add" },
-                { name: "Reports", path: "/inventory/reports" },
+                { name: "Stock List", path: "/admin/stock" },
+                { name: "Add Item", path: "/admin/add" },
+                { name: "Reports", path: "/admin/reports" },
             ],
         },
         {
             title: "Finance",
             icon: <FaMoneyBillWave />,
             items: [
-                { name: "Income", path: "/inventory/income" },
-                { name: "Outcome", path: "/inventory/outcome" },
-                { name: "Budget Control", path: "/inventory/budget" },
-                { name: "Reports", path: "/inventory/reports" },
+                { name: "Income", path: "/admin/income" },
+                { name: "Outcome", path: "/admin/outcome" },
+                { name: "Budget Control", path: "/admin/budget" },
+                { name: "Reports", path: "/admin/reports" },
             ],
         },
         {
             title: "Human Resouce",
             icon: <FaUsersCog />,
             items: [
-                { name: "Employee", path: "/inventory/employee" },
-                { name: "Work Time", path: "/inventory/work" },
-                { name: "Salary", path: "/inventory/salary" },
-                { name: "Attendence", path: "/inventory/attendance" },
-                { name: "Reports", path: "/inventory/reports" },
+                { name: "Employee", path: "/admin/employee" },
+                { name: "Work Time", path: "/admin/work" },
+                { name: "Salary", path: "/admin/salary" },
+                { name: "Attendence", path: "/admin/attendance" },
+                { name: "Reports", path: "/admin/reports" },
             ],
         },
     ];

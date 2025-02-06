@@ -12,8 +12,9 @@ import {
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+// import { Button } from "@/components/ui/button";
+import { Button } from "./ui/button";
+import { Checkbox } from "./ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -22,8 +23,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from "./ui/dropdown-menu";
+import { Input } from "./ui/input";
 import {
   Table,
   TableBody,
@@ -31,25 +32,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "./ui/table";
 import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
-const data = [
-  { id: "m5gr84i9", name: "Iphone", datein: "success", qty: 1, supplier: "ken99@yahoo.com", category: "Electronics" },
-  { id: "3u1reuv4", name: "Samsung", datein: "success", qty: 1, supplier: "Abe45@gmail.com", category: "Electronics" },
-  { id: "derv1ws0", name: "Xiaomi", datein: "processing", qty: 1, supplier: "Monserrat44@gmail.com", category: "Electronics" },
-  { id: "5kma53ae", name: "Oppo", datein: "success", qty: 1, supplier: "Silas22@gmail.com", category: "Electronics" },
-  { id: "bhqecj4p", name: "Vivo", datein: "failed", qty: 1, supplier: "carmella@hotmail.com", category: "Electronics" },
-  { id: "jk4e8d2p", name: "Realme", datein: "success", qty: 1, supplier: "realme@gmail.com", category: "Electronics" },
-  { id: "lm2g5s7d", name: "Huawei", datein: "success", qty: 1, supplier: "huawei@gmail.com", category: "Electronics" },
-  { id: "zx7w3q9r", name: "Sony", datein: "processing", qty: 1, supplier: "sony@gmail.com", category: "Electronics" },
-  { id: "op1q2r3s", name: "LG", datein: "success", qty: 1, supplier: "lg@gmail.com", category: "Electronics" },
-  { id: "gh5j6k7l", name: "Motorola", datein: "failed", qty: 1, supplier: "motorola@gmail.com", category: "Electronics" },
-  { id: "wx1y2z3a", name: "Nokia", datein: "success", qty: 1, supplier: "nokia@gmail.com", category: "Electronics" },
-];
-export function DataTableInbound() {
+export function DataTableInbound({data}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -85,14 +73,31 @@ export function DataTableInbound() {
       cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
     },
     {
-      accessorKey: "datein",
+      accessorKey: "created_at",
       header: ({ column }) => (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Date In
           <ArrowUpDown />
         </Button>
       ),
-      cell: ({ row }) => <div className="lowercase">{row.getValue("datein")}</div>,
+      cell: ({ row }) => {
+        const rawDate = row.getValue("created_at");
+        const date = new Date(rawDate);
+    
+        // Format ke "HH:mm dd-MM-yyyy"
+        const formattedDate = new Intl.DateTimeFormat("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }).format(date);
+    
+        return <div className="lowercase">{formattedDate}</div>;
+      },
     },
     {
       accessorKey: "qty",
