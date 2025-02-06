@@ -19,7 +19,9 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::middleware('rolechecking:admin')->group(function(){
         // view
         Route::get('/admin/dashboard', [AdminController::class, 'view'])->name('admin.dashboard');
+        Route::get('/admin/user', [AdminController::class, 'userView'])->name('admin.user');
         Route::get('/admin/inbound', [AdminController::class, 'inboundView'])->name('admin.inbound');
+        Route::get('/admin/outbound', [AdminController::class, 'outboundView'])->name('admin.outbound');
     });
 
     // Finance (fnc)
