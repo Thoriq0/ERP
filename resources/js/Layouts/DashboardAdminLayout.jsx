@@ -6,7 +6,7 @@ import { FaWarehouse, FaUsersCog, FaTruck, FaMoneyBillWave } from "react-icons/f
 export default function DashboardAdminLayout({ children, auth }) {
     const menuItems = [
         { name: "Dashboard", path: "/admin/dashboard", icon: <HiChartPie /> },
-        { name: "User Warehouse", path: "/user", icon: <HiUser /> },
+        { name: "User Warehouse", path: "/admin/user", icon: <HiUser /> },
         { name: "Warehouse", path: "/warehouse", icon: <FaWarehouse /> },
     ];
 

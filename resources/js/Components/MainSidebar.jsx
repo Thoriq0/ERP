@@ -88,7 +88,9 @@ export default function FlexibleSidebar({ title, menuItems, logo, dropdownMenus,
                                         <Link
                                             key={subItem.path}
                                             href={subItem.path}
-                                            className="block text-sm rounded p-2 hover:bg-[#D9D9D940]"
+                                            className={`flex items-center p-2 rounded hover:bg-[#D9D9D940] ${
+                                                url.startsWith(subItem.path) ? "bg-activeMenuSidebar font-semibold" : ""
+                                            }`}
                                         >
                                             {subItem.name}
                                         </Link>
