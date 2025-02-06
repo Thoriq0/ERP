@@ -23,7 +23,7 @@ export default function Register() {
 
     return (
         <GuestLayout>
-            <Head title="Register" />
+            <Head title="Sign Up" />
             <h2 className="text-3xl font-bold text-white mb-4 text-center">SIGN UP</h2>
             <form onSubmit={submit}>
                 <div>

@@ -4,10 +4,13 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import LoginLayout from '@/Layouts/LoginLayout';
-import { FaUser, FaLock } from 'react-icons/fa';
+import { FaUser, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Head, Link, useForm } from '@inertiajs/react';
+import React, { useState } from "react";
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({ status, canResetPassword}) {
+
+    const [showPassword, setShowPassword] = React.useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -60,20 +63,26 @@ export default function Login({ status, canResetPassword }) {
                 <div className="my-10">
                     <InputLabel htmlFor="password"  />
 
-                    <div className='relative block'>
-                        <FaLock className=" absolute top-3 left-6 text-primaryPurple" />
+                    <div className="relative">
+                        <FaLock className="absolute top-3 left-6 text-primaryPurple" />
+                        <TextInput
+                            id="password"
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="Input your password"
+                            value={data.password}
+                            className="mt-1 block w-full pl-16 pr-12"
+                            autoComplete="current-password"
+                            onChange={(e) => setData("password", e.target.value)}
+                        />
+                        <button
+                            type="button"
+                            className="absolute top-3 right-6 text-gray-500 hover:text-gray-700"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <FaEye className='text-primaryPurple' /> : <FaEyeSlash className='text-primaryPurple'/> }
+                        </button>
                     </div>
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        placeholder="input your password"
-                        value={data.password}
-                        className="mt-1 block w-full pl-16"
-                        autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
 
                     <InputError message={errors.password} className="mt-2" />
                 </div>

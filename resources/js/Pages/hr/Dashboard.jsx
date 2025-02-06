@@ -13,10 +13,10 @@ export default function DashboardInventory({auth, title}) {
             </div>
 
             <div className='flex flex-col lg:flex-row mt-10 mb-8'>
-                {/* shipment */}
+                {/* employee */}
                 <div className='w-full border border-borderCard shadow-2xl rounded-2xl py-10'>
                     <div className='flex flex-col md:flex-row items-center justify-around gap-10 md:gap-0'>
-                        {/* Total Shipment */}
+                        {/* Total Employee */}
                         <div className='flex flex-col'>
                             <div className=''>
                                 <img src="/images/people.svg" alt="Total Employee" className='w-[20px]'/>
@@ -24,7 +24,7 @@ export default function DashboardInventory({auth, title}) {
                                 <h1 className='text-center text-xl font-semibold mt-10'>15</h1>
                             </div> 
                         </div>
-                        {/* Schedule */}
+                        {/* Attendance */}
                         <div className='flex flex-col'>
                             <div className=''>
                                 <img src="/images/schedule.svg" alt="Attendance Rate" className='w-[20px]'/>
@@ -32,7 +32,7 @@ export default function DashboardInventory({auth, title}) {
                                 <h1 className='text-center text-xl font-semibold mt-10'>15</h1>
                             </div> 
                         </div>
-                        {/* In Process */}
+                        {/* pending approval */}
                         <div className='flex flex-col'>
                             <div className=''>
                                 <img src="/images/progress.svg" alt="Pending Approval" className='w-[20px]'/>
@@ -40,7 +40,7 @@ export default function DashboardInventory({auth, title}) {
                                 <h1 className='text-center text-xl font-semibold mt-10'>15</h1>
                             </div> 
                         </div>
-                        {/* Completed */}
+                        {/* approval request */}
                         <div className='flex flex-col'>
                             <div className=''>
                                 <img src="/images/complete.svg" alt="Approval Request" className='w-[20px]'/>

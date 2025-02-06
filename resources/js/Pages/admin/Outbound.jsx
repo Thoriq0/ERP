@@ -1,10 +1,11 @@
 import DashboardAdminLayout from '@/Layouts/DashboardAdminLayout';
-import DataUserWarehouse from "@/Components/DataUserWarehouse";
+import DataTableOutbound from "@/Components/DataTableOutbond";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function UserWarehouse({auth, title}) {
-    const data = [];
+export default function Outbound({auth, title}) {
+    const data = [
+    ];
     return (
         <DashboardAdminLayout auth={auth}>
             <Head title="Dashboard" />
@@ -12,7 +13,7 @@ export default function UserWarehouse({auth, title}) {
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-              <DataUserWarehouse data={data} />
+              <DataTableOutbound data={data} />
           </div>
 
         </DashboardAdminLayout>

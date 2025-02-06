@@ -63,7 +63,7 @@ export default function DashboardAdminLayout({ children, auth }) {
                 menuItems={menuItems}
                 dropdownMenus={dropdownMenus}
             />
-            <div className="ml-0 lg:ml-64 w-full p-6">
+            <div className="ml-0 lg:ml-64 w-full">
                 {children}
             </div>
         </div>
