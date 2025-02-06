@@ -37,19 +37,19 @@ import { ButtonDialogDelete } from "./ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 const data = [
-  { id: "m5gr84i9", name: "Iphone", datein: "success", qty: 1, supplier: "ken99@yahoo.com", category: "Electronics" },
-  { id: "3u1reuv4", name: "Samsung", datein: "success", qty: 1, supplier: "Abe45@gmail.com", category: "Electronics" },
-  { id: "derv1ws0", name: "Xiaomi", datein: "processing", qty: 1, supplier: "Monserrat44@gmail.com", category: "Electronics" },
-  { id: "5kma53ae", name: "Oppo", datein: "success", qty: 1, supplier: "Silas22@gmail.com", category: "Electronics" },
-  { id: "bhqecj4p", name: "Vivo", datein: "failed", qty: 1, supplier: "carmella@hotmail.com", category: "Electronics" },
-  { id: "jk4e8d2p", name: "Realme", datein: "success", qty: 1, supplier: "realme@gmail.com", category: "Electronics" },
-  { id: "lm2g5s7d", name: "Huawei", datein: "success", qty: 1, supplier: "huawei@gmail.com", category: "Electronics" },
-  { id: "zx7w3q9r", name: "Sony", datein: "processing", qty: 1, supplier: "sony@gmail.com", category: "Electronics" },
-  { id: "op1q2r3s", name: "LG", datein: "success", qty: 1, supplier: "lg@gmail.com", category: "Electronics" },
-  { id: "gh5j6k7l", name: "Motorola", datein: "failed", qty: 1, supplier: "motorola@gmail.com", category: "Electronics" },
-  { id: "wx1y2z3a", name: "Nokia", datein: "success", qty: 1, supplier: "nokia@gmail.com", category: "Electronics" },
+  { id: "m5gr84i9", name: "Iphone", dateout: "success", qty: 1, to: "ken99@yahoo.com", category: "Electronics" },
+  { id: "3u1reuv4", name: "Samsung", dateout: "success", qty: 1, to: "Abe45@gmail.com", category: "Electronics" },
+  { id: "derv1ws0", name: "Xiaomi", dateout: "processing", qty: 1, to: "Monserrat44@gmail.com", category: "Electronics" },
+  { id: "5kma53ae", name: "Oppo", dateout: "success", qty: 1, to: "Silas22@gmail.com", category: "Electronics" },
+  { id: "bhqecj4p", name: "Vivo", dateout: "failed", qty: 1, to: "carmella@hotmail.com", category: "Electronics" },
+  { id: "jk4e8d2p", name: "Realme", dateout: "success", qty: 1, to: "realme@gmail.com", category: "Electronics" },
+  { id: "lm2g5s7d", name: "Huawei", dateout: "success", qty: 1, to: "huawei@gmail.com", category: "Electronics" },
+  { id: "zx7w3q9r", name: "Sony", dateout: "processing", qty: 1, to: "sony@gmail.com", category: "Electronics" },
+  { id: "op1q2r3s", name: "LG", dateout: "success", qty: 1, to: "lg@gmail.com", category: "Electronics" },
+  { id: "gh5j6k7l", name: "Motorola", dateout: "failed", qty: 1, to: "motorola@gmail.com", category: "Electronics" },
+  { id: "wx1y2z3a", name: "Nokia", dateout: "success", qty: 1, to: "nokia@gmail.com", category: "Electronics" },
 ];
-export function DataTableInbound() {
+export function DataTableOutbound() {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -85,14 +85,14 @@ export function DataTableInbound() {
       cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
     },
     {
-      accessorKey: "datein",
+      accessorKey: "dateout",
       header: ({ column }) => (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Date In
+          Date Out
           <ArrowUpDown />
         </Button>
       ),
-      cell: ({ row }) => <div className="lowercase">{row.getValue("datein")}</div>,
+      cell: ({ row }) => <div className="lowercase">{row.getValue("dateout")}</div>,
     },
     {
       accessorKey: "qty",
@@ -100,9 +100,9 @@ export function DataTableInbound() {
       cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
     },
     {
-      accessorKey: "supplier",
-      header: "Supplier",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
+      accessorKey: "to",
+      header: "To",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("to")}</div>,
     },
     {
       accessorKey: "category",
@@ -197,10 +197,10 @@ export function DataTableInbound() {
             </DropdownMenuContent>
         </DropdownMenu>
           <Input
-            placeholder="Search by Name, Date In, Supplier or Category"
+            placeholder="Search by Name, Date Out, or Category"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
-            className="max-w-xs"
+            className="max-w-xs text-sm"
           />
         </div>
         <ButtonModalInbound/>
@@ -270,4 +270,4 @@ export function DataTableInbound() {
   );
 }
 
-export default DataTableInbound;
+export default DataTableOutbound;

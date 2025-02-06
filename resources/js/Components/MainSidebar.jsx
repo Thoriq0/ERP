@@ -24,7 +24,7 @@ export default function FlexibleSidebar({ title, menuItems, logo, dropdownMenus,
             {/* Mobile Menu Button */}
             <button
                 onClick={toggleSidebar}
-                className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-primaryPurple text-white rounded shadow-lg"
+                className="lg:hidden fixed top-2 right-4 z-50 p-2 bg-primaryPurple text-white rounded shadow-lg"
             >
                 {isSidebarOpen ? <HiX size={28} /> : <HiMenuAlt3 size={28} />} 
             </button>

@@ -17,9 +17,9 @@ export function ButtonModalInbound() {
       <DialogTrigger asChild>
         <Button className='bg-PurpleFive  hover:bg-primaryPurple'>Create</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="md:max-w-[700px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Create Data</DialogTitle>
           <DialogDescription>
             Make changes to your profile here. Click save when you're done.
           </DialogDescription>
@@ -35,7 +35,19 @@ export function ButtonModalInbound() {
             <Label htmlFor="username" className="text-right">
               Username
             </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
+            <Input id="username" type="text" placeholder="Input ..." className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input id="username" type="text" placeholder="Input ..." className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input id="username" type="text" placeholder="Input ...." className="col-span-3" />
           </div>
         </div>
         <DialogFooter>
