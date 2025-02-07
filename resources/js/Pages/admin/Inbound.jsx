@@ -3,10 +3,8 @@ import DataTableInbound from "@/Components/DataTableInbound";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function Inbound({auth, title}) {
-    const data = [
-
-    ];
+export default function Inbound({auth, title, inbound}) {
+    const data = inbound;
     return (
         <DashboardAdminLayout auth={auth}>
             <Head title="Dashboard" />
