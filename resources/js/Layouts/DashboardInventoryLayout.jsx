@@ -4,11 +4,11 @@ import { HiChartPie } from "react-icons/hi";
 import { FaFileAlt, FaTruck, FaArrowCircleDown, FaShippingFast, FaBoxes } from "react-icons/fa";
 
 
-export default function DashboardAdminLayout({ children, auth }) {
+export default function DashboardInventoryLayout({ children, auth }) {
     const menuItems = [
-        { name: "Dashboard", path: "/", icon: <HiChartPie /> },
+        { name: "Dashboard", path: "/wrhs/dashboard", icon: <HiChartPie /> },
         { name: "Inbound", path: "/inbound", icon: <FaArrowCircleDown  /> },
-        { name: "Outbound", path: "/outbound", icon: <FaTruck /> },
+        { name: "Outbound", path: "/wrhs/outbound", icon: <FaTruck /> },
         { name: "Stock", path: "/stock", icon: <FaBoxes  /> },
         { name: "Shipment", path: "/shipment", icon: <FaShippingFast  /> },
     ];
@@ -34,7 +34,7 @@ export default function DashboardAdminLayout({ children, auth }) {
                 menuItems={menuItems}
                 dropdownMenus={dropdownMenus}
             />
-            <div className="ml-0 lg:ml-64 w-full p-6">
+            <div className="ml-0 lg:ml-64 w-full">
                 {children}
             </div>
         </div>

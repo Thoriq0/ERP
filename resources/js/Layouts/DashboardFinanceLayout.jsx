@@ -6,8 +6,8 @@ import { FaFileAlt, FaArrowCircleUp, FaArrowCircleDown, FaBalanceScale  } from "
 
 export default function DashboardAdminLayout({ children, auth }) {
     const menuItems = [
-        { name: "Dashboard", path: "/", icon: <HiChartPie /> },
-        { name: "Income", path: "/income", icon: <FaArrowCircleUp  /> },
+        { name: "Dashboard", path: "/finance/dashboard", icon: <HiChartPie /> },
+        { name: "Income", path: "/finance/income", icon: <FaArrowCircleUp  /> },
         { name: "Outcome", path: "/outcome", icon: <FaArrowCircleDown  /> },
         { name: "Budget Control", path: "/budget", icon: <FaBalanceScale   /> },
     ];
@@ -33,7 +33,7 @@ export default function DashboardAdminLayout({ children, auth }) {
                 menuItems={menuItems}
                 dropdownMenus={dropdownMenus}
             />
-            <div className="ml-0 lg:ml-64 w-full p-6">
+            <div className="ml-0 lg:ml-64 w-full">
                 {children}
             </div>
         </div>
