@@ -27,7 +27,8 @@ Route::middleware('auth', 'verified')->group(function () {
     // Finance (fnc)
     Route::middleware('rolechecking:fnc')->group(function(){
         // view
-        Route::get('/finance/dashboard', [FinanceController::class, 'view'])->name('finance.dashboard');      
+        Route::get('/finance/dashboard', [FinanceController::class, 'view'])->name('finance.dashboard');
+        Route::get('/finance/income', [FinanceController::class, 'incomeView'])->name('finance.income');       
     });
 
     // Human Resource (hr)
