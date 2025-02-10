@@ -13,4 +13,12 @@ class FinanceController extends Controller
             'title' => 'Dashboard Finance'
         ]);
     }
+
+    public function incomeView(){
+        // dd();
+        return inertia::render('finance/Income', [
+            'title' => 'Inventory Outbound',
+    
+        ]);
+    }
 }

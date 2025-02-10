@@ -13,4 +13,13 @@ class WarehouseController extends Controller
             'title' => 'Dashboard WareHouse'
         ]);
     }
+
+    public function outboundView(){
+        // dd();
+        return inertia::render('warehouse/Outbound', [
+            'title' => 'Inventory Outbound',
+            
+        ]);
+        // dd(Inbound::all());
+    }
 }

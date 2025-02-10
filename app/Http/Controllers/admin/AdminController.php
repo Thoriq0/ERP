@@ -40,4 +40,13 @@ class AdminController extends Controller
         ]);
         // dd(Inbound::all());
     }
+
+    public function stockView(){
+        // dd();
+        return inertia::render('admin/Stock', [
+            'title' => 'Admin Inventory Stock',
+            
+        ]);
+        // dd(Inbound::all());
+    }
 }
