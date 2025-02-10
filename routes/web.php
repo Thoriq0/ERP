@@ -22,12 +22,14 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/user', [AdminController::class, 'userView'])->name('admin.user');
         Route::get('/admin/inbound', [AdminController::class, 'inboundView'])->name('admin.inbound');
         Route::get('/admin/outbound', [AdminController::class, 'outboundView'])->name('admin.outbound');
+        Route::get('/admin/stock', [AdminController::class, 'stockView'])->name('admin.stock');
     });
 
     // Finance (fnc)
     Route::middleware('rolechecking:fnc')->group(function(){
         // view
-        Route::get('/finance/dashboard', [FinanceController::class, 'view'])->name('finance.dashboard');      
+        Route::get('/finance/dashboard', [FinanceController::class, 'view'])->name('finance.dashboard');
+        Route::get('/finance/income', [FinanceController::class, 'incomeView'])->name('finance.income');      
     });
 
     // Human Resource (hr)
@@ -40,6 +42,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::middleware('rolechecking:wrhs')->group(function(){
         // view
         Route::get('/wrhs/dashboard', [WarehouseController::class, 'view'])->name('wrhs.dashboard');
+        Route::get('/wrhs/outbound', [WarehouseController::class, 'outboundView'])->name('wrhs.outbound');
     });
 
     // Profile User
