@@ -4,8 +4,8 @@ import BarChart from '@/Components/BarChartAdmin';
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function UserWarehouse({auth, title}) {
-    const data = [];
+export default function UserWarehouse({auth, title, user}) {
+    const data = user;
     return (
         <DashboardAdminLayout auth={auth}>
             <Head title="Dashboard" />

@@ -12,8 +12,8 @@ import {
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "./ui/button";
+import { Checkbox } from "./ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -22,8 +22,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from "./ui/dropdown-menu";
+import { Input } from "./ui/input";
 import {
   Table,
   TableBody,
@@ -31,25 +31,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "./ui/table";
 import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
-const data = [
-  { id: "m5gr84i9", name: "Iphone", email:"ken99@yahoo.com", role: "success" },
-  { id: "3u1reuv4", name: "Samsung", email:"Abe45@gmail.com", role: "success"  },
-  { id: "derv1ws0", name: "Xiaomi", email:"Monserrat44@gmail.com", role: "processing" },
-  { id: "5kma53ae", name: "Oppo", email:"Silas22@gmail.com", role: "success"},
-  { id: "bhqecj4p", name: "Vivo", email:"carmella@hotmail.com", role: "failed" },
-  { id: "jk4e8d2p", name: "Realme", email:"realme@gmail.com", role: "success" },
-  { id: "lm2g5s7d", name: "Huawei", email:"huawei@gmail.com", role: "success" },
-  { id: "zx7w3q9r", name: "Sony", email:"sony@gmail.com", role: "processing"},
-  { id: "op1q2r3s", name: "LG",  email:"lg@gmail.com", role: "success" },
-  { id: "gh5j6k7l", name: "Motorola", email:"motorola@gmail.com", role: "failed" },
-  { id: "wx1y2z3a", name: "Nokia", email:"nokia@gmail.com", role: "success" },
-];
-export function DataTableOutbound() {
+
+export function DataTableOutbound({data}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 

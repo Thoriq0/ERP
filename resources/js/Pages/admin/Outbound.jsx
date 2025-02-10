@@ -3,9 +3,10 @@ import DataTableOutbound from "@/Components/DataTableOutbond";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function Outbound({auth, title}) {
-    const data = [
-    ];
+export default function Outbound({auth, title, outbound}) {
+    
+    const data = outbound;
+
     return (
         <DashboardAdminLayout auth={auth}>
             <Head title="Dashboard" />
