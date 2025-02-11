@@ -37,6 +37,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::middleware('rolechecking:hr')->group(function(){
         // view
         Route::get('/hr/dashboard', [HumanResourceController::class, 'view'])->name('hr.dashboard');
+        // coba
     });
 
     // Warehouse/Inventory (wrhs)
