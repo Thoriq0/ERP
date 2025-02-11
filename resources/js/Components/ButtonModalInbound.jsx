@@ -10,7 +10,7 @@ import {
 } from "./ui/dialog"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
-import { toast } from "./ui/sonner"
+
 
 export function ButtonModalInbound() {
   return (
@@ -54,15 +54,7 @@ export function ButtonModalInbound() {
         <DialogFooter>
             <Button 
               type="submit"
-              onClick={() =>
-                toast("Event has been created", {
-                  description: "Sunday, December 03, 2023 at 9:00 AM",
-                  action: {
-                    label: "Undo",
-                    onClick: () => console.log("Undo"),
-                  },
-                })
-              } 
+              
               className='bg-PurpleFive hover:bg-primaryPurple'>
                 Save
             </Button>

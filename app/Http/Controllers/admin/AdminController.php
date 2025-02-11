@@ -19,11 +19,11 @@ class AdminController extends Controller
     }
 
     public function userView(){
-        dd();
-        // return Inertia::render('admin/UserWarehouse', [
-        //     'title' => 'User Warehouse',
-        //     'user' => User::all()
-        // ]);
+        // dd();
+        return Inertia::render('admin/UserWarehouse', [
+            'title' => 'User Warehouse',
+            'user' => User::all()
+        ]);
     }
 
     public function inboundView(){
