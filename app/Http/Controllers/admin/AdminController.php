@@ -48,7 +48,7 @@ class AdminController extends Controller
         // dd();
         return inertia::render('admin/Stock', [
             'title' => 'Admin Inventory Stock',
-            
+            'inbound' => Inbound::all()
         ]);
         // dd(Inbound::all());
     }
