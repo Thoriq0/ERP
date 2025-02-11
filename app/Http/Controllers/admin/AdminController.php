@@ -6,6 +6,8 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Inbound;
+use App\Models\Outbound;
+use App\Models\User;
 
 class AdminController extends Controller
 {
@@ -17,10 +19,11 @@ class AdminController extends Controller
     }
 
     public function userView(){
-        // dd();
-        return Inertia::render('admin/UserWarehouse', [
-            'title' => 'User Warehouse'
-        ]);
+        dd();
+        // return Inertia::render('admin/UserWarehouse', [
+        //     'title' => 'User Warehouse',
+        //     'user' => User::all()
+        // ]);
     }
 
     public function inboundView(){
@@ -36,7 +39,7 @@ class AdminController extends Controller
         // dd();
         return inertia::render('admin/Outbound', [
             'title' => 'Admin Inventory Outbound',
-            
+            'outbound' => Outbound::all()
         ]);
         // dd(Inbound::all());
     }
@@ -44,6 +47,15 @@ class AdminController extends Controller
     public function stockView(){
         // dd();
         return inertia::render('admin/Stock', [
+            'title' => 'Admin Inventory Stock',
+            
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function shipmentView(){
+        // dd();
+        return inertia::render('admin/Shipment', [
             'title' => 'Admin Inventory Stock',
             
         ]);

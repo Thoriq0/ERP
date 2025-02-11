@@ -9,7 +9,7 @@ export default function Edit({ mustVerifyEmail, status }) {
             <Head title="Profile" />
             <div>
                 <div className="mx-auto max-w-7xl space-y-5 sm:px-6 lg:px-6">
-                    <div className="bg-white mt-10 p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
+                    <div className="bg-white mt-16 p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
