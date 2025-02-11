@@ -23,7 +23,7 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/inbound', [AdminController::class, 'inboundView'])->name('admin.inbound');
         Route::get('/admin/outbound', [AdminController::class, 'outboundView'])->name('admin.outbound');
         Route::get('/admin/stock', [AdminController::class, 'stockView'])->name('admin.stock');
-        Route::get('/admin/shipment', [AdminController::class, 'shipmentView'])->name('admin.shipment');
+        Route::get('/admin/stock', [AdminController::class, 'stockView'])->name('admin.stock');
     });
 
     // Finance (fnc)
