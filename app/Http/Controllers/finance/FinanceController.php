@@ -16,8 +16,24 @@ class FinanceController extends Controller
 
     public function incomeView(){
         // dd();
-        return inertia::render('finance/Income', [
-            'title' => 'Inventory Outbound',
+        return inertia::render('features/Income', [
+            'title' => 'Finance Income',
+    
+        ]);
+    }
+
+    public function outcomeView(){
+        // dd();
+        return inertia::render('features/Outcome', [
+            'title' => 'Finance Outcome',
+    
+        ]);
+    }
+
+    public function budgetView(){
+        // dd();
+        return inertia::render('features/Budget', [
+            'title' => 'Finance Budget Control',
     
         ]);
     }

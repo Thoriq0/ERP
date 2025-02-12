@@ -51,4 +51,38 @@ class WarehouseController extends Controller
         ]);
         // dd(Inbound::all());
     }
+
+    public function inboundreportsView(){
+        // dd();
+        return inertia::render('warehouse/InboundReports', [
+            'title' => 'Inventory Inbound Reports',
+            
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function outboundreportsView(){
+        // dd();
+        return inertia::render('warehouse/OutboundReports', [
+            'title' => 'Inventory Outbound Reports',
+            
+        ]);
+        // dd(Inbound::all());
+    }
+    public function stockreportsView(){
+        // dd();
+        return inertia::render('warehouse/StockReports', [
+            'title' => 'Inventory Stock Reports',
+            
+        ]);
+        // dd(Inbound::all());
+    }
+    public function shipmentreportsView(){
+        // dd();
+        return inertia::render('warehouse/ShipmentReports', [
+            'title' => 'Inventory Shipment Reports',
+            
+        ]);
+        // dd(Inbound::all());
+    }
 }

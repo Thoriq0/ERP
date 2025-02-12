@@ -61,4 +61,30 @@ class AdminController extends Controller
         ]);
         // dd(Inbound::all());
     }
+
+
+    // features in user finance
+    public function incomeView(){
+        // dd();
+        return inertia::render('features/Income', [
+            'title' => 'Admin Finance Income',
+    
+        ]);
+    }
+
+    public function outcomeView(){
+        // dd();
+        return inertia::render('features/Outcome', [
+            'title' => 'Admin Finance Outcome',
+    
+        ]);
+    }
+
+    public function budgetView(){
+        // dd();
+        return inertia::render('features/Budget', [
+            'title' => 'Admin Finance Budget Control',
+    
+        ]);
+    }
 }
