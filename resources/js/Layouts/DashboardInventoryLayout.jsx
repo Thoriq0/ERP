@@ -18,10 +18,10 @@ export default function DashboardInventoryLayout({ children, auth }) {
             title: "Reports",
             icon: <FaFileAlt  />,
             items: [
-                { name: "Inbound Reports", path: "/inventory/stock" },
-                { name: "Outbound Reports", path: "/inventory/add" },
-                { name: "Stock Reports", path: "/inventory/reports" },
-                { name: "Shipment Reports", path: "/inventory/reports" },
+                { name: "Inbound Reports", path: "/wrhs/inboundreports" },
+                { name: "Outbound Reports", path: "/wrhs/outboundreports" },
+                { name: "Stock Reports", path: "/wrhs/stockreports" },
+                { name: "Shipment Reports", path: "/wrhs/shipmentreports" },
             ],
         },
     ];

@@ -8,8 +8,8 @@ export default function DashboardAdminLayout({ children, auth }) {
     const menuItems = [
         { name: "Dashboard", path: "/finance/dashboard", icon: <HiChartPie /> },
         { name: "Income", path: "/finance/income", icon: <FaArrowCircleUp  /> },
-        { name: "Outcome", path: "/outcome", icon: <FaArrowCircleDown  /> },
-        { name: "Budget Control", path: "/budget", icon: <FaBalanceScale   /> },
+        { name: "Outcome", path: "/finance/outcome", icon: <FaArrowCircleDown  /> },
+        { name: "Budget Control", path: "/finance/budget", icon: <FaBalanceScale   /> },
     ];
 
     const dropdownMenus = [
@@ -17,9 +17,9 @@ export default function DashboardAdminLayout({ children, auth }) {
             title: "Reports",
             icon: <FaFileAlt  />,
             items: [
-                { name: "Stock List", path: "/inventory/stock" },
-                { name: "Add Item", path: "/inventory/add" },
-                { name: "Reports", path: "/inventory/reports" },
+                { name: "Income Reports", path: "/finance/Income Reports" },
+                { name: "Outcome Reports", path: "/finance/Outcome Reports" },
+                { name: "Budget Reports", path: "/finance/Budget Reports" },
             ],
         },
     ];
