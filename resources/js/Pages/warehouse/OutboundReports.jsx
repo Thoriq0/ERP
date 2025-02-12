@@ -1,11 +1,10 @@
 import DashboardInventoryLayout from '@/Layouts/DashboardInventoryLayout';
-import DataTableOutbound from "@/Components/DataTableOutbond";
+import DataTableOutboundReports from "@/Components/DataTableOutboundReports";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function Outbound({auth, title}) {
-    const data = [
-    ];
+export default function OutboundReports({auth, title}) {
+    const data = [];
     return (
         <DashboardInventoryLayout auth={auth}>
             <Head title="Dashboard" />
@@ -13,12 +12,8 @@ export default function Outbound({auth, title}) {
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-              <DataTableOutbound data={data} />
-          </div>
-
+              <DataTableOutboundReports data={data} />
+            </div>
         </DashboardInventoryLayout>
     );
 }
-
-
-
