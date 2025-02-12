@@ -7,10 +7,10 @@ import { FaFileAlt, FaTruck, FaArrowCircleDown, FaShippingFast, FaBoxes } from "
 export default function DashboardInventoryLayout({ children, auth }) {
     const menuItems = [
         { name: "Dashboard", path: "/wrhs/dashboard", icon: <HiChartPie /> },
-        { name: "Inbound", path: "/inbound", icon: <FaArrowCircleDown  /> },
+        { name: "Inbound", path: "/wrhs/inbound", icon: <FaArrowCircleDown  /> },
         { name: "Outbound", path: "/wrhs/outbound", icon: <FaTruck /> },
-        { name: "Stock", path: "/stock", icon: <FaBoxes  /> },
-        { name: "Shipment", path: "/shipment", icon: <FaShippingFast  /> },
+        { name: "Stock", path: "/wrhs/stock", icon: <FaBoxes  /> },
+        { name: "Shipment", path: "/wrhs/shipment", icon: <FaShippingFast  /> },
     ];
 
     const dropdownMenus = [
@@ -18,9 +18,10 @@ export default function DashboardInventoryLayout({ children, auth }) {
             title: "Reports",
             icon: <FaFileAlt  />,
             items: [
-                { name: "Stock List", path: "/inventory/stock" },
-                { name: "Add Item", path: "/inventory/add" },
-                { name: "Reports", path: "/inventory/reports" },
+                { name: "Inbound Reports", path: "/inventory/stock" },
+                { name: "Outbound Reports", path: "/inventory/add" },
+                { name: "Stock Reports", path: "/inventory/reports" },
+                { name: "Shipment Reports", path: "/inventory/reports" },
             ],
         },
     ];
