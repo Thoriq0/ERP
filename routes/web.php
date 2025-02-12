@@ -45,7 +45,10 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::middleware('rolechecking:wrhs')->group(function(){
         // view
         Route::get('/wrhs/dashboard', [WarehouseController::class, 'view'])->name('wrhs.dashboard');
+        Route::get('/wrhs/inbound', [WarehouseController::class, 'inboundView'])->name('wrhs.inbound');
         Route::get('/wrhs/outbound', [WarehouseController::class, 'outboundView'])->name('wrhs.outbound');
+        Route::get('/wrhs/stock', [WarehouseController::class, 'stockView'])->name('wrhs.stock');
+        Route::get('/wrhs/shipment', [WarehouseController::class, 'shipmentView'])->name('wrhs.shipment');
     });
 
     // Profile User
