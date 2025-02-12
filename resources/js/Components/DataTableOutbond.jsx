@@ -78,7 +78,7 @@ export function DataTableOutbound({data}) {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date In
+          Date Out
           <ArrowUpDown />
         </Button>
       ),

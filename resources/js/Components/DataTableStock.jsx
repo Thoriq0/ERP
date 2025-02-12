@@ -114,6 +114,11 @@ export function DataTableInbound({data}) {
       header: "Category",
       cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
     },
+    {
+      accessorKey: "supplier",
+      header: "Warehouse",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("supplier")}</div>,
+    },
     
     {
       id: "actions",
@@ -208,7 +213,6 @@ export function DataTableInbound({data}) {
             className="max-w-xs"
           />
         </div>
-        <ButtonModalInbound/>
       </div>
       <div className="rounded-md border">
         <Table>

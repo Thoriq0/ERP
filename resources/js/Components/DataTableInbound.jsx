@@ -116,6 +116,12 @@ export function DataTableInbound({data}) {
     },
     
     {
+      accessorKey: "name",
+      header: "PIC",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
+    },
+    
+    {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
