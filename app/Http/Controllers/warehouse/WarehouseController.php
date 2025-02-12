@@ -5,6 +5,8 @@ namespace App\Http\Controllers\warehouse;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
+use App\Models\Inbound;
+use App\Models\Outbound;
 
 class WarehouseController extends Controller
 {
@@ -14,11 +16,38 @@ class WarehouseController extends Controller
         ]);
     }
 
+    public function inboundView(){
+        // dd();
+        return inertia::render('features/Inbound', [
+            'title' => 'Inventory Inbound',
+            'inbound' => Inbound::all()
+        ]);
+        // dd(Inbound::all());
+    }
+
     public function outboundView(){
         // dd();
-        return inertia::render('warehouse/Outbound', [
+        return inertia::render('features/Outbound', [
             'title' => 'Inventory Outbound',
-            
+            'outbound' => Outbound::all()
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function stockView(){
+        // dd();
+        return inertia::render('features/Stock', [
+            'title' => 'Inventory Stock',
+            'inbound' => Inbound::all()
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function shipmentView(){
+        // dd();
+        return inertia::render('features/Shipment', [
+            'title' => 'Inventory Shipment',
+            'inbound' => Inbound::all()
         ]);
         // dd(Inbound::all());
     }

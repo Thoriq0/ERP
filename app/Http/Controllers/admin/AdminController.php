@@ -28,7 +28,7 @@ class AdminController extends Controller
 
     public function inboundView(){
         // dd();
-        return inertia::render('admin/Inbound', [
+        return inertia::render('features/Inbound', [
             'title' => 'Admin Inventory Inbound',
             'inbound' => Inbound::all()
         ]);
@@ -37,7 +37,7 @@ class AdminController extends Controller
 
     public function outboundView(){
         // dd();
-        return inertia::render('admin/Outbound', [
+        return inertia::render('features/Outbound', [
             'title' => 'Admin Inventory Outbound',
             'outbound' => Outbound::all()
         ]);
@@ -46,7 +46,7 @@ class AdminController extends Controller
 
     public function stockView(){
         // dd();
-        return inertia::render('admin/Stock', [
+        return inertia::render('features/Stock', [
             'title' => 'Admin Inventory Stock',
             'inbound' => Inbound::all()
         ]);
@@ -55,9 +55,9 @@ class AdminController extends Controller
 
     public function shipmentView(){
         // dd();
-        return inertia::render('admin/Shipment', [
-            'title' => 'Admin Inventory Stock',
-            
+        return inertia::render('features/Shipment', [
+            'title' => 'Admin Inventory Shipment',
+            'inbound' => Inbound::all()
         ]);
         // dd(Inbound::all());
     }
