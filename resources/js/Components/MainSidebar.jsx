@@ -1,9 +1,10 @@
-// FlexibleSidebar.jsx
 import React, { useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
-import { HiMenuAlt3, HiX } from "react-icons/hi"; 
+import { HiMenuAlt3, HiX } from "react-icons/hi";
+import { FaUser, FaSignOutAlt, FaCog, FaBell, FaCreditCard } from "react-icons/fa";
+import { HiChevronUpDown } from "react-icons/hi2";
 
-export default function FlexibleSidebar({ title, menuItems, logo, dropdownMenus, user }) {
+export default function MainSidebar({ title, menuItems, logo, dropdownMenus, user }) {
     const { url, component } = usePage();
     const [openDropdowns, setOpenDropdowns] = useState({});
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -17,6 +18,10 @@ export default function FlexibleSidebar({ title, menuItems, logo, dropdownMenus,
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    const isDropdownActive = (dropdown) => {
+        return dropdown.items.some((subItem) => url.startsWith(subItem.path));
     };
 
     return (
@@ -53,89 +58,89 @@ export default function FlexibleSidebar({ title, menuItems, logo, dropdownMenus,
                             className={`flex items-center p-2 rounded hover:bg-[#D9D9D940] ${
                                 url.startsWith(item.path) ? "bg-activeMenuSidebar font-semibold" : ""
                             }`}
-                            >
+                        >
                             <span className="mr-2">{item.icon}</span>
                             {item.name}
                         </Link>
                     ))}
 
-                    {dropdownMenus.map((dropdown) => (
-                        <div key={dropdown.title} className="flex flex-col">
-                            <button
-                                onClick={() => toggleDropdown(dropdown.title)}
-                                className="flex items-center justify-between p-2 rounded hover:bg-[#D9D9D940]"
-                            >
-                                <span className="flex items-center">
-                                    {dropdown.icon}
-                                    <span className="ml-2">{dropdown.title}</span>
-                                </span>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className={`w-4 h-4 transform transition-transform ${
-                                        openDropdowns[dropdown.title] ? "rotate-180" : ""
-                                    }`}
+                    {dropdownMenus.map((dropdown) => {
+                        const isActive = isDropdownActive(dropdown);
+                        return (
+                            <div key={dropdown.title} className="flex flex-col">
+                                <button
+                                    onClick={() => toggleDropdown(dropdown.title)}
+                                    className="flex items-center justify-between p-2 rounded hover:bg-[#D9D9D940]"
                                 >
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-                                </svg>
-                            </button>
-                            {openDropdowns[dropdown.title] && (
-                                <div className="pl-6 space-y-2 ml-2">
-                                    {dropdown.items.map((subItem) => (
-                                        <Link
-                                            key={subItem.path}
-                                            href={subItem.path}
-                                            className={`flex items-center p-2 rounded hover:bg-[#D9D9D940] ${
-                                                url.startsWith(subItem.path) ? "bg-activeMenuSidebar font-semibold" : ""
-                                            }`}
-                                        >
-                                            {subItem.name}
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                                    <span className="flex items-center">
+                                        {dropdown.icon}
+                                        <span className="ml-2">{dropdown.title}</span>
+                                    </span>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className={`w-4 h-4 transform transition-transform ${
+                                            openDropdowns[dropdown.title] || isActive ? "rotate-180" : ""
+                                        }`}
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                                    </svg>
+                                </button>
+                                {(openDropdowns[dropdown.title] || isActive) && (
+                                    <div className="pl-6 space-y-2 ml-2">
+                                        {dropdown.items.map((subItem) => (
+                                            <Link
+                                                key={subItem.path}
+                                                href={subItem.path}
+                                                className={`flex items-center p-2 rounded hover:bg-[#D9D9D940] ${
+                                                    url.startsWith(subItem.path) ? "bg-activeMenuSidebar font-semibold" : ""
+                                                }`}
+                                            >
+                                                {subItem.name}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
                     <div className='h-px w-full mx-auto bg-[#C8C6C6]'></div>    
                 </nav>
 
-                                      
-                <div className="absolute bottom-6 left-4 right-4">
+                {/* Account Menu */}
+                <div className="absolute bottom-5 left-4 right-4">
                     <button
                         onClick={() => toggleDropdown("Account")}
                         className="flex w-full items-center justify-between rounded bg-[#D9D9D940] p-2 text-sm"
                     >
                         <span>{user.name}</span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-4 h-4"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-                        </svg>
+                        <HiChevronUpDown size={20} />
                     </button>
+
                     {openDropdowns["Account"] && (
-                        <div className="mt-2 rounded bg-[#D9D9D940] shadow-lg">
-                            <Link
-                                href={route("profile.edit")}
-                                className="block px-4 py-2 text-sm hover:bg-[#D9D9D940]"
-                            >
-                                Profile
-                            </Link>
-                            <Link
-                                href={route("logout")}
-                                method="post"
-                                as="button"
-                                className="block w-full text-left px-4 py-2 text-sm hover:bg-[#D9D9D940]"
-                            >
-                                Log Out
-                            </Link>
+                        <div className="absolute left-full bottom-0 ml-5 w-56 rounded-md bg-white shadow-lg border border-gray-200 text-black">
+                            <div className="px-4 py-3 border-b">
+                                <div className="font-semibold text-sm">{user.name}</div>
+                                <div className="text-xs text-gray-500">{user.email}</div>
+                            </div>
+                            <div className="py-2">
+                                <Link href={route("profile.edit")} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100">
+                                    <FaUser className="text-primaryPurple"/> Profile
+                                </Link>
+                            </div>
+                            <div className="border-t">
+                                <Link
+                                    href={route("logout")}
+                                    method="post"
+                                    as="button"
+                                    className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                                >
+                                    <FaSignOutAlt className="text-red-800"/> Log Out
+                                </Link>
+                            </div>
                         </div>
                     )}
                 </div>
