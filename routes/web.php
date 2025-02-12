@@ -18,13 +18,22 @@ Route::middleware('auth', 'verified')->group(function () {
 
     // Admin
     Route::middleware('rolechecking:admin')->group(function(){
-        // view
+        // route features inventory/warehouse
         Route::get('/admin/dashboard', [AdminController::class, 'view'])->name('admin.dashboard');
         Route::get('/admin/user', [AdminController::class, 'userView'])->name('admin.user');
         Route::get('/admin/inbound', [AdminController::class, 'inboundView'])->name('admin.inbound');
         Route::get('/admin/outbound', [AdminController::class, 'outboundView'])->name('admin.outbound');
         Route::get('/admin/stock', [AdminController::class, 'stockView'])->name('admin.stock');
         Route::get('/admin/shipment', [AdminController::class, 'shipmentView'])->name('admin.shipment');
+
+        // route features finance
+        Route::get('/admin/income', [AdminController::class, 'incomeView'])->name('finance.income');
+        Route::get('/admin/outcome', [AdminController::class, 'outcomeView'])->name('finance.outcome');
+        Route::get('/admin/budget', [AdminController::class, 'budgetView'])->name('finance.budget');
+        
+        // route features human resource
+        
+        // route features logistics
     });
 
     // Finance (fnc)
@@ -32,13 +41,15 @@ Route::middleware('auth', 'verified')->group(function () {
         // view
         Route::get('/finance/dashboard', [FinanceController::class, 'view'])->name('finance.dashboard');
         Route::get('/finance/income', [FinanceController::class, 'incomeView'])->name('finance.income');      
+        Route::get('/finance/outcome', [FinanceController::class, 'outcomeView'])->name('finance.outcome');      
+        Route::get('/finance/budget', [FinanceController::class, 'budgetView'])->name('finance.budget');      
     });
 
     // Human Resource (hr)
     Route::middleware('rolechecking:hr')->group(function(){
         // view
         Route::get('/hr/dashboard', [HumanResourceController::class, 'view'])->name('hr.dashboard');
-        // coba
+        
     });
 
     // Warehouse/Inventory (wrhs)
@@ -49,6 +60,10 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/wrhs/outbound', [WarehouseController::class, 'outboundView'])->name('wrhs.outbound');
         Route::get('/wrhs/stock', [WarehouseController::class, 'stockView'])->name('wrhs.stock');
         Route::get('/wrhs/shipment', [WarehouseController::class, 'shipmentView'])->name('wrhs.shipment');
+        Route::get('/wrhs/inboundreports', [WarehouseController::class, 'inboundreportsView'])->name('wrhs.inboundreports');
+        Route::get('/wrhs/outboundreports', [WarehouseController::class, 'outboundreportsView'])->name('wrhs.outboundreports');
+        Route::get('/wrhs/stockreports', [WarehouseController::class, 'stockreportsView'])->name('wrhs.stockreports');
+        Route::get('/wrhs/shipmentreports', [WarehouseController::class, 'shipmentreportsView'])->name('wrhs.shipmentreports');
     });
 
     // Profile User
