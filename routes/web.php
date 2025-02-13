@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\admin\InventoryController;
 use App\Http\Controllers\finance\FinanceController;
 use App\Http\Controllers\hr\HumanResourceController;
 use App\Http\Controllers\ProfileController;
@@ -25,6 +26,10 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/outbound', [AdminController::class, 'outboundView'])->name('admin.outbound');
         Route::get('/admin/stock', [AdminController::class, 'stockView'])->name('admin.stock');
         Route::get('/admin/shipment', [AdminController::class, 'shipmentView'])->name('admin.shipment');
+
+        // route INBOUND FUNCTION
+        Route::post('/admin/inbound', [InventoryController::class, 'inboundStore'])->name('inventory.inbound.store');
+        Route::delete('/admin/inbound/{inbound}', [InventoryController::class, 'inboundDestroy'])->name('inventory.inbound.destroy');
 
         // route features finance
         Route::get('/admin/income', [AdminController::class, 'incomeView'])->name('finance.income');

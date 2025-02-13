@@ -36,17 +36,28 @@ import {
 import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { router } from "@inertiajs/react";
+import toast from "react-hot-toast";
+
+
 
 export function DataTableInbound({data}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  const handleDelete = () => {
-    console.log(`Deleting item with ID: ${selectedId}`);
-    // Tambahkan logic API untuk delete di sini
-    setOpen(false); // Tutup modal setelah delete
+  const handleDelete = (id) => {
+    if (!id) return;
+  
+    router.delete(`/admin/inbound/${id}`, {
+      onSuccess: () => {
+        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
+      },
+      onError: (err) => {
+        console.error(err);
+        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
+      },
+    });
   };
-
   const columns = [
     {
       id: "select",
@@ -68,9 +79,9 @@ export function DataTableInbound({data}) {
       enableHiding: false,
     },
     {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+      accessorKey: "product",
+      header: "Product",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("product")}</div>,
     },
     {
       accessorKey: "created_at",
@@ -116,9 +127,9 @@ export function DataTableInbound({data}) {
     },
     
     {
-      accessorKey: "name",
+      accessorKey: "pic",
       header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
     },
     
     {
@@ -142,7 +153,7 @@ export function DataTableInbound({data}) {
               <DropdownMenuSeparator />
               <DropdownMenuItem>View customer</DropdownMenuItem>
               <DropdownMenuItem>View payment details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
+              <DropdownMenuItem onClick={() => handleDelete(item.id)}>
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -17,10 +17,12 @@ class InboundFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'product' => fake()->name(),
             'qty' => fake()->numberBetween(0, 100),
             'supplier' =>fake()->unique()->safeEmail(),
-            'category' =>fake()->word()
+            'category' =>fake()->word(),
+            'pic' =>fake()->name(),
+            'image' => 'null'
         ];
     }
 }

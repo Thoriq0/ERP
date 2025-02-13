@@ -10,7 +10,7 @@ class Inbound extends Model
     /** @use HasFactory<\Database\Factories\InboundFactory> */
 
     protected $guarded = [
-        'id',
+        'id'
     ];
 
     use HasFactory;

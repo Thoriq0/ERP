@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('inbounds', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('product');
             $table->timestamps();
             $table->integer('qty');
             $table->string('supplier');
             $table->string('category');
+            $table->string('pic');
+            $table->string('image')->nullable();
         });
     }
 
