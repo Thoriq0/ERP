@@ -85,7 +85,14 @@ export function DataTableOutbound({data}) {
     {
       accessorKey: "role",
       header: "Role",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("role")}</div>,
+      cell: ({ row }) => {
+        const roleMap = {
+          fnc: "Finance",
+          wrhs: "Warehouse",
+          hr: "Human Resource",
+        };
+        return <div className="capitalize">{roleMap[row.getValue("role")] || row.getValue("role")}</div>;  
+      }
     },
     {
       id: "actions",
