@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Models\Inbound;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class InventoryController extends Controller
 {
@@ -53,6 +54,14 @@ class InventoryController extends Controller
     }
 
     public function inboundDestroy(Inbound $inbound){
+        
+        if ($inbound->image) { 
+            $imagePath = public_path('images/inbounds/' . $inbound->image); 
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            }
+        }
+
         $inbound->delete();
         return redirect()->back();
     }
