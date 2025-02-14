@@ -32,18 +32,29 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
+import { ButtonModalOutbound } from "@/Components/ButtonModalOutbound";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { router } from "@inertiajs/react";
+import toast from "react-hot-toast";
 
 export function DataTableOutbound({data}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
   const handleDelete = () => {
-    console.log(`Deleting item with ID: ${selectedId}`);
-    // Tambahkan logic API untuk delete di sini
-    setOpen(false); // Tutup modal setelah delete
+    if (!selectedId) return;
+  
+    router.delete(`/admin/outbound/${selectedId}`, {
+      onSuccess: () => {
+        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
+      },
+      onError: (err) => {
+        console.error(err);
+        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
+      },
+    });
+    setOpen(false); 
   };
 
   const columns = [
@@ -67,9 +78,9 @@ export function DataTableOutbound({data}) {
       enableHiding: false,
     },
     {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+      accessorKey: "product",
+      header: "Product",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("product")}</div>,
     },
     {
       accessorKey: "created_at",
@@ -104,16 +115,20 @@ export function DataTableOutbound({data}) {
       cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
     },
     {
-      accessorKey: "costumer",
+      accessorKey: "receiver",
       header: "To",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("costumer")}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.getValue("receiver")}</div>,
     },
     {
       accessorKey: "category",
       header: "Category",
       cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
     },
-    
+    {
+      accessorKey: "pic",
+      header: "PIC",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
+    },
     {
       id: "actions",
       enableHiding: false,
@@ -207,7 +222,7 @@ export function DataTableOutbound({data}) {
             className="max-w-xs text-sm"
           />
         </div>
-        <ButtonModalInbound/>
+        <ButtonModalOutbound/>
       </div>
       <div className="rounded-md border">
         <Table>

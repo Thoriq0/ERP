@@ -26,6 +26,7 @@ class UserFactory extends Factory
         // FNC = Finance
         // HR = Human Resource
         $roles = ['admin', 'fnc', 'hr', 'wrhs'];
+        $statuses = ['active', 'not active'];
         return [
             'name' => fake()->name(),
             'role' => fake()->randomElement($roles),
@@ -33,6 +34,8 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'address' => fake()->address(),
+            'status' => fake()->randomElement($statuses),
         ];
     }
 

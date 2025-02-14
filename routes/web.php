@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\InventoryController;
+use App\Http\Controllers\admin\WarehouseUserController;
 use App\Http\Controllers\finance\FinanceController;
 use App\Http\Controllers\hr\HumanResourceController;
 use App\Http\Controllers\ProfileController;
@@ -17,19 +18,25 @@ Route::get('/', function () {
 
 Route::middleware('auth', 'verified')->group(function () {
 
-    // Admin
+    // ==== ADMIN ====
     Route::middleware('rolechecking:admin')->group(function(){
         // route features inventory/warehouse
         Route::get('/admin/dashboard', [AdminController::class, 'view'])->name('admin.dashboard');
-        Route::get('/admin/user', [AdminController::class, 'userView'])->name('admin.user');
         Route::get('/admin/inbound', [AdminController::class, 'inboundView'])->name('admin.inbound');
         Route::get('/admin/outbound', [AdminController::class, 'outboundView'])->name('admin.outbound');
         Route::get('/admin/stock', [AdminController::class, 'stockView'])->name('admin.stock');
         Route::get('/admin/shipment', [AdminController::class, 'shipmentView'])->name('admin.shipment');
 
-        // route INBOUND FUNCTION
+        // route userwarehouse action & view
+        Route::resource('/admin/user', WarehouseUserController::class);
+
+        // route inbound action
         Route::post('/admin/inbound', [InventoryController::class, 'inboundStore'])->name('inventory.inbound.store');
         Route::delete('/admin/inbound/{inbound}', [InventoryController::class, 'inboundDestroy'])->name('inventory.inbound.destroy');
+
+        // route outbound action
+        Route::post('/admin/outbound', [InventoryController::class, 'outboundStore'])->name('inventory.outbound.store');
+        Route::delete('/admin/outbound/{outbound}', [InventoryController::class, 'outboundDestroy'])->name('inventory.outbound.destroy');
 
         // route features finance
         Route::get('/admin/income', [AdminController::class, 'incomeView'])->name('finance.income');
@@ -41,7 +48,7 @@ Route::middleware('auth', 'verified')->group(function () {
         // route features logistics
     });
 
-    // Finance (fnc)
+    // ==== FINANCE (fnc) ====
     Route::middleware('rolechecking:fnc')->group(function(){
         // view
         Route::get('/finance/dashboard', [FinanceController::class, 'view'])->name('finance.dashboard');
@@ -50,14 +57,14 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/finance/budget', [FinanceController::class, 'budgetView'])->name('finance.budget');      
     });
 
-    // Human Resource (hr)
+    // ==== HUMAN RESOURCE (hr) ====
     Route::middleware('rolechecking:hr')->group(function(){
         // view
         Route::get('/hr/dashboard', [HumanResourceController::class, 'view'])->name('hr.dashboard');
         
     });
 
-    // Warehouse/Inventory (wrhs)
+    // ==== Warehouse/Inventory (wrhs) ====
     Route::middleware('rolechecking:wrhs')->group(function(){
         // view
         Route::get('/wrhs/dashboard', [WarehouseController::class, 'view'])->name('wrhs.dashboard');

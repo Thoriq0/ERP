@@ -12,7 +12,6 @@ import {
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
 
-// import { Button } from "@/components/ui/button";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import {
@@ -39,16 +38,14 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-
-
 export function DataTableInbound({data}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  const handleDelete = (id) => {
-    if (!id) return;
+  const handleDelete = () => {
+    if (!selectedId) return;
   
-    router.delete(`/admin/inbound/${id}`, {
+    router.delete(`/admin/inbound/${selectedId}`, {
       onSuccess: () => {
         toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
       },
@@ -57,6 +54,7 @@ export function DataTableInbound({data}) {
         toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
       },
     });
+    setOpen(false); 
   };
   const columns = [
     {
@@ -153,7 +151,7 @@ export function DataTableInbound({data}) {
               <DropdownMenuSeparator />
               <DropdownMenuItem>View customer</DropdownMenuItem>
               <DropdownMenuItem>View payment details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleDelete(item.id)}>
+              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>

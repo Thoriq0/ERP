@@ -32,19 +32,29 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
+import { ButtonModalUsrwrhs } from "@/Components/ButtonModalUsrwrhs";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { router } from "@inertiajs/react";
+import toast from "react-hot-toast";
 
 
 export function DataTableOutbound({data}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  const handleDelete = () => {
-    console.log(`Deleting item with ID: ${selectedId}`);
-    // Tambahkan logic API untuk delete di sini
-    setOpen(false); // Tutup modal setelah delete
+  const handleDelete = (id) => {
+    if (!id) return;
+  
+    router.delete(`/admin/user/${id}`, {
+      onSuccess: () => {
+        toast.success("Penggua berhasil dihapus! 🗑️", { duration: 5000 });
+      },
+      onError: (err) => {
+        console.error(err);
+        toast.error("Gagal menghapus Pengguna! ❌", { duration: 5000 });
+      },
+    });
   };
 
   const columns = [
@@ -95,6 +105,37 @@ export function DataTableOutbound({data}) {
       }
     },
     {
+      accessorKey: "address",
+      header: "Address",
+      cell: ({ row }) => {
+        const address = row.getValue("address") || "";
+        const maxLength = 26;
+        return (
+          <div className="capitalize">
+            {address.length > maxLength ? address.slice(0, maxLength) + "..." : address}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status");
+        const isActive = status === "active";
+    
+        return (
+          <div
+            className={`px-3 py-1 rounded-full text-white w-fit text-sm font-semibold ${
+              isActive ? "bg-green-500" : "bg-red-500"
+            }`}
+          >
+            {status}
+          </div>
+        );
+      },
+    },
+    {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
@@ -115,7 +156,7 @@ export function DataTableOutbound({data}) {
               <DropdownMenuSeparator />
               <DropdownMenuItem>View customer</DropdownMenuItem>
               <DropdownMenuItem>View payment details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
+              <DropdownMenuItem onClick={() => handleDelete(item.id)}>
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -187,7 +228,7 @@ export function DataTableOutbound({data}) {
             className="max-w-xs text-sm"
           />
         </div>
-        <ButtonModalInbound/>
+        <ButtonModalUsrwrhs/>
       </div>
       <div className="rounded-md border">
         <Table>

@@ -16,11 +16,35 @@ class OutboundFactory extends Factory
      */
     public function definition(): array
     {
+        $products = [
+            'Indomie Goreng' => 'Makanan',
+            'Teh Botol Sosro' => 'Minuman',
+            'Kopi Kapal Api' => 'Minuman',
+            'ABC Kecap Manis' => 'Bumbu Dapur',
+            'Bimoli Minyak Goreng' => 'Bahan Pokok',
+            'Gula Pasir Gulaku' => 'Bahan Pokok',
+            'Sabun Lifebuoy' => 'Kebutuhan Rumah Tangga',
+            'Shampoo Pantene' => 'Kebutuhan Rumah Tangga',
+            'Obat Paracetamol' => 'Obat-obatan',
+            'Vitamin C Redoxon' => 'Obat-obatan',
+        ];
+    
+        $suppliers = [
+            'PT Indofood Sukses Makmur', 'PT Mayora Indah', 'PT Wings Surya',
+            'PT Unilever Indonesia', 'PT Kalbe Farma', 'PT Sido Muncul', 
+            'PT Nutrifood Indonesia', 'PT Ultra Jaya Milk', 'PT ABC President Indonesia'
+        ];
+        
+        $product = fake()->randomElement(array_keys($products));
+        $category = $products[$product];
+
         return [
-            'name'=>fake()->name(),
-            'qty' => fake()->numberBetween(0, 100),
-            'costumer' =>fake()->unique()->safeEmail(),
-            'category' =>fake()->word()
+            'product' => $product,
+            'qty' => fake()->numberBetween(1, 100),
+            'receiver' => fake()->randomElement($suppliers),
+            'category' => $category,
+            'pic' => fake()->name(),
+            'image' => null,
         ];
     }
 }
