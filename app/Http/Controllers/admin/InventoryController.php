@@ -120,6 +120,21 @@ class InventoryController extends Controller
         ];
         // dd($save);
         Outbound::create($save);
+
+        // $stockQuery = Stock::where('product', $request->product)
+        //             ->where('supplier', $request->supplier);
+
+        // $stock = $stockQuery->first();
+        // dd($stock);
+
+        // if ($stock) {
+        //     // Update query builder
+        //     $stockQuery->update([
+        //         'qty' => $stock->qty - $request->qty,
+        //         'updated_at' => now(),
+        //     ]);
+        // }
+
         return redirect()->route('admin.outbound');
         
     }
