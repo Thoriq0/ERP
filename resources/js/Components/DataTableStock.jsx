@@ -68,23 +68,23 @@ export function DataTableInbound({data}) {
       enableHiding: false,
     },
     {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+      accessorKey: "product",
+      header: "Product",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("product")}</div>,
     },
     {
-      accessorKey: "created_at",
+      accessorKey: "updated_at",
       header: ({ column }) => (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date In
+          Last Update
           <ArrowUpDown />
         </Button>
       ),
       cell: ({ row }) => {
-        const rawDate = row.getValue("created_at");
+        const rawDate = row.getValue("updated_at");
         const date = new Date(rawDate);
     
         // Format ke "HH:mm dd-MM-yyyy"
@@ -115,9 +115,9 @@ export function DataTableInbound({data}) {
       cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
     },
     {
-      accessorKey: "supplier",
+      accessorKey: "warehouse",
       header: "Warehouse",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("supplier")}</div>,
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("warehouse")}</div>,
     },
     
     {

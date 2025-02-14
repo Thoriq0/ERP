@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\admin;
-use App\Http\Controllers\Controller;
+use App\Models\Stock;
 use App\Models\Inbound;
 use App\Models\Outbound;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 
 class InventoryController extends Controller
@@ -37,18 +38,36 @@ class InventoryController extends Controller
             $image->move(public_path('images/inbounds'), $imageName);
         }
         // dd($imageName);
-        $save = [
+        
+        Inbound::create([
             'product' => $request->product,
             'qty' => $request->qty,
             'supplier' => $request->supplier,
             'category' => $request->category,
             'pic' => $request->pic,
-            'image' => $imageName ? $imageName : null
-        ];
-        // dd($save);
-        Inbound::create($save);
-        return redirect()->route('admin.inbound');
-        
+            'image' => $imageName
+        ]);
+
+        $stockQuery = Stock::where('product', $request->product)
+                        ->where('supplier', $request->supplier);
+
+        $stock = $stockQuery->first();
+
+        if ($stock) {
+            $stockQuery->update([
+                'qty' => $stock->qty + $request->qty,
+                'updated_at' => now(),
+            ]);
+        } else {
+            Stock::create([
+                'product' => $request->product,
+                'qty' => $request->qty,
+                'supplier' => $request->supplier,
+                'category' => $request->category,
+                'warehouse' => null,
+            ]);
+        }
+        return redirect()->back();
     }
 
     public function inboundDestroy(Inbound $inbound){

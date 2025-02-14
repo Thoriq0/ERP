@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Inbound;
 use App\Models\Outbound;
-use App\Models\User;
+use App\Models\Stock;
 
 class AdminController extends Controller
 {
@@ -40,7 +40,7 @@ class AdminController extends Controller
         // dd();
         return inertia::render('features/Stock', [
             'title' => 'Admin Inventory Stock',
-            'inbound' => Inbound::all()
+            'inbound' => Stock::all()
         ]);
         // dd(Inbound::all());
     }
