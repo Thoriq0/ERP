@@ -126,7 +126,7 @@ export function DataTableOutbound({data}) {
     
         return (
           <div
-            className={`px-3 py-1 rounded-full text-white w-fit text-sm font-semibold ${
+            className={`px-3 py-1 rounded-full text-white w-fit text-sm text-center font-semibold ${
               isActive ? "bg-green-500" : "bg-red-500"
             }`}
           >
