@@ -14,7 +14,7 @@ import React, { useState } from "react";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast"; 
 
-export function ButtonModalInbound() {
+export function ButtonModalInbound({userRole}) {
   // State untuk form
   const [values, setValues] = useState({
     product: "",
@@ -42,12 +42,21 @@ export function ButtonModalInbound() {
     e.preventDefault();
     setErrors({}); // Reset error sebelum submit
 
+    // Mapping role endpoint
+    const rolePaths = {
+      admin: "/admin/inbound",
+      wrhs: "/wrhs/inbound",
+    };
+  
+    const userPath = rolePaths[userRole];
+
+
     // Kirim data ke backend
     router.post(
-      "/admin/inbound",
+      userPath,
       values,
       {
-        forceFormData: true, // Supaya file bisa dikirim
+        forceFormData: true,
         onSuccess: () => {
           toast.success("Produk berhasil disimpan! 🎉", {
             duration: 5000,

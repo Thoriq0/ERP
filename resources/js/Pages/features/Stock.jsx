@@ -14,7 +14,8 @@ export default function Stock({auth, mustVerifyEmail, status, title, inbound}) {
         }
     };
 
-    const Layout = getLayout(auth.user.role);
+    const role = auth.user.role;
+    const Layout = getLayout(role);
     const data = inbound;
 
     return (
@@ -24,7 +25,7 @@ export default function Stock({auth, mustVerifyEmail, status, title, inbound}) {
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-              <DataTableStock mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
+              <DataTableStock mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} />
           </div>
 
         </Layout>

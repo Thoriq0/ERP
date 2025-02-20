@@ -38,14 +38,24 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-export function DataTableInbound({data}) {
+export function DataTableInbound({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
+  // console.log(userRole, "role get");
+
   const handleDelete = () => {
     if (!selectedId) return;
+
+    // Mapping role endpoint
+    const rolePaths = {
+      admin: "/admin/inbound",
+      wrhs: "/wrhs/inbound",
+    };
+
+    const userPath = rolePaths[userRole];
   
-    router.delete(`/admin/inbound/${selectedId}`, {
+    router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
         toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
       },
@@ -223,7 +233,7 @@ export function DataTableInbound({data}) {
             className="max-w-xs"
           />
         </div>
-        <ButtonModalInbound/>
+        <ButtonModalInbound userRole={userRole}/>
       </div>
       <div className="rounded-md border">
         <Table>

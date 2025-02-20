@@ -13,7 +13,6 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect()->route('login');
-    // as
 });
 
 Route::middleware('auth', 'verified')->group(function () {
@@ -76,6 +75,15 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/wrhs/outboundreports', [WarehouseController::class, 'outboundreportsView'])->name('wrhs.outboundreports');
         Route::get('/wrhs/stockreports', [WarehouseController::class, 'stockreportsView'])->name('wrhs.stockreports');
         Route::get('/wrhs/shipmentreports', [WarehouseController::class, 'shipmentreportsView'])->name('wrhs.shipmentreports');
+
+        // Route inbound action 
+        Route::post('/wrhs/inbound', [InventoryController::class, 'inboundStore'])->name('wrhs.inbound.store');
+        Route::delete('/wrhs/inbound/{inbound}', [InventoryController::class, 'inboundDestroy'])->name('wrhs.inbound.destroy');
+
+        // Route outbound action
+        Route::post('/wrhs/outbound', [InventoryController::class, 'outboundStore'])->name('wrhs.outbound.store');
+        Route::delete('/wrhs/outbound/{outbound}', [InventoryController::class, 'outboundDestroy'])->name('wrhs.outbound.destroy');
+
     });
 
     // Profile User

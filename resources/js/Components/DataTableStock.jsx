@@ -37,7 +37,7 @@ import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
-export function DataTableInbound({data}) {
+export function DataTableInbound({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 

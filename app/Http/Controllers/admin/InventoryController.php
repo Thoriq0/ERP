@@ -135,7 +135,7 @@ class InventoryController extends Controller
         //     ]);
         // }
 
-        return redirect()->route('admin.outbound');
+        return redirect()->back();
         
     }
 
