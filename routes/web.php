@@ -21,6 +21,8 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::middleware('rolechecking:admin')->group(function(){
         // route features inventory/warehouse
         Route::get('/admin/dashboard', [AdminController::class, 'view'])->name('admin.dashboard');
+        Route::get('/admin/product', [AdminController::class, 'productView'])->name('admin.product');
+        Route::get('/admin/supplier', [AdminController::class, 'supplierView'])->name('admin.supplier');
         Route::get('/admin/inbound', [AdminController::class, 'inboundView'])->name('admin.inbound');
         Route::get('/admin/outbound', [AdminController::class, 'outboundView'])->name('admin.outbound');
         Route::get('/admin/stock', [AdminController::class, 'stockView'])->name('admin.stock');
@@ -70,8 +72,10 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/wrhs/inbound', [WarehouseController::class, 'inboundView'])->name('wrhs.inbound');
         Route::get('/wrhs/outbound', [WarehouseController::class, 'outboundView'])->name('wrhs.outbound');
         Route::get('/wrhs/stock', [WarehouseController::class, 'stockView'])->name('wrhs.stock');
+        Route::get('/wrhs/product', [WarehouseController::class, 'productView'])->name('wrhs.product');
+        Route::get('/wrhs/supplier', [WarehouseController::class, 'supplierView'])->name('wrhs.supplier');
         Route::get('/wrhs/shipment', [WarehouseController::class, 'shipmentView'])->name('wrhs.shipment');
-        Route::get('/wrhs/inboundreports', [WarehouseController::class, 'inboundreportsView'])->name('wrhs.inboundreports');
+        Route::get('/wrhs/inboundreports', [WarehouseController::class, 'inboundReportsView'])->name('wrhs.inboundreports');
         Route::get('/wrhs/outboundreports', [WarehouseController::class, 'outboundreportsView'])->name('wrhs.outboundreports');
         Route::get('/wrhs/stockreports', [WarehouseController::class, 'stockreportsView'])->name('wrhs.stockreports');
         Route::get('/wrhs/shipmentreports', [WarehouseController::class, 'shipmentreportsView'])->name('wrhs.shipmentreports');

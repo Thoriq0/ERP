@@ -52,11 +52,29 @@ class WarehouseController extends Controller
         // dd(Inbound::all());
     }
 
-    public function inboundreportsView(){
+    public function productView(){
+        // dd();
+        return inertia::render('features/Product', [
+            'title' => 'Inventory Product',
+            'inbound' => Inbound::all()
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function supplierView(){
+        // dd();
+        return inertia::render('features/Supplier', [
+            'title' => 'Inventory Supplier',
+            'inbound' => Inbound::all()
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function inboundReportsView(){
         // dd();
         return inertia::render('warehouse/InboundReports', [
             'title' => 'Inventory Inbound Reports',
-            
+            'inbound' => Inbound::all()
         ]);
         // dd(Inbound::all());
     }
@@ -65,7 +83,7 @@ class WarehouseController extends Controller
         // dd();
         return inertia::render('warehouse/OutboundReports', [
             'title' => 'Inventory Outbound Reports',
-            
+            'outbound' => Inbound::all()
         ]);
         // dd(Inbound::all());
     }

@@ -18,7 +18,7 @@ export function ButtonDialogDelete({ open, onOpenChange, onDelete }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete this payment.
+              This action cannot be undone. This will permanently delete this data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

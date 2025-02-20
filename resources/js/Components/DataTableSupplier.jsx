@@ -32,31 +32,40 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { ButtonModalUsrwrhs } from "@/Components/ButtonModalUsrwrhs";
+import { ButtonModalSupplier } from "@/Components/ButtonModalSupplier";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-
-export function DataTableOutbound({data}) {
+export function DataTableSupplier({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  const handleDelete = (id) => {
-    if (!id) return;
+  // console.log(userRole, "role get");
+
+  const handleDelete = () => {
+    if (!selectedId) return;
+
+    // Mapping role endpoint
+    const rolePaths = {
+      admin: "/admin/inbound",
+      wrhs: "/wrhs/inbound",
+    };
+
+    const userPath = rolePaths[userRole];
   
-    router.delete(`/admin/user/${id}`, {
+    router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
-        toast.success("Penggua berhasil dihapus! 🗑️", { duration: 5000 });
+        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
         console.error(err);
-        toast.error("Gagal menghapus Pengguna! ❌", { duration: 5000 });
+        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
       },
     });
+    setOpen(false); 
   };
-
   const columns = [
     {
       id: "select",
@@ -78,63 +87,59 @@ export function DataTableOutbound({data}) {
       enableHiding: false,
     },
     {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+      accessorKey: "product",
+      header: "Product",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("product")}</div>,
     },
     {
-      accessorKey: "email",
+      accessorKey: "created_at",
       header: ({ column }) => (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Email
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date In
           <ArrowUpDown />
         </Button>
       ),
-      cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-    },
-    {
-      accessorKey: "role",
-      header: "Role",
       cell: ({ row }) => {
-        const roleMap = {
-          fnc: "Finance",
-          wrhs: "Warehouse",
-          hr: "Human Resource",
-        };
-        return <div className="capitalize">{roleMap[row.getValue("role")] || row.getValue("role")}</div>;  
-      }
-    },
-    {
-      accessorKey: "address",
-      header: "Address",
-      cell: ({ row }) => {
-        const address = row.getValue("address") || "";
-        const maxLength = 26;
-        return (
-          <div className="capitalize">
-            {address.length > maxLength ? address.slice(0, maxLength) + "..." : address}
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => {
-        const status = row.getValue("status");
-        const isActive = status === "active";
+        const rawDate = row.getValue("created_at");
+        const date = new Date(rawDate);
     
-        return (
-          <div
-            className={`px-3 py-1 rounded-full text-white w-fit text-sm font-semibold ${
-              isActive ? "bg-green-500" : "bg-red-500"
-            }`}
-          >
-            {status}
-          </div>
-        );
+        // Format ke "HH:mm dd-MM-yyyy"
+        const formattedDate = new Intl.DateTimeFormat("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }).format(date);
+    
+        return <div className="lowercase">{formattedDate}</div>;
       },
     },
+    {
+      accessorKey: "qty",
+      header: "QTY",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
+    },
+    {
+      accessorKey: "supplier",
+      header: "Supplier",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
+    },
+    
+    {
+      accessorKey: "pic",
+      header: "PIC",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
+    },
+    
     {
       id: "actions",
       enableHiding: false,
@@ -222,13 +227,13 @@ export function DataTableOutbound({data}) {
             </DropdownMenuContent>
         </DropdownMenu>
           <Input
-            placeholder="Search by Name, Email or Role"
+            placeholder="Search by Name, Date In, Supplier or Category"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
-            className="max-w-xs text-sm"
+            className="max-w-xs"
           />
         </div>
-        <ButtonModalUsrwrhs/>
+        <ButtonModalSupplier userRole={userRole}/>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -259,7 +264,7 @@ export function DataTableOutbound({data}) {
           
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
-
+          
         </div>
 
         <button
@@ -295,4 +300,4 @@ export function DataTableOutbound({data}) {
   );
 }
 
-export default DataTableOutbound;
+export default DataTableSupplier;

@@ -1,7 +1,7 @@
 import React from 'react';
 import MainSidebar from '@/Components/MainSidebar';
 import { HiChartPie } from "react-icons/hi";
-import { FaFileAlt, FaTruck, FaArrowCircleDown, FaShippingFast, FaBoxes } from "react-icons/fa";
+import { FaFileAlt, FaTruck, FaArrowCircleDown, FaShippingFast, FaBoxes, FaDatabase  } from "react-icons/fa";
 
 
 export default function DashboardInventoryLayout({ children, auth }) {
@@ -15,10 +15,18 @@ export default function DashboardInventoryLayout({ children, auth }) {
 
     const dropdownMenus = [
         {
+            title: "Master Data",
+            icon: <FaDatabase   />,
+            items: [
+                { name: "Product", path: "/wrhs/product" },
+                { name: "Supplier", path: "/wrhs/supplier" },
+            ],
+        },
+        {
             title: "Reports",
             icon: <FaFileAlt  />,
             items: [
-                { name: "Inbound Reports", path: "/wrhs/inboundreports" },
+                { name: "Inbound Reports", path: "/wrhs/inboundReports" },
                 { name: "Outbound Reports", path: "/wrhs/outboundreports" },
                 { name: "Stock Reports", path: "/wrhs/stockreports" },
                 { name: "Shipment Reports", path: "/wrhs/shipmentreports" },

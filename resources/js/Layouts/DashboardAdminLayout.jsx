@@ -15,6 +15,8 @@ export default function DashboardAdminLayout({ children, auth }) {
             title: "Inventory",
             icon: <HiInbox />,
             items: [
+                { name: "Product", path: "/admin/product" },
+                { name: "Supplier", path: "/admin/supplier" },
                 { name: "Inbound", path: "/admin/inbound" },
                 { name: "Outbound", path: "/admin/outbound" },
                 { name: "Stock", path: "/admin/stock" },

@@ -18,6 +18,24 @@ class AdminController extends Controller
         ]);
     }
 
+    public function productView(){
+        // dd();
+        return inertia::render('features/Product', [
+            'title' => 'Admin Inventory Product',
+            'inbound' => Inbound::all()
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function supplierView(){
+        // dd();
+        return inertia::render('features/Supplier', [
+            'title' => 'Admin Inventory Supplier',
+            'inbound' => Inbound::all()
+        ]);
+        // dd(Inbound::all());
+    }
+
     public function inboundView(){
         // dd();
         return inertia::render('features/Inbound', [

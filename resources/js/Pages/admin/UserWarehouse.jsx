@@ -1,6 +1,5 @@
 import DashboardAdminLayout from '@/Layouts/DashboardAdminLayout';
 import DataUserWarehouse from "@/Components/DataUserWarehouse";
-import BarChart from '@/Components/BarChartAdmin';
 import { Head } from '@inertiajs/react';
 import React from 'react';
 import ToasterComponent from "@/Components/ToasterComponent";
