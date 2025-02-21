@@ -16,8 +16,26 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
+        static $usedCategories = [];
+        $categories = [
+            'Electronics', 'Fashion', 'Home Appliances', 'Health & Beauty',
+            'Sports & Outdoors', 'Toys & Games', 'Automotive', 'Books',
+            'Groceries', 'Furniture', 'Musical Instruments', 'Pet Supplies',
+            'Gaming', 'Office Supplies', 'Gardening Tools'
+        ];
+    
+        // Pilih kategori yang belum digunakan
+        $availableCategories = array_diff($categories, $usedCategories);
+    
+        if (empty($availableCategories)) {
+            throw new \Exception('Tidak cukup kategori unik untuk dibuat.');
+        }
+    
+        $category = fake()->randomElement($availableCategories);
+        $usedCategories[] = $category;
+    
         return [
-            'name' => fake()->unique()->word(), // Nama kategori random
+            'name' => $category,
         ];
     }
 }

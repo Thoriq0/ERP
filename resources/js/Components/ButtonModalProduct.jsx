@@ -9,72 +9,67 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import InputLabel from "./InputLabel";
-import TextInput from "./TextInput";
 import React, { useState } from "react";
+import Select from "react-select"; // Import react-select
 import { router } from "@inertiajs/react";
-import toast from "react-hot-toast"; 
+import toast from "react-hot-toast";
 
-export function ButtonModalProduct({userRole}) {
-  // State untuk form
+export function ButtonModalProduct({ userRole, categoryData, supplierData }) {
   const [values, setValues] = useState({
-    product: "",
-    qty: "",
-    supplier: "",
-    category: "",
-    pic: "",
-    image: null,
+    name: "",
+    category: null,  // Sesuai dengan react-select
+    supplier: null,
   });
 
-  // State untuk error
   const [errors, setErrors] = useState({});
 
-  // Handle perubahan input
+  // I GOT CONFUSED
+  const supplierOptions = supplierData.map((cat) => ({
+    value: cat.id,
+    label: cat.name
+  }));
+
+  const categoryOptions = categoryData.map((cat) => ({
+    value: cat.id,
+    label: cat.name
+  }));
+
   function handleChange(e) {
-    const { name, value, type, files } = e.target;
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: type === "file" ? files[0] : value,
-    }));
+    const { name, value } = e.target;
+    setValues((prev) => ({ ...prev, [name]: value }));
   }
 
-  // Handle submit
+  function handleSelectChange(name, selectedOption) {
+    setValues((prev) => ({ ...prev, [name]: selectedOption }));
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
-    setErrors({}); // Reset error sebelum submit
+    setErrors({});
 
-    // Mapping role endpoint
     const rolePaths = {
-      admin: "/admin/inbound",
-      wrhs: "/wrhs/inbound",
+      admin: "/admin/product",
+      wrhs: "/wrhs/product",
     };
-  
+
     const userPath = rolePaths[userRole];
 
-
-    // Kirim data ke backend
     router.post(
       userPath,
-      values,
+      {
+        ...values,
+        category: values.category?.value || "",  
+        supplier: values.supplier?.value || "",
+      },
       {
         forceFormData: true,
         onSuccess: () => {
-          toast.success("Produk berhasil disimpan! 🎉", {
-            duration: 5000,
-          });
-          setValues({
-            product: "",
-            qty: "",
-            supplier: "",
-            category: "",
-            pic: "",
-            image: null,
-          });
+          toast.success("Produk berhasil disimpan! 🎉");
+          setValues({ name: "", category: null, supplier: null });
         },
         onError: (err) => {
-          setErrors(err); // Simpan error ke state
-          toast.error("Gagal menyimpan produk! ❌", {
-              duration: 5000,
-          });
+          setErrors(err);
+          toast.error("Gagal menyimpan produk! ❌");
         },
       }
     );
@@ -95,73 +90,47 @@ export function ButtonModalProduct({userRole}) {
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="product" value="Nama Produk" />
-            <TextInput
-              id="product"
+            <InputLabel htmlFor="name" value="Nama Produk" />
+            <input
+              id="name"
               type="text"
-              name="product"
-              className="mt-1 block w-full"
+              name="name"
+              className="mt-1 block w-full border p-2 rounded-md"
               placeholder="Nama Produk"
-              value={values.product}
+              value={values.name}
               onChange={handleChange}
             />
-            {errors.product && <p className="text-red-500 text-sm">{errors.product}</p>}
+            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
 
-          <div className="mt-4">
-            <InputLabel htmlFor="qty" value="Jumlah Produk" />
-            <TextInput
-              id="qty"
-              type="number"
-              name="qty"
-              className="mt-1 block w-full"
-              placeholder="Jumlah Produk Masuk"
-              value={values.qty}
-              onChange={handleChange}
-            />
-            {errors.qty && <p className="text-red-500 text-sm">{errors.qty}</p>}
-          </div>
-
-          <div className="mt-4">
-            <InputLabel htmlFor="supplier" value="Pemasok" />
-            <TextInput
-              id="supplier"
-              type="text"
-              name="supplier"
-              className="mt-1 block w-full"
-              placeholder="Nama Pemasok"
-              value={values.supplier}
-              onChange={handleChange}
-            />
-            {errors.supplier && <p className="text-red-500 text-sm">{errors.supplier}</p>}
-          </div>
-
+          {/* Dropdown Kategori */}
           <div className="mt-4">
             <InputLabel htmlFor="category" value="Kategori" />
-            <TextInput
+            <Select
               id="category"
-              type="text"
-              name="category"
-              className="mt-1 block w-full"
-              placeholder="Kategori Produk"
+              options={categoryOptions}
+              isSearchable={true}
+              placeholder="Pilih Kategori"
               value={values.category}
-              onChange={handleChange}
+              onChange={(selected) => handleSelectChange("category", selected)}
+              className="mt-1"
             />
             {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
           </div>
 
+          {/* Dropdown Supplier */}
           <div className="mt-4">
-            <InputLabel htmlFor="pic" value="Penerima Produk" />
-            <TextInput
-              id="pic"
-              type="text"
-              name="pic"
-              className="mt-1 block w-full"
-              placeholder="Nama Penerima Produk"
-              value={values.pic}
-              onChange={handleChange}
+            <InputLabel htmlFor="supplier" value="Pemasok" />
+            <Select
+              id="supplier"
+              options={supplierOptions}
+              isSearchable={true}
+              placeholder="Pilih Supplier"
+              value={values.supplier}
+              onChange={(selected) => handleSelectChange("supplier", selected)}
+              className="mt-1"
             />
-            {errors.pic && <p className="text-red-500 text-sm">{errors.pic}</p>}
+            {errors.supplier && <p className="text-red-500 text-sm">{errors.supplier}</p>}
           </div>
 
           <DialogFooter>

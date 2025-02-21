@@ -38,7 +38,7 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-export function DataTableProduct({data, userRole}) {
+export function DataTableProduct({data, userRole, categoryData, supplierData}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -49,8 +49,8 @@ export function DataTableProduct({data, userRole}) {
 
     // Mapping role endpoint
     const rolePaths = {
-      admin: "/admin/inbound",
-      wrhs: "/wrhs/inbound",
+      admin: "/admin/product",
+      wrhs: "/wrhs/product",
     };
 
     const userPath = rolePaths[userRole];
@@ -87,9 +87,9 @@ export function DataTableProduct({data, userRole}) {
       enableHiding: false,
     },
     {
-      accessorKey: "product",
-      header: "Product",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("product")}</div>,
+      accessorKey: "name",
+      header: "Product Name",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
     },
     {
       accessorKey: "created_at",
@@ -98,7 +98,7 @@ export function DataTableProduct({data, userRole}) {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date In
+          Crated At
           <ArrowUpDown />
         </Button>
       ),
@@ -119,27 +119,21 @@ export function DataTableProduct({data, userRole}) {
       },
     },
     {
-      accessorKey: "qty",
-      header: "QTY",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
-    },
-    {
-      accessorKey: "supplier",
-      header: "Supplier",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
-    },
-    {
-      accessorKey: "category",
+      accessorKey: "category_id",
       header: "Category",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
+      cell: ({ row }) => {
+        const category = categoryData.find(cat => cat.id === row.getValue("category_id"));
+        return <div className="capitalize">{category ? category.name : "Unknown"}</div>;
+      },
     },
-    
     {
-      accessorKey: "pic",
-      header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
+      accessorKey: "supplier_id",
+      header: "Supplier",
+      cell: ({ row }) => {
+        const supplier = supplierData.find(sup => sup.id === row.getValue("supplier_id"));
+        return <div className="capitalize">{supplier ? supplier.name : "Unknown"}</div>;
+      },
     },
-    
     {
       id: "actions",
       enableHiding: false,
@@ -233,7 +227,7 @@ export function DataTableProduct({data, userRole}) {
             className="max-w-xs"
           />
         </div>
-        <ButtonModalProduct userRole={userRole}/>
+        <ButtonModalProduct userRole={userRole} categoryData={categoryData} supplierData={supplierData}/>
       </div>
       <div className="rounded-md border">
         <Table>

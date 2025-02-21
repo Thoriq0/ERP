@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\admin;
 
 use Inertia\Inertia;
+use App\Models\Stock;
+use App\Models\Inbound;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Outbound;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Inbound;
-use App\Models\Outbound;
-use App\Models\Stock;
-use App\Models\Supplier;
 
 class AdminController extends Controller
 {
@@ -23,7 +25,9 @@ class AdminController extends Controller
         // dd();
         return inertia::render('features/Product', [
             'title' => 'Admin Inventory Product',
-            'inbound' => Inbound::all()
+            'product' => Product::all(),
+            'categories' => Category::select('id', 'name')->get(),
+            'suppliers' => Supplier::select('id', 'name')->get(),
         ]);
         // dd(Inbound::all());
     }

@@ -6,6 +6,7 @@ use App\Models\Inbound;
 use App\Models\Outbound;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\File;
 
@@ -33,6 +34,28 @@ class InventoryController extends Controller
         $supplier->delete();
         return redirect()->back();
     }
+
+        // ---- PRODUCT ----
+    public function productStore(Request $request){
+        $request->validate([
+            'name' => 'required|string',
+            'category' => 'required|integer',
+            'supplier' => 'required|integer'
+        ]);
+
+        Product::create([
+            'name' => $request->name,
+            'category_id' => $request->category,
+            'supplier_id' => $request->supplier
+        ]);
+
+    }
+    public function productDestroy(Product $product){
+        
+        $product->delete();
+        return redirect()->back();
+    }
+
 
     // ==== INBOUND ====
     public function inboundStore(Request $request){
