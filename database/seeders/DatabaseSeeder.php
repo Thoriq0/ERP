@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Inbound;
-use App\Models\Outbound;
 use App\Models\User;
+use App\Models\Inbound;
+use App\Models\Category;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Outbound;
+use App\Models\Supplier;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,7 +18,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory(10)->create();
-        Inbound::factory(8)->create();
-        Outbound::factory(8)->create();
+        Category::factory(10)->create();
+        Supplier::factory(10)->create();
+        // Inbound::factory(8)->create();
+        // Outbound::factory(8)->create();
     }
 }

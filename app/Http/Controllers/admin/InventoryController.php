@@ -6,10 +6,33 @@ use App\Models\Inbound;
 use App\Models\Outbound;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Supplier;
 use Illuminate\Support\Facades\File;
 
 class InventoryController extends Controller
 {
+
+    // ==== MASTER DATA ====
+        // ---- SUPPLIER ----
+    public function supplierStore(Request $request){
+        $request->validate([
+            'name' => 'required|string',
+            'contact' => 'required|integer',
+            'address' => 'required|string'
+        ]);
+
+        Supplier::create([
+            'name' => $request->name,
+            'contact' => $request->contact,
+            'address' => $request->address
+        ]);
+
+    }
+    public function supplierDestroy(Supplier $supplier){
+        
+        $supplier->delete();
+        return redirect()->back();
+    }
 
     // ==== INBOUND ====
     public function inboundStore(Request $request){

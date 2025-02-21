@@ -17,12 +17,9 @@ import toast from "react-hot-toast";
 export function ButtonModalSupplier({userRole}) {
   // State untuk form
   const [values, setValues] = useState({
-    product: "",
-    qty: "",
-    supplier: "",
-    category: "",
-    pic: "",
-    image: null,
+    name: "",
+    contact: "",
+    address: "",
   });
 
   // State untuk error
@@ -44,8 +41,8 @@ export function ButtonModalSupplier({userRole}) {
 
     // Mapping role endpoint
     const rolePaths = {
-      admin: "/admin/inbound",
-      wrhs: "/wrhs/inbound",
+      admin: "/admin/supplier",
+      wrhs: "/wrhs/supplier",
     };
   
     const userPath = rolePaths[userRole];
@@ -62,12 +59,9 @@ export function ButtonModalSupplier({userRole}) {
             duration: 5000,
           });
           setValues({
-            product: "",
-            qty: "",
-            supplier: "",
-            category: "",
-            pic: "",
-            image: null,
+            name: "",
+            contact: "",
+            address: "",
           });
         },
         onError: (err) => {
@@ -89,79 +83,51 @@ export function ButtonModalSupplier({userRole}) {
         <DialogHeader>
           <DialogTitle>Data Supplier</DialogTitle>
           <DialogDescription>
-            Masukkan data Suppler yang masuk, lalu klik Simpan.
+            Masukkan data Supplier yang masuk, lalu klik Simpan.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="product" value="Nama Produk" />
+            <InputLabel htmlFor="name" value="Nama Supplier" />
             <TextInput
-              id="product"
+              id="name"
               type="text"
-              name="product"
+              name="name"
               className="mt-1 block w-full"
-              placeholder="Nama Produk"
-              value={values.product}
+              placeholder="Nama Supplier"
+              value={values.name}
               onChange={handleChange}
             />
-            {errors.product && <p className="text-red-500 text-sm">{errors.product}</p>}
+            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="qty" value="Jumlah Produk" />
+            <InputLabel htmlFor="contact" value="Contact" />
             <TextInput
-              id="qty"
+              id="contact"
               type="number"
-              name="qty"
+              name="contact"
               className="mt-1 block w-full"
-              placeholder="Jumlah Produk Masuk"
-              value={values.qty}
+              placeholder="contact supplier"
+              value={values.contact}
               onChange={handleChange}
             />
-            {errors.qty && <p className="text-red-500 text-sm">{errors.qty}</p>}
+            {errors.contact && <p className="text-red-500 text-sm">{errors.contact}</p>}
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="supplier" value="Pemasok" />
+            <InputLabel htmlFor="address" value="Alamat Supplier" />
             <TextInput
-              id="supplier"
+              id="address"
               type="text"
-              name="supplier"
+              name="address"
               className="mt-1 block w-full"
-              placeholder="Nama Pemasok"
-              value={values.supplier}
+              placeholder="Alamat Supplier"
+              value={values.address}
               onChange={handleChange}
             />
-            {errors.supplier && <p className="text-red-500 text-sm">{errors.supplier}</p>}
-          </div>
-
-          <div className="mt-4">
-            <InputLabel htmlFor="category" value="Kategori" />
-            <TextInput
-              id="category"
-              type="text"
-              name="category"
-              className="mt-1 block w-full"
-              placeholder="Kategori Produk"
-              value={values.category}
-              onChange={handleChange}
-            />
-            {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
-          </div>
-
-          <div className="mt-4">
-            <InputLabel htmlFor="pic" value="Penerima Produk" />
-            <TextInput
-              id="pic"
-              type="text"
-              name="pic"
-              className="mt-1 block w-full"
-              placeholder="Nama Penerima Produk"
-              value={values.pic}
-              onChange={handleChange}
-            />
-            {errors.pic && <p className="text-red-500 text-sm">{errors.pic}</p>}
+            {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
           </div>
 
           <DialogFooter>

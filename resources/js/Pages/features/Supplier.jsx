@@ -6,7 +6,7 @@ import ToasterComponent from "@/Components/ToasterComponent";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function Supplier({auth, mustVerifyEmail, status, title, inbound}) {
+export default function Supplier({auth, mustVerifyEmail, status, title, supplier}) {
     const getLayout = (role) => {
         switch (role) {
             case 'wrhs':
@@ -18,7 +18,7 @@ export default function Supplier({auth, mustVerifyEmail, status, title, inbound}
 
     const role = auth.user.role;
     const Layout = getLayout(role);
-    const data = inbound;
+    const data = supplier;
 
     return (
         <Layout auth={auth}>

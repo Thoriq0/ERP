@@ -49,8 +49,8 @@ export function DataTableSupplier({data, userRole}) {
 
     // Mapping role endpoint
     const rolePaths = {
-      admin: "/admin/inbound",
-      wrhs: "/wrhs/inbound",
+      admin: "/admin/supplier",
+      wrhs: "/wrhs/supplier",
     };
 
     const userPath = rolePaths[userRole];
@@ -87,9 +87,9 @@ export function DataTableSupplier({data, userRole}) {
       enableHiding: false,
     },
     {
-      accessorKey: "product",
-      header: "Product",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("product")}</div>,
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
     },
     {
       accessorKey: "created_at",
@@ -98,7 +98,7 @@ export function DataTableSupplier({data, userRole}) {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date In
+          Created At
           <ArrowUpDown />
         </Button>
       ),
@@ -119,27 +119,26 @@ export function DataTableSupplier({data, userRole}) {
       },
     },
     {
-      accessorKey: "qty",
-      header: "QTY",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
+      accessorKey: "contact",
+      header: "Contact",
+      cell: ({ row }) => (
+        <div className="capitalize">
+          {row.getValue("contact")?.trim() || "Belum Terdaftar"}
+        </div>
+      ),
     },
     {
-      accessorKey: "supplier",
-      header: "Supplier",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
+      accessorKey: "address",
+      header: "Address",
+      cell: ({ row }) => {
+        const address = row.getValue("address")?.trim() || "Belum Terdaftar";
+        return (
+          <div className="capitalize">
+            {address.length > 20 ? address.slice(0, 20) + "..." : address}
+          </div>
+        );
+      },
     },
-    {
-      accessorKey: "category",
-      header: "Category",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
-    },
-    
-    {
-      accessorKey: "pic",
-      header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
-    },
-    
     {
       id: "actions",
       enableHiding: false,

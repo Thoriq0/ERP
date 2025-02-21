@@ -39,6 +39,10 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::post('/admin/outbound', [InventoryController::class, 'outboundStore'])->name('inventory.outbound.store');
         Route::delete('/admin/outbound/{outbound}', [InventoryController::class, 'outboundDestroy'])->name('inventory.outbound.destroy');
 
+        // route supplier action
+        Route::post('/admin/supplier', [InventoryController::class, 'supplierStore'])->name('inventory.supplier.store');
+        Route::delete('/admin/supplier/{supplier}', [InventoryController::class, 'supplierDestroy'])->name('inventory.supplier.destroy');
+
         // route features finance
         Route::get('/admin/income', [AdminController::class, 'incomeView'])->name('finance.income');
         Route::get('/admin/outcome', [AdminController::class, 'outcomeView'])->name('finance.outcome');

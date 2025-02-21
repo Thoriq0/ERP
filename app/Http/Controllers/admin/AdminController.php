@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Inbound;
 use App\Models\Outbound;
 use App\Models\Stock;
+use App\Models\Supplier;
 
 class AdminController extends Controller
 {
@@ -31,7 +32,7 @@ class AdminController extends Controller
         // dd();
         return inertia::render('features/Supplier', [
             'title' => 'Admin Inventory Supplier',
-            'inbound' => Inbound::all()
+            'supplier' => Supplier::all()
         ]);
         // dd(Inbound::all());
     }
