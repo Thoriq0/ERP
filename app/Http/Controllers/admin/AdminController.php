@@ -87,7 +87,10 @@ class AdminController extends Controller
         // dd();
         return inertia::render('features/Shipment', [
             'title' => 'Admin Inventory Shipment',
-            'inbound' => Inbound::all()
+            'inbound' => Inbound::all(),
+            'products' => Product::with(['category:id,name', 'supplier:id,name'])
+                            ->select('id', 'name', 'category_id', 'supplier_id')
+                            ->get(),
         ]);
         // dd(Inbound::all());
     }
