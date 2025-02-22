@@ -101,6 +101,18 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::post('/wrhs/outbound', [InventoryController::class, 'outboundStore'])->name('wrhs.outbound.store');
         Route::delete('/wrhs/outbound/{outbound}', [InventoryController::class, 'outboundDestroy'])->name('wrhs.outbound.destroy');
 
+        // route supplier action
+        Route::post('/wrhs/supplier', [InventoryController::class, 'supplierStore'])->name('wrhs.supplier.store');
+        Route::delete('/wrhs/supplier/{supplier}', [InventoryController::class, 'supplierDestroy'])->name('wrhs.supplier.destroy');
+
+        // route product action
+        Route::post('/wrhs/product', [InventoryController::class, 'productStore'])->name('wrhs.product.store');
+        Route::delete('/wrhs/product/{product}', [InventoryController::class, 'productDestroy'])->name('wrhs.product.destroy');
+
+        // route category
+        Route::post('/wrhs/category', [InventoryController::class, 'categoryStore'])->name('wrhs.category.store');
+        Route::delete('/wrhs/category/{category}', [InventoryController::class, 'categoryDestroy'])->name('wrhs.category.destroy');
+
     });
 
     // Profile User

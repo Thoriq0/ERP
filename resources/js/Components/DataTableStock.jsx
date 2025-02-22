@@ -104,9 +104,9 @@ export function DataTableStock({data, userRole}) {
       cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
     },
     {
-      accessorKey: "supplier.name",
+      accessorKey: "product.supplier.name",
       header: "Supplier",
-      cell: ({ row }) => <div className="capitalize">{row.original.supplier?.name || "Unknown"}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.original.product?.supplier?.name || "Unknown"}</div>,
     },
     {
       accessorKey: "product.category.name",

@@ -38,7 +38,7 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-export function DataTableInbound({data, userRole, supplierData, productData}) {
+export function DataTableInbound({data, userRole, productData}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -130,8 +130,8 @@ export function DataTableInbound({data, userRole, supplierData, productData}) {
       accessorKey: "supplier_id",
       header: "Supplier",
       cell: ({ row }) => {
-        const supplier = supplierData.find(sup => sup.id === row.getValue("supplier_id"));
-        return <div className="capitalize">{supplier ? supplier.name : "Unknown"}</div>;
+        const product = productData.find(sup => sup.id === row.getValue("product_id"));
+        return <div className="capitalize">{product ? product.supplier?.name : "Unknown"}</div>;
       },
     },
     {
@@ -242,7 +242,7 @@ export function DataTableInbound({data, userRole, supplierData, productData}) {
             className="max-w-xs"
           />
         </div>
-        <ButtonModalInbound userRole={userRole} supplierData={supplierData} productData={productData} />
+        <ButtonModalInbound userRole={userRole} productData={productData} />
       </div>
       <div className="rounded-md border">
         <Table>

@@ -38,7 +38,7 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-export function DataTableOutbound({data, userRole}) {
+export function DataTableOutbound({data, userRole, supplierData, productData}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -88,9 +88,12 @@ export function DataTableOutbound({data, userRole}) {
       enableHiding: false,
     },
     {
-      accessorKey: "product",
+      accessorKey: "product_id",
       header: "Product",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("product")}</div>,
+      cell: ({ row }) => {
+        const product = productData.find(prod => prod.id === row.getValue("product_id"));
+        return <div className="capitalize">{product ? product.name : "Unknown"}</div>;
+      },
     },
     {
       accessorKey: "created_at",
@@ -130,9 +133,12 @@ export function DataTableOutbound({data, userRole}) {
       cell: ({ row }) => <div className="capitalize">{row.getValue("receiver")}</div>,
     },
     {
-      accessorKey: "category",
+      accessorKey: "category_id",
       header: "Category",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
+      cell: ({ row }) => {
+        const product = productData.find(prod => prod.id === row.getValue("product_id"));
+        return <div className="capitalize">{product ? product.category?.name : "Unknown"}</div>;
+      },
     },
     {
       accessorKey: "pic",
@@ -232,7 +238,7 @@ export function DataTableOutbound({data, userRole}) {
             className="max-w-xs text-sm"
           />
         </div>
-        <ButtonModalOutbound userRole={userRole}/>
+        <ButtonModalOutbound userRole={userRole} supplierData={supplierData} productData={productData} />
       </div>
       <div className="rounded-md border">
         <Table>

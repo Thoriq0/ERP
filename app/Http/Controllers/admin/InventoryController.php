@@ -81,7 +81,6 @@ class InventoryController extends Controller
         $request->validate([
             'product' => 'required|exists:products,id',
             'qty' => 'required|integer',
-            'supplier' => 'required|exists:suppliers,id',
             'pic' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
@@ -105,13 +104,16 @@ class InventoryController extends Controller
         Inbound::create([
             'product_id' => $request->product,
             'qty' => $request->qty,
-            'supplier_id' => $request->supplier,
             'pic' => $request->pic,
             'image' => $imageName
         ]);
 
-        $stockQuery = Stock::where('product_id', $request->product)
-                        ->where('supplier_id', $request->supplier);
+        $product = Product::findOrFail($request->product);
+
+        $stockQuery = Stock::whereHas('product', function ($query) use ($product) {
+            $query->where('id', $product->id)
+                    ->where('supplier_id', $product->supplier_id);});
+        
         // dd($stockQuery);
         $stock = $stockQuery->first();
 
@@ -124,7 +126,7 @@ class InventoryController extends Controller
             Stock::create([
                 'product_id' => $request->product,
                 'qty' => $request->qty,
-                'supplier_id' => $request->supplier,
+                // 'supplier_id' => $request->supplier,
                 'warehouse' => null,
             ]);
         }
@@ -147,58 +149,64 @@ class InventoryController extends Controller
 
 
     // ==== OUTBOUND ====
-    public function outboundStore(Request $request){
+    public function outboundStore(Request $request) {
         $request->validate([
-            'product' => 'required|string',
-            'qty' => 'required|integer',
+            'product' => 'required|exists:products,id',
+            'qty' => 'required|integer|min:1',
             'receiver' => 'required|string',
-            'category' => 'required|string',
             'pic' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
         
-        $imageName = null;
+        // Ambil data produk
+        $product = Product::findOrFail($request->product);
+
+        // Cek stok berdasarkan product_id dan supplier_id lewat relasi
+        $stockQuery = Stock::whereHas('product', function ($query) use ($product) {
+            $query->where('id', $product->id)
+                    ->where('supplier_id', $product->supplier_id);});
         
+        $stock = $stockQuery->first();
+        
+    
+        // dd($stock->qty, (int) $request->qty);
+        
+        // Jika stok tidak cukup
+        if (!$stock || $stock->qty < $request->qty) {
+            return back()->withErrors(['message' => 'Stok tidak mencukupi ❌']);
+        }
+    
+        $imageName = null;
+    
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-
             $extension = $image->extension();
-
-            $imageName = strtolower(str_replace(' ', '-', $request->product)) . '-' .
+    
+            $imageName = strtolower(str_replace(' ', '-', $product->name)) . '-' .
                         strtolower(str_replace(' ', '-', $request->pic)) . '-' .
-                        date('d-m-Y:H:i:s') . '.' . $extension;
-
+                        date('d-m-Y-H:i:s') . '.' . $extension;
+    
             $image->move(public_path('images/outbounds'), $imageName);
         }
-
-        $save = [
-            'product' => $request->product,
+    
+        Outbound::create([
+            'product_id' => $product->id,
             'qty' => $request->qty,
             'receiver' => $request->receiver,
-            'category' => $request->category,
             'pic' => $request->pic,
-            'image' => $imageName ? $imageName : null
-        ];
-        // dd($save);
-        Outbound::create($save);
-
-        // $stockQuery = Stock::where('product', $request->product)
-        //             ->where('supplier', $request->supplier);
-
-        // $stock = $stockQuery->first();
-        // dd($stock);
-
-        // if ($stock) {
-        //     // Update query builder
-        //     $stockQuery->update([
-        //         'qty' => $stock->qty - $request->qty,
-        //         'updated_at' => now(),
-        //     ]);
-        // }
-
-        return redirect()->back();
+            'image' => $imageName
+        ]);
         
+        $stockQuery->update([
+            'qty' => $stock->qty - (int) $request->qty,
+            'updated_at' => now(),
+        ]);
+    
+        return redirect()->back()->with(['message' => 'Barang berhasil dikeluarkan.']);
     }
+    
+    
+    
 
     public function outboundDestroy(Outbound $Outbound){
         

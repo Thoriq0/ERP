@@ -4,7 +4,7 @@ import DataTableStock from "@/Components/DataTableStock";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function Stock({auth, mustVerifyEmail, status, title, inbound}) {
+export default function Stock({auth, mustVerifyEmail, status, title, stock}) {
     const getLayout = (role) => {
         switch (role) {
             case 'wrhs':
@@ -16,8 +16,8 @@ export default function Stock({auth, mustVerifyEmail, status, title, inbound}) {
 
     const role = auth.user.role;
     const Layout = getLayout(role);
-    const data = inbound;
-
+    const stockData = stock;
+    // console.log(stockData);
     return (
         <Layout auth={auth}>
             <Head title="Dashboard" />
@@ -25,7 +25,7 @@ export default function Stock({auth, mustVerifyEmail, status, title, inbound}) {
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-              <DataTableStock mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} />
+              <DataTableStock mustVerifyEmail={mustVerifyEmail} status={status} data={stockData} userRole={role} />
           </div>
 
         </Layout>

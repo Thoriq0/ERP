@@ -15,41 +15,43 @@ import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import Select from "react-select";
 
-export function ButtonModalInbound({userRole, supplierData, productData}) {
+export function ButtonModalInbound({ userRole, productData }) {
   // State untuk form
   const [values, setValues] = useState({
     product: null,
     qty: "",
-    supplier: null,
     pic: "",
     image: null,
   });
 
+  // Untuk Disabled Feild
+  const [supplierName, setSupplierName] = useState("");
+  const [categoryName, setCategoryName] = useState("");
+
   // State untuk error
   const [errors, setErrors] = useState({});
 
-  // SET DROPDOWN SEARCH
-  const supplierOptions = supplierData.map((cat) => ({
-    value: cat.id,
-    label: cat.name
-  }));
-
-  const productOptions = productData.map((cat) => ({
-    value: cat.id,
-    label: cat.name
+  // SET DROPDOWN SEARCH  
+  const productOptions = productData.map((prod) => ({
+    value: prod.id,
+    label: prod.name,
   }));
 
   // Handle perubahan input
+  function handleSelectChange(name, selectedOption) {
+    const selectedProduct = productData.find((prod) => prod.id === selectedOption?.value);
+    
+    setValues((prev) => ({ ...prev, [name]: selectedOption }));
+    setSupplierName(selectedProduct?.supplier?.name || "");
+    setCategoryName(selectedProduct?.category?.name || "");
+  }
+
   function handleChange(e) {
     const { name, value, type, files } = e.target;
     setValues((prevValues) => ({
       ...prevValues,
       [name]: type === "file" ? files[0] : value,
     }));
-  }
-
-  function handleSelectChange(name, selectedOption) {
-    setValues((prev) => ({ ...prev, [name]: selectedOption }));
   }
 
   // Handle submit
@@ -62,38 +64,27 @@ export function ButtonModalInbound({userRole, supplierData, productData}) {
       admin: "/admin/inbound",
       wrhs: "/wrhs/inbound",
     };
-  
+
     const userPath = rolePaths[userRole];
-
-
+    
     // Kirim data ke backend
     router.post(
       userPath,
       {
         ...values,
-        product: values.product?.value || "",  
-        supplier: values.supplier?.value || "",
+        product: values.product?.value || "",
       },
-      values,
       {
         forceFormData: true,
         onSuccess: () => {
-          toast.success("Produk berhasil disimpan! 🎉", {
-            duration: 5000,
-          });
-          setValues({
-            product: "",
-            qty: "",
-            supplier: "",
-            pic: "",
-            image: null,
-          });
+          toast.success("Produk berhasil disimpan! 🎉", { duration: 5000 });
+          setValues({ product: null, qty: "", pic: "", image: null });
+          setSupplierName("");
+          setCategoryName("");
         },
         onError: (err) => {
-          setErrors(err); // Simpan error ke state
-          toast.error("Gagal menyimpan produk! ❌", {
-              duration: 5000,
-          });
+          setErrors(err);
+          toast.error("Gagal menyimpan produk! ❌", { duration: 5000 });
         },
       }
     );
@@ -107,15 +98,12 @@ export function ButtonModalInbound({userRole, supplierData, productData}) {
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
           <DialogTitle>Data Produk Masuk</DialogTitle>
-          <DialogDescription>
-            Masukkan data produk yang masuk, lalu klik Simpan.
-          </DialogDescription>
+          <DialogDescription>Masukkan data produk yang masuk, lalu klik Simpan.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
-
           <div className="mt-4">
-            <InputLabel htmlFor="product" value="product" />
+            <InputLabel htmlFor="product" value="Product" />
             <Select
               id="product"
               options={productOptions}
@@ -125,7 +113,6 @@ export function ButtonModalInbound({userRole, supplierData, productData}) {
               onChange={(selected) => handleSelectChange("product", selected)}
               className="mt-1"
             />
-            {errors.product && <p className="text-red-500 text-sm">{errors.product}</p>}
           </div>
 
           <div className="mt-4">
@@ -139,21 +126,6 @@ export function ButtonModalInbound({userRole, supplierData, productData}) {
               value={values.qty}
               onChange={handleChange}
             />
-            {errors.qty && <p className="text-red-500 text-sm">{errors.qty}</p>}
-          </div>
-
-          <div className="mt-4">
-            <InputLabel htmlFor="supplier" value="Pemasok" />
-            <Select
-              id="supplier"
-              options={supplierOptions}
-              isSearchable={true}
-              placeholder="Pilih Supplier"
-              value={values.supplier}
-              onChange={(selected) => handleSelectChange("supplier", selected)}
-              className="mt-1"
-            />
-            {errors.supplier && <p className="text-red-500 text-sm">{errors.supplier}</p>}
           </div>
 
           <div className="mt-4">
@@ -167,7 +139,26 @@ export function ButtonModalInbound({userRole, supplierData, productData}) {
               value={values.pic}
               onChange={handleChange}
             />
-            {errors.pic && <p className="text-red-500 text-sm">{errors.pic}</p>}
+          </div>
+
+          <div className="mt-4">
+            <InputLabel htmlFor="supplierName" value="Nama Supplier" />
+            <TextInput
+              type="text"
+              className="mt-1 block w-full bg-gray-200"
+              value={supplierName}
+              disabled
+            />
+          </div>
+
+          <div className="mt-4">
+            <InputLabel htmlFor="categoryName" value="Kategori Produk" />
+            <TextInput
+              type="text"
+              className="mt-1 block w-full bg-gray-200"
+              value={categoryName}
+              disabled
+            />
           </div>
 
           <div className="mt-4">
@@ -177,10 +168,9 @@ export function ButtonModalInbound({userRole, supplierData, productData}) {
               type="file"
               accept="image/*"
               name="image"
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               onChange={handleChange}
             />
-            {errors.image && <p className="text-red-500 text-sm">{errors.image}</p>}
           </div>
 
           <DialogFooter>

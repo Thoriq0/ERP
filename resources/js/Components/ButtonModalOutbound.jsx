@@ -12,21 +12,30 @@ import InputLabel from "./InputLabel";
 import TextInput from "./TextInput";
 import React, { useState } from "react";
 import { router } from "@inertiajs/react";
-import toast from "react-hot-toast"; 
+import toast from "react-hot-toast";
+import Select from "react-select";
 
-export function ButtonModalOutbound({userRole}) {
+export function ButtonModalOutbound({userRole,  productData}) {
   // State untuk form
   const [values, setValues] = useState({
-    product: "",
+    product: null,
     qty: "",
     receiver: "",
-    category: "",
     pic: "",
     image: null,
   });
 
+  // Untuk Disabled Feild
+  const [supplierName, setSupplierName] = useState("");
+
   // State untuk error
   const [errors, setErrors] = useState({});
+
+  // SET DROPDOWN SEARCH  
+  const productOptions = productData.map((prod) => ({
+    value: prod.id,
+    label: prod.name
+  }));
 
   // Handle perubahan input
   function handleChange(e) {
@@ -35,6 +44,13 @@ export function ButtonModalOutbound({userRole}) {
       ...prevValues,
       [name]: type === "file" ? files[0] : value,
     }));
+  }
+
+  function handleSelectChange(name, selectedOption) {
+    const selectedProduct = productData.find((prod) => prod.id === selectedOption?.value);
+    
+    setValues((prev) => ({ ...prev, [name]: selectedOption }));
+    setSupplierName(selectedProduct?.supplier?.name || "");
   }
 
   // Handle submit
@@ -53,7 +69,10 @@ export function ButtonModalOutbound({userRole}) {
     // Kirim data ke backend
     router.post(
       userPath,
-      values,
+      {
+        ...values,
+        product: values.product?.value || "",  
+      },
       {
         forceFormData: true, 
         onSuccess: () => {
@@ -61,19 +80,19 @@ export function ButtonModalOutbound({userRole}) {
             duration: 5000,
           });
           setValues({
-            product: "",
+            product: null,
             qty: "",
             receiver: "",
-            category: "",
             pic: "",
             image: null,
           });
+          setSupplierName("");
+          setCategoryName("");
         },
         onError: (err) => {
           setErrors(err); 
-          toast.error("Gagal menyimpan produk! ❌", {
-              duration: 5000,
-          });
+          const errorMessage = err.message || "Terjadi kesalahan!";
+          toast.error(`Gagal menyimpan produk!, ${errorMessage}`, { duration: 5000 });
         },
       }
     );
@@ -94,17 +113,27 @@ export function ButtonModalOutbound({userRole}) {
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="product" value="Nama Produk" />
-            <TextInput
+            <InputLabel htmlFor="product" value="Product" />
+            <Select
               id="product"
-              type="text"
-              name="product"
-              className="mt-1 block w-full"
-              placeholder="Nama Produk"
+              options={productOptions}
+              isSearchable={true}
+              placeholder="Pilih Product"
               value={values.product}
-              onChange={handleChange}
+              onChange={(selected) => handleSelectChange("product", selected)}
+              className="mt-1"
             />
             {errors.product && <p className="text-red-500 text-sm">{errors.product}</p>}
+          </div>
+
+          <div className="mt-4">
+            <InputLabel htmlFor="supplierName" value="Nama Supplier" />
+            <TextInput
+              type="text"
+              className="mt-1 block w-full bg-gray-200"
+              value={supplierName}
+              disabled
+            />
           </div>
 
           <div className="mt-4">
@@ -136,20 +165,6 @@ export function ButtonModalOutbound({userRole}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="category" value="Kategori" />
-            <TextInput
-              id="category"
-              type="text"
-              name="category"
-              className="mt-1 block w-full"
-              placeholder="Kategori Produk"
-              value={values.category}
-              onChange={handleChange}
-            />
-            {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
-          </div>
-
-          <div className="mt-4">
             <InputLabel htmlFor="pic" value="Penanggung Jawab Produk" />
             <TextInput
               id="pic"
@@ -170,7 +185,7 @@ export function ButtonModalOutbound({userRole}) {
               type="file"
               accept="image/*"
               name="image"
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               onChange={handleChange}
             />
             {errors.image && <p className="text-red-500 text-sm">{errors.image}</p>}

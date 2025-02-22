@@ -54,8 +54,10 @@ class AdminController extends Controller
         return inertia::render('features/Inbound', [
             'title' => 'Admin Inventory Inbound',
             'inbound' => Inbound::all(),
-            'products' => Product::with('category:id,name')->select('id', 'name', 'category_id')->get(),
-            'suppliers' => Supplier::select('id', 'name')->get(),
+            'products' => Product::with(['category:id,name', 'supplier:id,name'])
+                            ->select('id', 'name', 'category_id', 'supplier_id')
+                            ->get(),
+            
         ]);
         // dd(Inbound::all());
     }
@@ -64,7 +66,10 @@ class AdminController extends Controller
         // dd();
         return inertia::render('features/Outbound', [
             'title' => 'Admin Inventory Outbound',
-            'outbound' => Outbound::all()
+            'outbound' => Outbound::all(),
+            'products' => Product::with(['category:id,name', 'supplier:id,name'])
+                        ->select('id', 'name', 'category_id', 'supplier_id')
+                        ->get(),
         ]);
         // dd(Inbound::all());
     }
@@ -73,7 +78,7 @@ class AdminController extends Controller
         // dd();
         return inertia::render('features/Stock', [
             'title' => 'Admin Inventory Stock',
-            'inbound' => Stock::with(['product.category', 'supplier'])->get(),
+            'stock' => Stock::with(['product.category', 'product.supplier'])->get(),
         ]);
         // dd(Inbound::all());
     }
