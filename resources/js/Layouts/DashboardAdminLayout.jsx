@@ -17,6 +17,7 @@ export default function DashboardAdminLayout({ children, auth }) {
             items: [
                 { name: "Product", path: "/admin/product" },
                 { name: "Supplier", path: "/admin/supplier" },
+                { name: "Category", path: "/admin/category"},
                 { name: "Inbound", path: "/admin/inbound" },
                 { name: "Outbound", path: "/admin/outbound" },
                 { name: "Stock", path: "/admin/stock" },

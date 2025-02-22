@@ -9,7 +9,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\warehouse\WarehouseController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -22,6 +21,7 @@ Route::middleware('auth', 'verified')->group(function () {
         // route features inventory/warehouse
         Route::get('/admin/dashboard', [AdminController::class, 'view'])->name('admin.dashboard');
         Route::get('/admin/product', [AdminController::class, 'productView'])->name('admin.product');
+        Route::get('/admin/category', [AdminController::class, 'categoryView'])->name('admin.category');
         Route::get('/admin/supplier', [AdminController::class, 'supplierView'])->name('admin.supplier');
         Route::get('/admin/inbound', [AdminController::class, 'inboundView'])->name('admin.inbound');
         Route::get('/admin/outbound', [AdminController::class, 'outboundView'])->name('admin.outbound');
@@ -46,6 +46,10 @@ Route::middleware('auth', 'verified')->group(function () {
         // route product action
         Route::post('/admin/product', [InventoryController::class, 'productStore'])->name('inventory.product.store');
         Route::delete('/admin/product/{product}', [InventoryController::class, 'productDestroy'])->name('inventory.product.destroy');
+
+        // route category
+        Route::post('/admin/category', [InventoryController::class, 'categoryStore'])->name('inventory.category.store');
+        Route::delete('/admin/category/{category}', [InventoryController::class, 'categoryDestroy'])->name('inventory.category.destroy');
 
         // route features finance
         Route::get('/admin/income', [AdminController::class, 'incomeView'])->name('finance.income');
@@ -82,6 +86,7 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/wrhs/stock', [WarehouseController::class, 'stockView'])->name('wrhs.stock');
         Route::get('/wrhs/product', [WarehouseController::class, 'productView'])->name('wrhs.product');
         Route::get('/wrhs/supplier', [WarehouseController::class, 'supplierView'])->name('wrhs.supplier');
+        Route::get('/wrhs/category', [WarehouseController::class, 'categoryView'])->name('category.supplier');
         Route::get('/wrhs/shipment', [WarehouseController::class, 'shipmentView'])->name('wrhs.shipment');
         Route::get('/wrhs/inboundreports', [WarehouseController::class, 'inboundReportsView'])->name('wrhs.inboundreports');
         Route::get('/wrhs/outboundreports', [WarehouseController::class, 'outboundreportsView'])->name('wrhs.outboundreports');

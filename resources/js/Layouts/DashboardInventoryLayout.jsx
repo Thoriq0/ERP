@@ -20,6 +20,7 @@ export default function DashboardInventoryLayout({ children, auth }) {
             items: [
                 { name: "Product", path: "/wrhs/product" },
                 { name: "Supplier", path: "/wrhs/supplier" },
+                { name: "Category", path: "/wrhs/category"}
             ],
         },
         {

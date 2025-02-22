@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\admin;
 use App\Models\Stock;
 use App\Models\Inbound;
+use App\Models\Product;
+use App\Models\Category;
 use App\Models\Outbound;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Product;
-use App\Models\Supplier;
 use Illuminate\Support\Facades\File;
 
 class InventoryController extends Controller
@@ -19,7 +20,7 @@ class InventoryController extends Controller
         $request->validate([
             'name' => 'required|string',
             'contact' => 'required|integer',
-            'address' => 'required|string'
+            'address' => 'string'
         ]);
 
         Supplier::create([
@@ -53,6 +54,23 @@ class InventoryController extends Controller
     public function productDestroy(Product $product){
         
         $product->delete();
+        return redirect()->back();
+    }
+
+        // ---- CATEGORY ----
+    public function categoryStore(Request $request){
+        $request->validate([
+            'name' => 'required|string',
+        ]);
+
+        Category::create([
+            'name' => $request->name,
+        ]);
+
+    }
+    public function categoryDestroy(Category $category){
+        
+        $category->delete();
         return redirect()->back();
     }
 

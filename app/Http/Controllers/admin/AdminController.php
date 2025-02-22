@@ -32,6 +32,14 @@ class AdminController extends Controller
         // dd(Inbound::all());
     }
 
+    public function categoryView(){
+        // dd();
+        return inertia::render('features/Category', [
+            'title' => 'Admin Inventory Category',
+            'category' => Category::all(),
+        ]);
+    }
+
     public function supplierView(){
         // dd();
         return inertia::render('features/Supplier', [
