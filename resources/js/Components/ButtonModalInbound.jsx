@@ -12,21 +12,32 @@ import InputLabel from "./InputLabel";
 import TextInput from "./TextInput";
 import React, { useState } from "react";
 import { router } from "@inertiajs/react";
-import toast from "react-hot-toast"; 
+import toast from "react-hot-toast";
+import Select from "react-select";
 
-export function ButtonModalInbound({userRole}) {
+export function ButtonModalInbound({userRole, supplierData, productData}) {
   // State untuk form
   const [values, setValues] = useState({
-    product: "",
+    product: null,
     qty: "",
-    supplier: "",
-    category: "",
+    supplier: null,
     pic: "",
     image: null,
   });
 
   // State untuk error
   const [errors, setErrors] = useState({});
+
+  // SET DROPDOWN SEARCH
+  const supplierOptions = supplierData.map((cat) => ({
+    value: cat.id,
+    label: cat.name
+  }));
+
+  const productOptions = productData.map((cat) => ({
+    value: cat.id,
+    label: cat.name
+  }));
 
   // Handle perubahan input
   function handleChange(e) {
@@ -35,6 +46,10 @@ export function ButtonModalInbound({userRole}) {
       ...prevValues,
       [name]: type === "file" ? files[0] : value,
     }));
+  }
+
+  function handleSelectChange(name, selectedOption) {
+    setValues((prev) => ({ ...prev, [name]: selectedOption }));
   }
 
   // Handle submit
@@ -54,6 +69,11 @@ export function ButtonModalInbound({userRole}) {
     // Kirim data ke backend
     router.post(
       userPath,
+      {
+        ...values,
+        product: values.product?.value || "",  
+        supplier: values.supplier?.value || "",
+      },
       values,
       {
         forceFormData: true,
@@ -65,7 +85,6 @@ export function ButtonModalInbound({userRole}) {
             product: "",
             qty: "",
             supplier: "",
-            category: "",
             pic: "",
             image: null,
           });
@@ -94,16 +113,17 @@ export function ButtonModalInbound({userRole}) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
+
           <div className="mt-4">
-            <InputLabel htmlFor="product" value="Nama Produk" />
-            <TextInput
+            <InputLabel htmlFor="product" value="product" />
+            <Select
               id="product"
-              type="text"
-              name="product"
-              className="mt-1 block w-full"
-              placeholder="Nama Produk"
+              options={productOptions}
+              isSearchable={true}
+              placeholder="Pilih Product"
               value={values.product}
-              onChange={handleChange}
+              onChange={(selected) => handleSelectChange("product", selected)}
+              className="mt-1"
             />
             {errors.product && <p className="text-red-500 text-sm">{errors.product}</p>}
           </div>
@@ -124,30 +144,16 @@ export function ButtonModalInbound({userRole}) {
 
           <div className="mt-4">
             <InputLabel htmlFor="supplier" value="Pemasok" />
-            <TextInput
+            <Select
               id="supplier"
-              type="text"
-              name="supplier"
-              className="mt-1 block w-full"
-              placeholder="Nama Pemasok"
+              options={supplierOptions}
+              isSearchable={true}
+              placeholder="Pilih Supplier"
               value={values.supplier}
-              onChange={handleChange}
+              onChange={(selected) => handleSelectChange("supplier", selected)}
+              className="mt-1"
             />
             {errors.supplier && <p className="text-red-500 text-sm">{errors.supplier}</p>}
-          </div>
-
-          <div className="mt-4">
-            <InputLabel htmlFor="category" value="Kategori" />
-            <TextInput
-              id="category"
-              type="text"
-              name="category"
-              className="mt-1 block w-full"
-              placeholder="Kategori Produk"
-              value={values.category}
-              onChange={handleChange}
-            />
-            {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
           </div>
 
           <div className="mt-4">

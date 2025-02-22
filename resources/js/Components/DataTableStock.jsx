@@ -33,11 +33,10 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
-export function DataTableInbound({data, userRole}) {
+export function DataTableStock({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -68,9 +67,9 @@ export function DataTableInbound({data, userRole}) {
       enableHiding: false,
     },
     {
-      accessorKey: "product",
+      accessorKey: "product.name",
       header: "Product",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("product")}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.original.product?.name || "Unknown"}</div>,
     },
     {
       accessorKey: "updated_at",
@@ -105,14 +104,14 @@ export function DataTableInbound({data, userRole}) {
       cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
     },
     {
-      accessorKey: "supplier",
+      accessorKey: "supplier.name",
       header: "Supplier",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.original.supplier?.name || "Unknown"}</div>,
     },
     {
-      accessorKey: "category",
+      accessorKey: "product.category.name",
       header: "Category",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.original.product?.category?.name || "Unknown"}</div>,
     },
     {
       accessorKey: "warehouse",
@@ -279,4 +278,4 @@ export function DataTableInbound({data, userRole}) {
   );
 }
 
-export default DataTableInbound;
+export default DataTableStock;

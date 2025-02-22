@@ -79,10 +79,9 @@ class InventoryController extends Controller
     public function inboundStore(Request $request){
         // dd($request->all());
         $request->validate([
-            'product' => 'required|string',
+            'product' => 'required|exists:products,id',
             'qty' => 'required|integer',
-            'supplier' => 'required|string',
-            'category' => 'required|string',
+            'supplier' => 'required|exists:suppliers,id',
             'pic' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
@@ -104,17 +103,16 @@ class InventoryController extends Controller
         // dd($imageName);
         
         Inbound::create([
-            'product' => $request->product,
+            'product_id' => $request->product,
             'qty' => $request->qty,
-            'supplier' => $request->supplier,
-            'category' => $request->category,
+            'supplier_id' => $request->supplier,
             'pic' => $request->pic,
             'image' => $imageName
         ]);
 
-        $stockQuery = Stock::where('product', $request->product)
-                        ->where('supplier', $request->supplier);
-
+        $stockQuery = Stock::where('product_id', $request->product)
+                        ->where('supplier_id', $request->supplier);
+        // dd($stockQuery);
         $stock = $stockQuery->first();
 
         if ($stock) {
@@ -124,10 +122,9 @@ class InventoryController extends Controller
             ]);
         } else {
             Stock::create([
-                'product' => $request->product,
+                'product_id' => $request->product,
                 'qty' => $request->qty,
-                'supplier' => $request->supplier,
-                'category' => $request->category,
+                'supplier_id' => $request->supplier,
                 'warehouse' => null,
             ]);
         }
