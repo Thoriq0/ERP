@@ -34,13 +34,26 @@ import {
 } from "./ui/table";
 import { ButtonModalSupplier } from "@/Components/ButtonModalSupplier";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
+import { UpdateSupplierModal } from "./update/UpdateSupplierModal";
+import { ViewSupplierDetailModal } from "./viewsdetails/ViewSupplierDetailModal";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { FaCopy, FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
 export function DataTableSupplier({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+
+  // select data supplier dan modal
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+
+  // State untuk modal detail
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [selectedSupplierViews, setSelectedSupplierViews] = useState(null);
 
   // console.log(userRole, "role get");
 
@@ -66,6 +79,20 @@ export function DataTableSupplier({data, userRole}) {
     });
     setOpen(false); 
   };
+
+  const handleUpdate = (supplier,contact, address) => {
+    setSelectedSupplier(supplier);
+    setSelectedContact(contact);
+    setSelectedAddress(address);
+    setUpdateModalOpen(true);
+  };
+
+  // handle views details
+  const handleViewDetails = (supplier) => {
+    setSelectedSupplierViews(supplier);
+    setDetailModalOpen(true);
+  };
+
   const columns = [
     {
       id: "select",
@@ -117,6 +144,7 @@ export function DataTableSupplier({data, userRole}) {
     
         return <div className="lowercase">{formattedDate}</div>;
       },
+      sortingFn: "datetime",
     },
     {
       accessorKey: "contact",
@@ -141,27 +169,32 @@ export function DataTableSupplier({data, userRole}) {
     },
     {
       id: "actions",
+      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <DropdownMenu>
+          <DropdownMenu >
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
                 <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="cursor-pointer">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-                Copy payment ID
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)} className="cursor-pointer">
+                <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
-                Delete
+              <DropdownMenuItem onClick={() => handleUpdate(item, item.contact, item.address)} className="cursor-pointer">
+                <FaEdit size={16} className="text-yellow-500"/>Update
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleViewDetails(item)}  className="cursor-pointer">
+                <FaEye size={16} className="text-green-500"/>View details
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
+                <FaTrash size={16} className="text-red-500"/> Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
             
@@ -195,6 +228,19 @@ export function DataTableSupplier({data, userRole}) {
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
+      <UpdateSupplierModal
+          open={updateModalOpen}
+          onClose={() => setUpdateModalOpen(false)}
+          supplier={selectedSupplier}
+          contactData={selectedContact}
+          addressData={selectedAddress}
+          userRole={userRole}
+      />
+      <ViewSupplierDetailModal
+        open={detailModalOpen}
+        onClose={() => setDetailModalOpen(false)}
+        supplier={selectedSupplierViews}
+      />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>

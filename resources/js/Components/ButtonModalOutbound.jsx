@@ -15,7 +15,7 @@ import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import Select from "react-select";
 
-export function ButtonModalOutbound({userRole,  productData}) {
+export function ButtonModalOutbound({ userRole, productData}) {
   // State untuk form
   const [values, setValues] = useState({
     product: null,

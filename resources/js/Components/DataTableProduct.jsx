@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
-
+import { FaCopy, FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import {
@@ -34,15 +34,23 @@ import {
 } from "./ui/table";
 import { ButtonModalProduct } from "@/Components/ButtonModalProduct";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
+import { UpdateProductModal } from "./update/UpdateProductModal";
+import { ViewProdukDetailModal } from "./viewsdetails/ViewProdukDetailModal";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-export function DataTableProduct({data, userRole, categoryData, supplierData}) {
+export function DataTableProduct({ data, userRole, categoryData, supplierData }) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  // console.log(userRole, "role get");
+  // state & select data product dan modal
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  // State untuk modal detail
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [selectedProduk, setSelectedProduk] = useState(null);
 
   const handleDelete = () => {
     if (!selectedId) return;
@@ -54,7 +62,7 @@ export function DataTableProduct({data, userRole, categoryData, supplierData}) {
     };
 
     const userPath = rolePaths[userRole];
-  
+
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
         toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
@@ -64,8 +72,20 @@ export function DataTableProduct({data, userRole, categoryData, supplierData}) {
         toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
       },
     });
-    setOpen(false); 
+    setOpen(false);
   };
+
+  const handleUpdate = (product) => {
+    setSelectedProduct(product);
+    setUpdateModalOpen(true);
+  };
+
+  // handle views details
+  const handleViewDetails = (product) => {
+    setSelectedProduk(product);
+    setDetailModalOpen(true);
+  };
+
   const columns = [
     {
       id: "select",
@@ -98,14 +118,14 @@ export function DataTableProduct({data, userRole, categoryData, supplierData}) {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Crated At
+          Created At
           <ArrowUpDown />
         </Button>
       ),
       cell: ({ row }) => {
         const rawDate = row.getValue("created_at");
         const date = new Date(rawDate);
-    
+
         // Format ke "HH:mm dd-MM-yyyy"
         const formattedDate = new Intl.DateTimeFormat("id-ID", {
           hour: "2-digit",
@@ -114,7 +134,7 @@ export function DataTableProduct({data, userRole, categoryData, supplierData}) {
           month: "2-digit",
           year: "numeric",
         }).format(date);
-    
+
         return <div className="lowercase">{formattedDate}</div>;
       },
     },
@@ -136,6 +156,7 @@ export function DataTableProduct({data, userRole, categoryData, supplierData}) {
     },
     {
       id: "actions",
+      header: "Action",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
@@ -147,21 +168,23 @@ export function DataTableProduct({data, userRole, categoryData, supplierData}) {
                 <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="cursor-pointer">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-                Copy payment ID
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
+                <FaCopy size={16} className="text-blue-500"/>Copy product ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
-                Delete
+              <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
+                <FaEdit size={16} className="text-yellow-500"/>Update
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
+                <FaEye size={16} className="text-green-500"/>View details
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
+                <FaTrash size={16} className="text-red-500"/>Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
-            
           </DropdownMenu>
-          
         );
       },
     },
@@ -190,12 +213,27 @@ export function DataTableProduct({data, userRole, categoryData, supplierData}) {
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
+      <UpdateProductModal
+        open={updateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        product={selectedProduct}
+        categoryData={categoryData}
+        supplierData={supplierData}
+        userRole={userRole}
+      />
+      <ViewProdukDetailModal
+        open={detailModalOpen}
+        onClose={() => setDetailModalOpen(false)}
+        product={selectedProduk}
+        categoryData={categoryData}
+        supplierData={supplierData}
+      />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="border-solid border-2 border-primaryPurple">
-              <FiFilter size={24} />Filter
+                <FiFilter size={24} />Filter
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -219,7 +257,7 @@ export function DataTableProduct({data, userRole, categoryData, supplierData}) {
                   )
                 })}
             </DropdownMenuContent>
-        </DropdownMenu>
+          </DropdownMenu>
           <Input
             placeholder="Search by Name, Date In, Supplier or Category"
             value={table.getState().globalFilter || ""}
@@ -227,7 +265,7 @@ export function DataTableProduct({data, userRole, categoryData, supplierData}) {
             className="max-w-xs"
           />
         </div>
-        <ButtonModalProduct userRole={userRole} categoryData={categoryData} supplierData={supplierData}/>
+        <ButtonModalProduct userRole={userRole} categoryData={categoryData} supplierData={supplierData} />
       </div>
       <div className="rounded-md border">
         <Table>
@@ -255,32 +293,17 @@ export function DataTableProduct({data, userRole, categoryData, supplierData}) {
       </div>
       <div className="flex items-center space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
-          
         </div>
 
         <button
-            className="px-3 py-1 border rounded-md flex items-center disabled:opacity-50"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <AiOutlineLeft className="mr-1" /> Back
+          className="px-3 py-1 border rounded-md flex items-center disabled:opacity-50"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          <AiOutlineLeft className="mr-1" /> Back
         </button>
-
-        {/* Nomor halaman */}
-        {/* <div className="flex space-x-2">
-          {Array.from({ length: table.getPageCount() }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => table.setPageIndex(i)}
-              className={`px-3 py-1 border rounded-md ${table.getState().pagination.pageIndex === i ? "bg-PurpleFive text-white" : "bg-white"}`}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div> */}
 
         <button
           className="px-3 py-1 border rounded-md flex items-center bg-PurpleFive text-white disabled:opacity-50"

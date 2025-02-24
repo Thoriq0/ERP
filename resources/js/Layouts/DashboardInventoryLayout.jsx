@@ -10,7 +10,7 @@ export default function DashboardInventoryLayout({ children, auth }) {
         { name: "Inbound", path: "/wrhs/inbound", icon: <FaArrowCircleDown  /> },
         { name: "Outbound", path: "/wrhs/outbound", icon: <FaTruck /> },
         { name: "Stock", path: "/wrhs/stock", icon: <FaBoxes  /> },
-        { name: "Shipment", path: "/wrhs/shipment", icon: <FaShippingFast  /> },
+        // { name: "Shipment", path: "/wrhs/shipment", icon: <FaShippingFast  /> },
     ];
 
     const dropdownMenus = [

@@ -21,7 +21,6 @@ export default function DashboardAdminLayout({ children, auth }) {
                 { name: "Inbound", path: "/admin/inbound" },
                 { name: "Outbound", path: "/admin/outbound" },
                 { name: "Stock", path: "/admin/stock" },
-                { name: "Shipment", path: "/admin/shipment" },
                 { name: "Reports", path: "/admin/reports" },
             ],
         },
@@ -29,8 +28,9 @@ export default function DashboardAdminLayout({ children, auth }) {
             title: "Logistic",
             icon: <FaTruck />,
             items: [
-                { name: "Stock List", path: "/admin/stock" },
+                { name: "Stock List", path: "/admin/stockList" },
                 { name: "Add Item", path: "/admin/add" },
+                { name: "Shipment", path: "/admin/shipment" },
                 { name: "Reports", path: "/admin/reports" },
             ],
         },

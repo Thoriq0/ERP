@@ -34,13 +34,26 @@ import {
 } from "./ui/table";
 import { ButtonModalCategory } from "@/Components/ButtonModalCategory";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
+import { ViewCategoryDetailModal } from "./viewsdetails/ViewCategoryDetailModal"
+import { UpdateCategoryModal } from "./update/UpdateCategoryModal";
+
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
 export function DataTableCategory({data, userRole}) {
+  // modal delete
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+
+  // select data supplier dan modal
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  // State untuk modal detail
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [selectedCategoryDetail, setSelectedCategoryDetail] = useState(null);
 
   // console.log(userRole, "role get");
 
@@ -66,6 +79,18 @@ export function DataTableCategory({data, userRole}) {
     });
     setOpen(false); 
   };
+
+  const handleUpdate = (category) => {
+    setSelectedCategory(category);
+    setUpdateModalOpen(true);
+  };
+
+  // handle views details
+  const handleViewDetails = (category) => {
+    setSelectedCategoryDetail(category);
+    setDetailModalOpen(true);
+  };
+
   const columns = [
     {
       id: "select",
@@ -120,6 +145,7 @@ export function DataTableCategory({data, userRole}) {
     },
     {
       id: "actions",
+      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
@@ -131,16 +157,20 @@ export function DataTableCategory({data, userRole}) {
                 <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="cursor-pointer">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-                Copy payment ID
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
+                <FaCopy size={16} className="text-blue-500"/>Copy product ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
-                Delete
+              <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
+                <FaEdit size={16} className="text-yellow-500"/>Update
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
+                <FaEye size={16} className="text-green-500"/>View details
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
+                <FaTrash size={16} className="text-red-500"/>Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
             
@@ -174,6 +204,17 @@ export function DataTableCategory({data, userRole}) {
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
+      <UpdateCategoryModal
+        open={updateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        category={selectedCategory}
+        userRole={userRole}
+      />
+      <ViewCategoryDetailModal
+        open={detailModalOpen}
+        onClose={() => setDetailModalOpen(false)}
+        category={selectedCategoryDetail}
+      />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
