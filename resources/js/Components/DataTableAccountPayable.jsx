@@ -30,7 +30,7 @@ import {
   TableRow,
 } from "./ui/table";
 import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
-import { UpdateInboundModal } from "./update/UpdateInboundModal";
+import { UpdateApModal } from "./update/UpdateApModal";
 import { ViewInboundDetailModal } from "./viewsdetails/ViewInboundDetailModal";
 import { ButtonDialogDelete } from "./ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
@@ -38,7 +38,8 @@ import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-export function DataTableInbound({ data, userRole, productData }) {
+export default function DataTableAccountPayable({ data, userRole, productData, apData }) {
+  
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -66,7 +67,7 @@ export function DataTableInbound({ data, userRole, productData }) {
         toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
-        // console.error(err);
+        console.error(err);
         toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
       },
     });
@@ -106,67 +107,69 @@ export function DataTableInbound({ data, userRole, productData }) {
       enableHiding: false,
     },
     {
-      accessorKey: "product_id",
-      header: "Product",
-      cell: ({ row }) => {
-        const product = productData.find(prod => prod.id === row.getValue("product_id"));
-        return <div className="capitalize">{product ? product.name : "Unknown"}</div>;
-      },
+        accessorKey: "inbound.product.name",
+        header: "Product Name",
+        cell: ({ row }) => (
+            <div className="capitalize">
+            {row.original.inbound?.product?.name || "Unknown"}
+            </div>
+        ),
     },
     {
-      accessorKey: "created_at",
-      header: ({ column }) => (
+        accessorKey: "created_at",
+        header: ({ column }) => (
         <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date In
-          <ArrowUpDown />
+            Date In
+            <ArrowUpDown />
         </Button>
-      ),
-      cell: ({ row }) => {
+        ),
+        cell: ({ row }) => {
         const rawDate = row.getValue("created_at");
         const date = new Date(rawDate);
-
-        // Format ke "HH:mm dd-MM-yyyy"
         const formattedDate = new Intl.DateTimeFormat("id-ID", {
-          hour: "2-digit",
-          minute: "2-digit",
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
         }).format(date);
 
         return <div className="lowercase">{formattedDate}</div>;
-      },
-      sortingFn: "datetime",
+        },
+        sortingFn: "datetime",
     },
     {
-      accessorKey: "qty",
-      header: "QTY",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
+        accessorKey: "inbound.qty",
+        header: "QTY",
+        cell: ({ row }) => (
+            <div className="capitalize">{row.original.inbound?.qty ?? "N/A"}</div>
+        ),
     },
     {
-      accessorKey: "supplier_id",
-      header: "Supplier",
-      cell: ({ row }) => {
-        const product = productData.find(sup => sup.id === row.getValue("product_id"));
-        return <div className="capitalize">{product ? product.supplier?.name : "Unknown"}</div>;
-      },
+        accessorKey: "unit_price",
+        header: "Unit Price",
+        cell: ({ row }) => (
+            <div className="capitalize">{row.getValue("unit_price")}</div>
+        ),
     },
     {
-      accessorKey: "category_id",
-      header: "Category",
-      cell: ({ row }) => {
-        const product = productData.find(prod => prod.id === row.getValue("product_id"));
-        return <div className="capitalize">{product ? product.category?.name : "Unknown"}</div>;
-      },
+        accessorKey: "tax",
+        header: "Tax",
+        cell: ({ row }) => (
+            <div className="capitalize">{row.getValue("tax")}</div>
+        ),
     },
     {
-      accessorKey: "pic",
-      header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
+        accessorKey: "total_amount",
+        header: "Total Amount",
+        cell: ({ row }) => (
+            <div className="capitalize">{row.getValue("total_amount")}</div>
+        ),
     },
+    
     {
       id: "actions",
       header: "Actions",
@@ -209,7 +212,7 @@ export function DataTableInbound({ data, userRole, productData }) {
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
-    data,
+    data: apData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -226,12 +229,13 @@ export function DataTableInbound({ data, userRole, productData }) {
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
-      <UpdateInboundModal
+      <UpdateApModal
           open={updateModalOpen}
           onClose={() => setUpdateModalOpen(false)}
           inbound={selectedProduct}
           productData={productData}
           userRole={userRole}
+          apData={apData}
       />
       <ViewInboundDetailModal
         open={detailModalOpen}
@@ -327,5 +331,3 @@ export function DataTableInbound({ data, userRole, productData }) {
     </div>
   );
 }
-
-export default DataTableInbound;

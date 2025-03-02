@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             // $table->string('sku')->unique(); // Kode unik produk KTS-BLU-M
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('supplier_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

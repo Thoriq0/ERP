@@ -9,12 +9,13 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import InputLabel from "../InputLabel";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import { router } from "@inertiajs/react"; 
 
 export function UpdateCategoryModal({ userRole, open, onClose, category }) {
-  const { data, setData, errors, setErrors, post, reset } = useForm({
+  const {flash} = usePage().props;
+  const { data, setData, errors, setErrors, put, reset } = useForm({
     name: category?.name || "",
   });
 
@@ -25,36 +26,34 @@ export function UpdateCategoryModal({ userRole, open, onClose, category }) {
       });
     }
   }, [category]);
+  
+  useEffect(() => {
+    if (flash?.success) {
+      toast.success(flash.success, { duration: 5000 });
+      onClose(); 
+    }
+    if (flash?.error) {
+      toast.error(flash.error, { duration: 5000 });
+    }
+  }, [flash]);
 
   function handleSubmit(e) {
     e.preventDefault();
-    setErrors({});
 
     const rolePaths = {
-      admin: "/admin/supplier",
-      wrhs: "/wrhs/supplier",
+      admin: `/admin/category/${category?.id}`,
+      wrhs: `/wrhs/category/${category?.id}`,
     };
 
     const userPath = rolePaths[userRole];
-
-    post(
-      userPath,
-      {
-        ...data,
+    
+    put(userPath, data, {
+      forceFormData: true,
+      onError: (err) => {
+        setErrors(err);
+        toast.error("Gagal memperbarui Data Supplier! ❌", { duration: 5000 });
       },
-      {
-        forceFormData: true,
-        onSuccess: () => {
-          toast.success("Data Supplier berhasil diperbarui! 🎉");
-          reset();
-          onClose(); // Tutup modal setelah sukses
-        },
-        onError: (err) => {
-          setErrors(err);
-          toast.error("Gagal memperbarui Data Supplier! ❌");
-        },
-      }
-    );
+    });
   }
 
   return (

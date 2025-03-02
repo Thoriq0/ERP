@@ -10,7 +10,9 @@ use App\Models\Category;
 use App\Models\Outbound;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use App\Models\StagingInbound;
 use App\Http\Controllers\Controller;
+use App\Models\AccountPayable;
 
 class AdminController extends Controller
 {
@@ -62,6 +64,22 @@ class AdminController extends Controller
         // dd(Inbound::all());
     }
 
+    public function prestockView(){
+        return inertia::render('features/PreStockValidation', [
+            'title' => 'Validating Stock',
+            'inbound' => Inbound::all(),
+            'products' => Product::with(['category:id,name', 'supplier:id,name'])
+                            ->select('id', 'name', 'category_id', 'supplier_id')
+                            ->get(),
+            'staging' => StagingInbound::with([
+                'inbound.product.category',
+                'inbound.product.supplier'
+            ])->get()
+            // ->where('status', 'validating')->get()
+        ]);
+        
+    }
+
     public function outboundView(){
         // dd();
         return inertia::render('features/Outbound', [
@@ -97,6 +115,25 @@ class AdminController extends Controller
 
 
     // features in user finance
+
+    public function apView(){
+        // dd();
+        return inertia::render('features/AccountPayable', [
+            'title' => 'Account Payable',
+            'inbound' => Inbound::all(),
+            'products' => Product::with(['category:id,name', 'supplier:id,name'])
+                            ->select('id', 'name', 'category_id', 'supplier_id')
+                            ->get(),
+            'ap' => AccountPayable::with([
+                'inbound.product.category',
+                'inbound.product.supplier',
+                // 'inbound.qty'
+            ])->get()
+            
+        ]);
+        // dd(Inbound::all());
+    }
+
     public function incomeView(){
         // dd();
         return inertia::render('features/Income', [

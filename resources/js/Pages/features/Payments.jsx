@@ -1,12 +1,12 @@
 import DashboardAdminLayout from "@/Layouts/DashboardAdminLayout";
 import DashboardInventoryLayout from "@/Layouts/DashboardInventoryLayout"; 
-import DataTableProduct from "@/Components/DataTableProduct";
+import DataTableInbound from "@/Components/DataTableInbound";
 import ToasterComponent from "@/Components/ToasterComponent";
 
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function Product({auth, mustVerifyEmail, status, title, product, categories, suppliers}) {
+export default function Payment({auth, mustVerifyEmail, status, title, inbound, products}) {
     const getLayout = (role) => {
         switch (role) {
             case 'wrhs':
@@ -18,12 +18,8 @@ export default function Product({auth, mustVerifyEmail, status, title, product, 
 
     const role = auth.user.role;
     const Layout = getLayout(role);
-    const data = product;
-    const categoriesData = categories;
-    const suppliersData = suppliers;
-    // console.log(data);
-
-    
+    const data = inbound;
+    const productsData = products;
 
     return (
         <Layout auth={auth}>
@@ -33,8 +29,9 @@ export default function Product({auth, mustVerifyEmail, status, title, product, 
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableProduct mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} categoryData={categoriesData} supplierData={suppliersData} />
+                <DataTableInbound mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} productData={productsData}  />
             </div>
+
         </Layout>
     );
 }

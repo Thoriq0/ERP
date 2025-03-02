@@ -7,66 +7,108 @@ import {
     DialogHeader,
     DialogTitle,
 } from "../ui/dialog";
+import TextInput from "../TextInput";
 import { Button } from "../ui/button";
 import InputLabel from "../InputLabel";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import toast from "react-hot-toast";
-import { router } from "@inertiajs/react"; 
+import Select from "react-select";
 
 export function UpdateInboundModal({ userRole, open, onClose, inbound, productData }) {
-  console.log("Inbound data:", inbound);
-  console.log("Product data:", productData);
-
-  const { data, setData, errors, setErrors, put, reset } = useForm({
+  const { flash } = usePage().props;
+  const { data, setData, errors, setErrors, put } = useForm({
     product_id: inbound?.product_id || "",
-    qty: inbound?.qty || "",
+    qty: Number(inbound?.qty) || 0,
     pic: inbound?.pic || "",
-    supplier_name: "",
-    category_name: "",
   });
+
+  // State untuk menyimpan produk yang dipilih
+  const [selectedProduct, setSelectedProduct] = useState({
+    product: null,
+    supplierName: "",
+    categoryName: "",
+  });
+
+  // Set dropdown options untuk produk
+  const productOptions = productData.map((prod) => ({
+    value: prod.id,
+    label: prod.name,
+  }));
+
+  // Handle perubahan input pada select produk
+  function handleSelectChange(name, selectedOption) {
+    const selectedProduct = productData.find((prod) => prod.id === selectedOption?.value);
+
+    setData((prev) => ({
+      ...prev,
+      [name]: selectedOption,
+    }));
+
+    setSelectedProduct({
+      supplierName: selectedProduct?.supplier?.name || "",
+      categoryName: selectedProduct?.category?.name || "",
+      product: selectedOption,
+    });
+  }
+
+  // Handle perubahan input selain select
+  function handleChange(e) {
+    const { name, value, type, files } = e.target;
+    setData((prevValues) => ({
+      ...prevValues,
+      [name]: type === "file" ? files[0] : value,
+    }));
+  }
 
   useEffect(() => {
     if (inbound) {
-      const selectedProduct = productData.find(prod => prod.id === inbound.product_id);
+      const selectedProduct = productData.find((prod) => prod.id === inbound.product_id);
+
       setData({
         product_id: inbound.product_id,
         qty: inbound.qty,
         pic: inbound.pic,
-        supplier_name: selectedProduct?.supplier?.name || "Tidak Diketahui",
-        category_name: selectedProduct?.category?.name || "Tidak Diketahui",
       });
+
+      setSelectedProduct({
+        supplierName: selectedProduct?.supplier?.name || "",
+        categoryName: selectedProduct?.category?.name || "",
+        product: { value: inbound.product_id, label: selectedProduct?.name || "" },
+      });
+      console.log("Inbound Data:", inbound);
+      console.log("Selected Product on Initial:", selectedProduct);
     }
   }, [inbound, productData]);
 
+  // Menampilkan toast untuk success atau error
+  useEffect(() => {
+    if (flash?.success) {
+      toast.success(flash.success, { duration: 5000 });
+      onClose();
+    }
+    if (flash?.error) {
+      toast.error(flash.error, { duration: 5000 });
+    }
+  }, [flash]);
+
+  // Handle submit form
   function handleSubmit(e) {
     e.preventDefault();
-    setErrors({});
 
     const rolePaths = {
-      admin: "/admin/inbound",
-      wrhs: "/wrhs/inbound",
+      admin: `/admin/inbound/${inbound?.id}`,
+      wrhs: `/wrhs/inbound/${inbound?.id}`,
     };
 
     const userPath = rolePaths[userRole];
 
-    put(
-      `${userPath}/${inbound.id}`,
-      {
-        ...data,
+    put(userPath, data, {
+      forceFormData: true,
+      onError: (errors) => {
+        setErrors(errors);
+        toast.error("Gagal memperbarui Data Inbound! ❌");
       },
-      {
-        forceFormData: true,
-        onSuccess: () => {
-          toast.success("Data Inbound berhasil diperbarui! 🎉");
-          reset();
-          onClose(); // Tutup modal setelah sukses
-        },
-        onError: (err) => {
-          setErrors(err);
-          toast.error("Gagal memperbarui Data Inbound! ❌");
-        },
-      }
-    );
+    });
   }
 
   return (
@@ -79,28 +121,21 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-            <div className="mt-4">
-                <InputLabel htmlFor="product_id" value="Product" />
-                <select
-                    id="product_id"
-                    name="product_id"
-                    className="mt-1 block w-full border p-2 rounded-md"
-                    value={data.product_id}
-                    onChange={(e) => {
-                      const selectedProduct = productData.find(prod => prod.id === e.target.value);
-                      setData("product_id", e.target.value);
-                      setData("supplier_name", selectedProduct?.supplier?.name || "Tidak Diketahui");
-                      setData("category_name", selectedProduct?.category?.name || "Tidak Diketahui");
-                    }}
-                    >
-                    {productData.map((product) => (
-                        <option key={product.id} value={product.id}>
-                                {product.name}
-                        </option>
-                    ))}
-                </select>
-                {errors.product_id && <p className="text-red-500 text-sm">{errors.product_id}</p>}
-            </div>
+          <div className="mt-4">
+            <InputLabel htmlFor="product_id" value="Product" />
+            <Select
+              id="product"
+              options={productOptions}
+              isSearchable={true}
+              placeholder="Pilih Product"
+              value={selectedProduct.product}
+              onChange={(selected) => handleSelectChange("product", selected)}
+              className="mt-1"
+              isDisabled={true}
+            />
+            {errors.product_id && <p className="text-red-500 text-sm">{errors.product_id}</p>}
+          </div>
+
           <div className="mt-4">
             <InputLabel htmlFor="qty" value="Jumlah Produk" />
             <input
@@ -114,6 +149,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
             />
             {errors.qty && <p className="text-red-500 text-sm">{errors.qty}</p>}
           </div>
+
           <div className="mt-4">
             <InputLabel htmlFor="pic" value="Penerima Produk" />
             <input
@@ -127,32 +163,27 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
             />
             {errors.pic && <p className="text-red-500 text-sm">{errors.pic}</p>}
           </div>
+
           <div className="mt-4">
-            <InputLabel htmlFor="supplier_name" value="Nama Supplier" />
-            <input
-              id="supplier_name"
+            <InputLabel htmlFor="supplierName" value="Nama Supplier" />
+            <TextInput
               type="text"
-              name="supplier_name"
-              className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Nama Supplier"
-              value={data.supplier_name}
-              readOnly
+              className="mt-1 block w-full bg-gray-200"
+              value={selectedProduct.supplierName}
+              disabled
             />
-            {errors.supplier_name && <p className="text-red-500 text-sm">{errors.supplier_name}</p>}
           </div>
+
           <div className="mt-4">
-            <InputLabel htmlFor="category_name" value="Kategori Produk" />
-            <input
-              id="category_name"
+            <InputLabel htmlFor="categoryName" value="Kategori Produk" />
+            <TextInput
               type="text"
-              name="category_name"
-              className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Kategori Produk"
-              value={data.category_name}
-              readOnly
+              className="mt-1 block w-full bg-gray-200"
+              value={selectedProduct.categoryName}
+              disabled
             />
-            {errors.category_name && <p className="text-red-500 text-sm">{errors.category_name}</p>}
           </div>
+
           <DialogFooter>
             <Button
               type="button"
@@ -164,7 +195,6 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
             <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white mt-5">
               Simpan
             </Button>
-
           </DialogFooter>
         </form>
       </DialogContent>

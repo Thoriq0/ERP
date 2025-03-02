@@ -19,6 +19,7 @@ export default function DashboardAdminLayout({ children, auth }) {
                 { name: "Supplier", path: "/admin/supplier" },
                 { name: "Category", path: "/admin/category"},
                 { name: "Inbound", path: "/admin/inbound" },
+                { name: "Pre-Stock", path: "/admin/prestock" },
                 { name: "Outbound", path: "/admin/outbound" },
                 { name: "Stock", path: "/admin/stock" },
                 { name: "Reports", path: "/admin/reports" },
@@ -38,6 +39,7 @@ export default function DashboardAdminLayout({ children, auth }) {
             title: "Finance",
             icon: <FaMoneyBillWave />,
             items: [
+                { name: "Account Payable", path: "/admin/ap" },
                 { name: "Income", path: "/admin/income" },
                 { name: "Outcome", path: "/admin/outcome" },
                 { name: "Budget Control", path: "/admin/budget" },

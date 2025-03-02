@@ -9,12 +9,13 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import InputLabel from "../InputLabel";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import { router } from "@inertiajs/react"; 
 
 export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
-  const { data, setData, errors, setErrors, post, reset } = useForm({
+  const {flash} = usePage().props;
+  const { data, setData, errors, setErrors, put, reset } = useForm({
     name: supplier?.name || "",
     contact: supplier?.contact || "",
     address: supplier?.address || "",
@@ -30,35 +31,34 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
     }
   }, [supplier]);
 
+  useEffect(() => {
+    if (flash?.success) {
+      toast.success(flash.success, { duration: 5000 });
+      onClose(); 
+    }
+    if (flash?.error) {
+      toast.error(flash.error, { duration: 5000 });
+    }
+  }, [flash]);
+
   function handleSubmit(e) {
     e.preventDefault();
-    setErrors({});
 
     const rolePaths = {
-      admin: "/admin/supplier",
-      wrhs: "/wrhs/supplier",
+      admin: `/admin/supplier/${supplier?.id}`,
+      wrhs: `/wrhs/supplier/${supplier?.id}`,
     };
 
     const userPath = rolePaths[userRole];
 
-    post(
-      userPath,
-      {
-        ...data,
+    put(userPath, data, {
+      forceFormData: true,
+      onError: (errors) => {
+        setErrors(errors);
+        toast.error("Gagal memperbarui Data Supplier! ❌");
       },
-      {
-        forceFormData: true,
-        onSuccess: () => {
-          toast.success("Data Supplier berhasil diperbarui! 🎉");
-          reset();
-          onClose(); // Tutup modal setelah sukses
-        },
-        onError: (err) => {
-          setErrors(err);
-          toast.error("Gagal memperbarui Data Supplier! ❌");
-        },
-      }
-    );
+    });
+    
   }
 
   return (
@@ -79,7 +79,7 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
               name="name"
               className="mt-1 block w-full border p-2 rounded-md"
               placeholder="Nama Produk"
-              value={data.name}
+              value={data.name || ""}
               onChange={(e) => setData("name", e.target.value)}
             />
             {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
@@ -92,7 +92,7 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
               name="contact"
               className="mt-1 block w-full border p-2 rounded-md"
               placeholder="Contact Supplier"
-              value={data.contact}
+              value={data.contact || ""}
               onChange={(e) => setData("contact", e.target.value)}
             />
             {errors.contact && <p className="text-red-500 text-sm">{errors.contact}</p>}
@@ -105,7 +105,7 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
               name="address"
               className="mt-1 block w-full border p-2 rounded-md"
               placeholder="Alamat Supplier"
-              value={data.address}
+              value={data.address || ""}
               onChange={(e) => setData("address", e.target.value)}
             />
             {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}

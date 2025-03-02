@@ -60,7 +60,7 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
       admin: "/admin/product",
       wrhs: "/wrhs/product",
     };
-
+    
     const userPath = rolePaths[userRole];
 
     router.delete(`${userPath}/${selectedId}`, {

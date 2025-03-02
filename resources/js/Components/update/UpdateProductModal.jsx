@@ -10,56 +10,54 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import InputLabel from "../InputLabel";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
 export function UpdateProductModal({ userRole, open, onClose, product, categoryData, supplierData }) {
-  const { data, setData, errors, reset } = useForm({
+  const {flash} = usePage().props;
+  const { data, setData, put, errors, setErrors, reset } = useForm({
     name: product?.name || "",
     category_id: product?.category_id || "",
     supplier_id: product?.supplier_id || "",
   });
-
+  // console.log(product);
   useEffect(() => {
     if (product) {
       setData({
-        name: product.name,
-        category_id: product.category_id,
-        supplier_id: product.supplier_id,
+        name: product.name || "",
+        category_id: product.category_id || "",
+        supplier_id: product.supplier_id || "",
       });
     }
   }, [product]);
 
+  useEffect(() => {
+    if (flash?.success) {
+      toast.success(flash.success, { duration: 5000 });
+      onClose(); 
+    }
+    if (flash?.error) {
+      toast.error(flash.error, { duration: 5000 });
+    }
+  }, [flash]);
+
   function handleSubmit(e) {
     e.preventDefault();
-    setErrors({});
-
+    // console.log("Data yang dikirim:", data);
     const rolePaths = {
-      admin: "/admin/product",
-      wrhs: "/wrhs/product",
+      admin: `/admin/product/${product?.id}`,
+      wrhs: `/wrhs/product/${product?.id}`,
     };
 
     const userPath = rolePaths[userRole];
 
-    router.post(
-      userPath,
-      {
-        ...values,
-        category: values.category?.value || "",  
-        supplier: values.supplier?.value || "",
+    put(userPath, data, {
+      forceFormData: true,
+      onError: (errors) => {
+        setErrors(errors);
+        toast.error("Gagal memperbarui Data Supplier! ❌");
       },
-      {
-        forceFormData: true,
-        onSuccess: () => {
-          toast.success("Produk berhasil di update! 🎉");
-          setValues({ name: "", category: null, supplier: null });
-        },
-        onError: (err) => {
-          setErrors(err);
-          toast.error("Gagal update produk! ❌");
-        },
-      }
-    );
+    });
   }
 
   return (
@@ -109,7 +107,7 @@ export function UpdateProductModal({ userRole, open, onClose, product, categoryD
                         name="supplier_id"
                         className="mt-1 block w-full border p-2 rounded-md "
                         value={data.supplier_id}
-                        onChange={(e) => setData("supplier_id", e.target.value)}
+                        onChange={(e) => setData("supplier_id", Number(e.target.value))}
                     >
                         {supplierData.map((supplier) => (
                             <option key={supplier.id} value={supplier.id}>

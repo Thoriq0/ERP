@@ -8,6 +8,10 @@ use App\Models\Category;
 use App\Models\Outbound;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use App\Models\AccountPayable;
+use App\Models\StagingInbound;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 
@@ -36,6 +40,23 @@ class InventoryController extends Controller
         return redirect()->back();
     }
 
+    public function supplierUpdate(Request $request, Supplier $supplier){
+        $request->validate([
+            'name' => 'required|string',
+            'contact' => 'required|string',
+            'address' => 'required|string',
+        ]);
+    
+        $supplier->update([
+            'name' => $request->name,
+            'contact' => $request->contact,
+            'address' => $request->address,
+        ]);
+    
+        session()->flash('success', 'Data Supplier berhasil diperbarui!');
+        return redirect()->back();
+    }
+
         // ---- PRODUCT ----
     public function productStore(Request $request){
         $request->validate([
@@ -57,6 +78,23 @@ class InventoryController extends Controller
         return redirect()->back();
     }
 
+    public function productUpdate(Request $request, Product $product){
+        $request->validate([
+            'name' => 'required|string',
+            'category_id' => 'required|integer',
+            'supplier_id' => 'required|integer',
+        ]);
+    
+        $product->update([
+            'name' => $request->name,
+            'category_id' => $request->category_id,
+            'supplier_id' => $request->supplier_id,
+        ]);
+    
+        session()->flash('success', 'Data Product berhasil diperbarui!');
+        return redirect()->back();
+    }
+
         // ---- CATEGORY ----
     public function categoryStore(Request $request){
         $request->validate([
@@ -73,6 +111,21 @@ class InventoryController extends Controller
         $category->delete();
         return redirect()->back();
     }
+
+    public function categoryUpdate(Request $request, Category $category){
+        $request->validate([
+            'name' => 'required|string',
+        ]);
+    
+        $category->update([
+            'name' => $request->name,
+        ]);
+    
+        session()->flash('success', 'Data Category berhasil diperbarui!');
+        return redirect()->back();
+    }
+
+    
 
 
     // ==== INBOUND ====
@@ -101,38 +154,117 @@ class InventoryController extends Controller
         }
         // dd($imageName);
         
-        Inbound::create([
+        $inbound = Inbound::create([
             'product_id' => $request->product,
             'qty' => $request->qty,
             'pic' => $request->pic,
             'image' => $imageName
         ]);
 
-        $product = Product::findOrFail($request->product);
+        StagingInbound::create([
+            'inbound_id' => $inbound->id,
+            'status' => 'validating',
+            'stock_status' => 'On Hold',
+            'payment_status' => 'unpaid',
+        ]);
 
-        $stockQuery = Stock::whereHas('product', function ($query) use ($product) {
-            $query->where('id', $product->id)
-                    ->where('supplier_id', $product->supplier_id);});
+        AccountPayable::create([
+            'inbound_id' => $inbound->id,
+            'unit_price' => 0,
+            'tax' => 0,
+            'total_amount' => 0,
+            'status_payment' => 'unpaid',
+            'due_date' => '',
+            'status_inbound' => true
+        ]);
+
+        // $product = Product::findOrFail($request->product);
+
+        // $stockQuery = Stock::whereHas('product', function ($query) use ($product) {
+        //     $query->where('id', $product->id)
+        //             ->where('supplier_id', $product->supplier_id);});
         
-        // dd($stockQuery);
-        $stock = $stockQuery->first();
+        // // dd($stockQuery);
+        // $stock = $stockQuery->first();
 
-        if ($stock) {
-            $stockQuery->update([
-                'qty' => $stock->qty + $request->qty,
-                'updated_at' => now(),
-            ]);
-        } else {
-            Stock::create([
-                'product_id' => $request->product,
-                'qty' => $request->qty,
-                // 'supplier_id' => $request->supplier,
-                'warehouse' => null,
-            ]);
-        }
+        // if ($stock) {
+        //     $stockQuery->update([
+        //         'qty' => $stock->qty + $request->qty,
+        //         'updated_at' => now(),
+        //     ]);
+        // } else {
+        //     Stock::create([
+        //         'product_id' => $request->product,
+        //         'qty' => $request->qty,
+        //         // 'supplier_id' => $request->supplier,
+        //         'warehouse' => null,
+        //     ]);
+        // }
         return redirect()->back();
     }
 
+    public function qcStock(Request $request){
+        $request->merge([
+            'selected_products' => array_map('intval', $request->selected_products)
+        ]);
+    
+        $request->validate([
+            'selected_products' => 'required|array',
+            'selected_products.*' => 'exists:staging_inbounds,id',
+        ]);
+    
+        // Update status langsung
+        StagingInbound::whereIn('id', $request->selected_products)
+            ->update(['status' => 'validated']);
+    
+        return redirect()->back()->with('success', 'Stock validated successfully!');
+    }
+
+    public function validateStock(Request $request){
+        $request->validate([
+            'selected_products' => 'required|array',
+            'selected_products.*' => 'exists:staging_inbounds,id',
+        ]);
+        
+        $queryValidate = StagingInbound::whereIn('id', $request->selected_products);
+
+        $queryValidate->update([
+            'stock_status' => 'In Stock'
+        ]);
+
+        $validatedProducts = $queryValidate->get();
+        // dd($validatedProducts);
+    
+        foreach ($validatedProducts as $product) {
+            $inbound = $product->inbound;
+            
+            // Cek apakah stok dengan produk yang sama sudah ada
+            $stockQuery = Stock::where('product_id', $inbound->product_id);
+            $stock = $stockQuery->first();
+            
+            if ($stock) {
+                $stockQuery->update([
+                    'qty' => $stock->qty + $inbound->qty,
+                    'updated_at' => now(),
+                ]);
+            } else {
+                // Jika belum ada, buat record baru
+                Stock::create([
+                    'product_id' => $inbound->product_id,
+                    'qty' => $inbound->qty,
+                    // 'fnc_status' => 'need payment',
+                    // 'stk_status' => 'restrict stock',
+                    'warehouse' => null, 
+                ]);
+            }
+    
+            // Update status di staging_inbounds menjadi "validated"
+            $product->update(['status' => 'validated']);
+        }
+    
+        return redirect()->back();
+    }
+    
     public function inboundDestroy(Inbound $inbound){
         
         if ($inbound->image) { 
@@ -146,7 +278,24 @@ class InventoryController extends Controller
         return redirect()->back();
     }
 
+    public function inboundUpdate(Request $request, Inbound $inbound){
+        // dd($request->all());
+        // Validasi input
+        $request->validate([
+            'qty' => 'required|integer',
+            'pic' => 'required|string',
+        ]);
+    
+        // Update data inbound
+        $inbound->update([
+            // 'product_id' => $validated['product'],
+            'qty' => $request->qty,
+            'pic' => $request->pic,
+        ]);
 
+        session()->flash('success', 'Data Category berhasil diperbarui!');
+        return redirect()->back();
+    }
 
     // ==== OUTBOUND ====
     public function outboundStore(Request $request) {
@@ -205,8 +354,6 @@ class InventoryController extends Controller
         return redirect()->back()->with(['message' => 'Barang berhasil dikeluarkan.']);
     }
     
-    
-    
 
     public function outboundDestroy(Outbound $Outbound){
         
@@ -218,6 +365,47 @@ class InventoryController extends Controller
         }
 
         $Outbound->delete();
+        return redirect()->back();
+    }
+
+    public function apUpdate(Request $request, AccountPayable $ap){
+        // dd($request->status_payment);
+        try {
+            // Validasi input
+            $request->validate([
+                'unit_price' => 'required|numeric|min:0',
+                'tax' => 'nullable|numeric|min:0',
+                'total_amount' => 'required|numeric|min:0',
+                'status_payment' => 'required|in:unpaid,scheduled,paid,overdue',
+                'due_date' => 'required|date',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 422);
+        }
+        
+        // Update data jika validasi lolos
+        $ap->update([
+            'unit_price' => $request->unit_price,
+            'tax' => $request->tax,
+            'total_amount' => $request->total_amount,
+            'status_payment' => $request->status_payment,
+            'due_date' => $request->due_date,
+        ]);
+        
+        // dd($request->all(), $ap);
+        if($request->status_payment === "scheduled"){
+            $inboundId = $request->inbound_id;
+            $status = $request->status_payment;
+            // dd($status);
+            StagingInbound::where('inbound_id', $inboundId)
+                ->update([
+                    'payment_status' => $status
+                ]);
+        }
+        
+
+        // Redirect dengan pesan sukses
+        session()->flash('success', 'Data Category berhasil diperbarui!');
         return redirect()->back();
     }
 

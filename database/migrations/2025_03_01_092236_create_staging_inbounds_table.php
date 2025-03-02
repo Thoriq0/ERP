@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inbounds', function (Blueprint $table) {
+        Schema::create('staging_inbounds', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('inbound_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->string('status');
+            $table->string('stock_status');
+            $table->string('payment_status');
             $table->timestamps();
-            $table->integer('qty');
-            $table->string('pic');
-            $table->string('image')->nullable();
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inbounds');
+        Schema::dropIfExists('staging_inbounds');
     }
 };
