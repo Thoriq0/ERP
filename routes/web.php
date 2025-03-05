@@ -18,7 +18,10 @@ Route::middleware('auth', 'verified')->group(function () {
 
     // ==== ADMIN ====
     Route::middleware('rolechecking:admin')->group(function(){
-        // route features inventory/warehouse
+        // route userwarehouse action & view
+        Route::resource('/admin/user', WarehouseUserController::class);
+
+        // route view features inventory/warehouse
         Route::get('/admin/dashboard', [AdminController::class, 'view'])->name('admin.dashboard');
         Route::get('/admin/product', [AdminController::class, 'productView'])->name('admin.product');
         Route::get('/admin/category', [AdminController::class, 'categoryView'])->name('admin.category');
@@ -28,9 +31,6 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/stock', [AdminController::class, 'stockView'])->name('admin.stock');
         Route::get('/admin/shipment', [AdminController::class, 'shipmentView'])->name('admin.shipment');
         Route::get('/admin/prestock', [AdminController::class, 'prestockView'])->name('admin.prestock');
-
-        // route userwarehouse action & view
-        Route::resource('/admin/user', WarehouseUserController::class);
 
         // route inbound action
         Route::post('/admin/inbound', [InventoryController::class, 'inboundStore'])->name('inventory.inbound.store');
@@ -63,13 +63,18 @@ Route::middleware('auth', 'verified')->group(function () {
         // route account payable action
         Route::put('/admin/ap/{ap}', [InventoryController::class, 'apUpdate'])->name('inventory.ap.update');
 
-        // route features finance
-        Route::get('/admin/income', [AdminController::class, 'incomeView'])->name('finance.income');
-        Route::get('/admin/outcome', [AdminController::class, 'outcomeView'])->name('finance.outcome');
-        Route::get('/admin/budget', [AdminController::class, 'budgetView'])->name('finance.budget');
+        // route view features finance
+        Route::get('/admin/income', [AdminController::class, 'incomeView'])->name('admin.income');
+        Route::get('/admin/outcome', [AdminController::class, 'outcomeView'])->name('admin.outcome');
+        Route::get('/admin/budget', [AdminController::class, 'budgetView'])->name('admin.budget');
         Route::get('/admin/ap', [AdminController::class, 'apView'])->name('admin.ap');
+        Route::get('/admin/payment', [AdminController::class, 'paymentView'])->name('admin.payment');
         
-        // route features human resource
+        // route view features human resource
+        Route::get('/admin/employee', [AdminController::class, 'employeeView'])->name('admin.employee');
+        Route::get('/admin/work', [AdminController::class, 'workView'])->name('admin.work');
+        Route::get('/admin/salary', [AdminController::class, 'salaryView'])->name('admin.salary');
+        Route::get('/admin/attendance', [AdminController::class, 'attendanceView'])->name('admin.attendance');
         
         // route features logistics
     });
@@ -78,15 +83,25 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::middleware('rolechecking:fnc')->group(function(){
         // view
         Route::get('/finance/dashboard', [FinanceController::class, 'view'])->name('finance.dashboard');
+
         Route::get('/finance/income', [FinanceController::class, 'incomeView'])->name('finance.income');      
         Route::get('/finance/outcome', [FinanceController::class, 'outcomeView'])->name('finance.outcome');      
-        Route::get('/finance/budget', [FinanceController::class, 'budgetView'])->name('finance.budget');      
+        Route::get('/finance/budget', [FinanceController::class, 'budgetView'])->name('finance.budget'); 
+        Route::get('/finance/ap', [FinanceController::class, 'apView'])->name('finance.ap');     
+        Route::get('/finance/payment', [FinanceController::class, 'paymentView'])->name('finance.payment');     
+
+        // route account payable action
+        Route::put('/finance/ap/{ap}', [FinanceController::class, 'apUpdate'])->name('finance.ap.update');
     });
 
     // ==== HUMAN RESOURCE (hr) ====
     Route::middleware('rolechecking:hr')->group(function(){
         // view
         Route::get('/hr/dashboard', [HumanResourceController::class, 'view'])->name('hr.dashboard');
+        Route::get('/hr/employee', [HumanResourceController::class, 'employeeView'])->name('hr.employee');
+        Route::get('/hr/work', [HumanResourceController::class, 'workView'])->name('hr.work');
+        Route::get('/hr/salary', [HumanResourceController::class, 'salaryView'])->name('hr.salary');
+        Route::get('/hr/attendance', [HumanResourceController::class, 'attendanceView'])->name('hr.attendance');
         
     });
 
@@ -105,10 +120,16 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/wrhs/outboundreports', [WarehouseController::class, 'outboundreportsView'])->name('wrhs.outboundreports');
         Route::get('/wrhs/stockreports', [WarehouseController::class, 'stockreportsView'])->name('wrhs.stockreports');
         Route::get('/wrhs/shipmentreports', [WarehouseController::class, 'shipmentreportsView'])->name('wrhs.shipmentreports');
+        Route::get('/wrhs/prestock', [WarehouseController::class, 'prestockView'])->name('wrhs.prestock');
 
         // Route inbound action 
         Route::post('/wrhs/inbound', [InventoryController::class, 'inboundStore'])->name('wrhs.inbound.store');
         Route::delete('/wrhs/inbound/{inbound}', [InventoryController::class, 'inboundDestroy'])->name('wrhs.inbound.destroy');
+
+        // route inbound pre-stock
+        Route::post('/wrhs/validatestock', [InventoryController::class, 'validateStock'])->name('wrhs.stock.store');
+        Route::post('/wrhs/qcstock', [InventoryController::class, 'qcStock'])->name('wrhs.qcstock.store');
+        Route::put('/wrhs/inbound/{inbound}', [InventoryController::class, 'inboundUpdate'])->name('wrhs.inbound.update');
 
         // Route outbound action
         Route::post('/wrhs/outbound', [InventoryController::class, 'outboundStore'])->name('wrhs.outbound.store');
