@@ -6,11 +6,11 @@ import { MdAccessTime, MdPayment } from "react-icons/md";
 
 export default function DashboardAdminLayout({ children, auth }) {
     const menuItems = [
-        { name: "Dashboard", path: "/dashboard", icon: <HiChartPie /> },
-        { name: "Employee", path: "/inbound", icon: <FaUserTie /> },
-        { name: "Work Time", path: "/outbound", icon: <MdAccessTime  /> },
-        { name: "Salary", path: "/stock", icon: <MdPayment /> },
-        { name: "Attendance", path: "/shipment", icon: <FaClipboardList  /> },
+        { name: "Dashboard", path: "/hr/dashboard", icon: <HiChartPie /> },
+        { name: "Employee", path: "/hr/employee", icon: <FaUserTie /> },
+        { name: "Work Time", path: "/hr/work", icon: <MdAccessTime  /> },
+        { name: "Salary", path: "/hr/salary", icon: <MdPayment /> },
+        { name: "Attendance", path: "/hr/attendance", icon: <FaClipboardList  /> },
     ];
 
     const dropdownMenus = [
@@ -34,7 +34,7 @@ export default function DashboardAdminLayout({ children, auth }) {
                 menuItems={menuItems}
                 dropdownMenus={dropdownMenus}
             />
-            <div className="ml-0 lg:ml-64 w-full p-6">
+            <div className="ml-0 lg:ml-64 w-full">
                 {children}
             </div>
         </div>

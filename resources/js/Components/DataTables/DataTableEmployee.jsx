@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react";
 import {
   flexRender,
@@ -9,8 +11,8 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -19,8 +21,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Input } from "./ui/input";
+} from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
 import {
   Table,
   TableBody,
@@ -28,63 +30,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
-import { UpdateApModal } from "./update/UpdateApModal";
-import { ViewInboundDetailModal } from "./viewsdetails/ViewInboundDetailModal";
-import { ButtonDialogDelete } from "./ButtonDialogDelete";
+} from "../ui/table";
+import { ButtonDialogDelete } from "../ButtonDialogDelete";
+import { ButtonModalEmployee } from "../ButtonModalEmployee";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
-import { router } from "@inertiajs/react";
-import toast from "react-hot-toast";
 
-export default function DataTableAccountPayable({ data, userRole, productData, apData }) {
-  
+export function DataTableEmployee({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  // select data inbound dan modal
-  const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-
-  // select data inbound dan modal
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [selectedInbound, setSelectedInbound] = useState(null);
-
   const handleDelete = () => {
-    if (!selectedId) return;
-
-    // Mapping role endpoint
-    const rolePaths = {
-      admin: "/admin/inbound",
-      wrhs: "/wrhs/inbound",
-    };
-
-    const userPath = rolePaths[userRole];
-
-    router.delete(`${userPath}/${selectedId}`, {
-      onSuccess: () => {
-        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
-      },
-      onError: (err) => {
-        console.error(err);
-        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
-      },
-    });
-    setOpen(false);
+    console.log(`Deleting item with ID: ${selectedId}`);
+    // Tambahkan logic API untuk delete di sini
+    setOpen(false); // Tutup modal setelah delete
   };
-
-  const handleUpdate = (inbound) => {
-    setSelectedProduct(inbound);
-    setUpdateModalOpen(true);
-  };
-
-  // handle views details
-  const handleViewDetails = (inbound) => {
-    setSelectedInbound(inbound);
-    setDetailModalOpen(true);
-  };
-  
 
   const columns = [
     {
@@ -107,72 +66,61 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
       enableHiding: false,
     },
     {
-        accessorKey: "inbound.product.name",
-        header: "Product Name",
-        cell: ({ row }) => (
-            <div className="capitalize">
-            {row.original.inbound?.product?.name || "Unknown"}
-            </div>
-        ),
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
     },
     {
-        accessorKey: "created_at",
-        header: ({ column }) => (
+      accessorKey: "created_at",
+      header: ({ column }) => (
         <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-            Date In
-            <ArrowUpDown />
+          Date In
+          <ArrowUpDown />
         </Button>
-        ),
-        cell: ({ row }) => {
+      ),
+      cell: ({ row }) => {
         const rawDate = row.getValue("created_at");
         const date = new Date(rawDate);
+    
+        // Format ke "HH:mm dd-MM-yyyy"
         const formattedDate = new Intl.DateTimeFormat("id-ID", {
-            hour: "2-digit",
-            minute: "2-digit",
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
         }).format(date);
-
+    
         return <div className="lowercase">{formattedDate}</div>;
-        },
-        sortingFn: "datetime",
+      },
     },
     {
-        accessorKey: "inbound.qty",
-        header: "QTY",
-        cell: ({ row }) => (
-            <div className="capitalize">{row.original.inbound?.qty ?? "N/A"}</div>
-        ),
+      accessorKey: "qty",
+      header: "QTY",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
     },
     {
-        accessorKey: "unit_price",
-        header: "Unit Price",
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("unit_price")}</div>
-        ),
+      accessorKey: "supplier",
+      header: "Supplier",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
     },
     {
-        accessorKey: "tax",
-        header: "Tax",
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("tax")}</div>
-        ),
+      accessorKey: "category",
+      header: "Category",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
     },
+    
     {
-        accessorKey: "total_amount",
-        header: "Total Amount",
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("total_amount")}</div>
-        ),
+      accessorKey: "name",
+      header: "PIC",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
     },
     
     {
       id: "actions",
-      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
@@ -186,21 +134,19 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
+                Copy payment ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
-                <FaEdit size={16} className="text-yellow-500 "/>Update
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
-                <FaEye size={16} className="text-green-500 "/>View details
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
-                <FaTrash size={16} className="text-red-500"/>Delete
+              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem>View payment details</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
+                Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
+            
           </DropdownMenu>
+          
         );
       },
     },
@@ -212,7 +158,7 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
-    data: apData,
+    data,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -229,20 +175,6 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
-      <UpdateApModal
-          open={updateModalOpen}
-          onClose={() => setUpdateModalOpen(false)}
-          inbound={selectedProduct}
-          productData={productData}
-          userRole={userRole}
-          apData={apData}
-      />
-      <ViewInboundDetailModal
-        open={detailModalOpen}
-        onClose={() => setDetailModalOpen(false)}
-        inbound={selectedInbound}
-        productData={productData}
-      />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
@@ -272,7 +204,7 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
                   )
                 })}
             </DropdownMenuContent>
-          </DropdownMenu>
+        </DropdownMenu>
           <Input
             placeholder="Search by Name, Date In, Supplier or Category"
             value={table.getState().globalFilter || ""}
@@ -280,7 +212,7 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
             className="max-w-xs"
           />
         </div>
-        <ButtonModalInbound userRole={userRole} productData={productData} />
+        <ButtonModalEmployee userRole={userRole} />
       </div>
       <div className="rounded-md border">
         <Table>
@@ -308,16 +240,18 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
       </div>
       <div className="flex items-center space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
+          
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
+          
         </div>
 
         <button
-          className="px-3 py-1 border rounded-md flex items-center disabled:opacity-50"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          <AiOutlineLeft className="mr-1" /> Back
+            className="px-3 py-1 border rounded-md flex items-center disabled:opacity-50"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <AiOutlineLeft className="mr-1" /> Back
         </button>
 
         <button
@@ -331,3 +265,5 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
     </div>
   );
 }
+
+export default DataTableEmployee;

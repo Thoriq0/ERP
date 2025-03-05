@@ -8,16 +8,17 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { FiFilter } from "react-icons/fi";
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Input } from "./ui/input";
+} from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
 import {
   Table,
   TableBody,
@@ -25,11 +26,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
+} from "../ui/table";
 import toast from "react-hot-toast";
 import { router } from "@inertiajs/react";
 
-export default function DataTablePrestock({ stagingData }) {
+export default function DataTablePrestock({ stagingData, userRole }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
 
   // Handle Transfer Stock
@@ -39,7 +40,7 @@ export default function DataTablePrestock({ stagingData }) {
       return;
     }
 
-      // Cek apakah ada produk yang belum berstatus 'validated'
+  // Cek apakah ada produk yang belum berstatus 'validated'
   const unvalidatedProducts = stagingData.filter(
     (product) => selectedProducts.includes(product.id) && product.status !== "validated"
   );
@@ -76,21 +77,35 @@ export default function DataTablePrestock({ stagingData }) {
   const handleValidateStock = () => {
     if (selectedProducts.length === 0) {
       toast.error("No products selected!");
-      return;
-    }
+    return;
+  }
 
-    router.post(
-        "/admin/qcstock",
-        { selected_products: selectedProducts }, // ✅ Kirim hanya array ID
-        {
-          onSuccess: () => toast.success("Stock successfully validated!"),
-          onError: (err) => {
-            console.error(err);
-            toast.error("Validation failed!");
-          },
-        }
-      );
+  // Mapping role endpoint
+  const rolePaths = {
+    admin: "/admin/qcstock",
+    wrhs: "/wrhs/qcstock",
   };
+
+  const userPath = rolePaths[userRole];
+
+  if (!userPath) {
+    toast.error("You don't have permission to validate stock!");
+    return;
+  }
+
+  router.post(
+    userPath, // ✅ Gunakan path sesuai role
+    { selected_products: selectedProducts }, // ✅ Kirim hanya array ID
+    {
+      onSuccess: () => toast.success("Stock successfully validated!"),
+      onError: (err) => {
+        console.error(err);
+        toast.error("Validation failed!");
+      },
+    }
+  );
+};
+
 
   const columns = [
     {
@@ -217,6 +232,11 @@ export default function DataTablePrestock({ stagingData }) {
         );
       },
     },
+    {
+      accessorKey: "payment",
+      header: "Payment",
+
+    },
   ];
 
   const [sorting, setSorting] = useState([]);
@@ -277,10 +297,10 @@ export default function DataTablePrestock({ stagingData }) {
           />
         </div>
         <div className="flex space-x-2">
-          <Button className="bg-indigo-700" onClick={handleTransferStock}>
+          <Button className="bg-indigo-700 hover:bg-indigo-500" onClick={handleTransferStock}>
             Transfer Stock
           </Button>
-          <Button className="bg-green-600" onClick={handleValidateStock}>
+          <Button className="bg-green-600 hover:bg-green-400" onClick={handleValidateStock}>
             Validate Stock
           </Button>
         </div>
@@ -320,6 +340,27 @@ export default function DataTablePrestock({ stagingData }) {
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className="flex items-center space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
+        <button
+            className="px-3 py-1 border rounded-md flex items-center disabled:opacity-50"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+        >
+            <AiOutlineLeft className="mr-1" /> Back
+        </button>
+      
+        <button
+          className="px-3 py-1 border rounded-md flex items-center bg-PurpleFive text-white disabled:opacity-50"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+            Next <AiOutlineRight className="ml-1" />
+        </button>
       </div>
     </div>
   );

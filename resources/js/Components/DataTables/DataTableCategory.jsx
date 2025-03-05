@@ -12,9 +12,8 @@ import {
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
 
-// import { Button } from "@/components/ui/button";
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -23,8 +22,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Input } from "./ui/input";
+} from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
 import {
   Table,
   TableBody,
@@ -32,19 +31,64 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
-import { ButtonDialogDelete } from "./ButtonDialogDelete";
-import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+} from "../ui/table";
+import { ButtonModalCategory } from "@/Components/ButtonModalCategory";
+import { ButtonDialogDelete } from "../ButtonDialogDelete";
+import { ViewCategoryDetailModal } from "../viewsdetails/ViewCategoryDetailModal"
+import { UpdateCategoryModal } from "../update/UpdateCategoryModal";
 
-export function DataTableStockReports({data}) {
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
+import { router } from "@inertiajs/react";
+import toast from "react-hot-toast";
+
+export function DataTableCategory({data, userRole}) {
+  // modal delete
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
+  // select data supplier dan modal
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  // State untuk modal detail
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [selectedCategoryDetail, setSelectedCategoryDetail] = useState(null);
+
+  // console.log(userRole, "role get");
+
   const handleDelete = () => {
-    console.log(`Deleting item with ID: ${selectedId}`);
-    // Tambahkan logic API untuk delete di sini
-    setOpen(false); // Tutup modal setelah delete
+    if (!selectedId) return;
+
+    // Mapping role endpoint
+    const rolePaths = {
+      admin: "/admin/category",
+      wrhs: "/wrhs/category",
+    };
+
+    const userPath = rolePaths[userRole];
+  
+    router.delete(`${userPath}/${selectedId}`, {
+      onSuccess: () => {
+        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
+      },
+      onError: (err) => {
+        console.error(err);
+        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
+      },
+    });
+    setOpen(false); 
+  };
+
+  const handleUpdate = (category) => {
+    setSelectedCategory(category);
+    setUpdateModalOpen(true);
+  };
+
+  // handle views details
+  const handleViewDetails = (category) => {
+    setSelectedCategoryDetail(category);
+    setDetailModalOpen(true);
   };
 
   const columns = [
@@ -69,7 +113,7 @@ export function DataTableStockReports({data}) {
     },
     {
       accessorKey: "name",
-      header: "Name",
+      header: "Category Name",
       cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
     },
     {
@@ -79,7 +123,7 @@ export function DataTableStockReports({data}) {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date In
+          Created At
           <ArrowUpDown />
         </Button>
       ),
@@ -100,27 +144,41 @@ export function DataTableStockReports({data}) {
       },
     },
     {
-      accessorKey: "qty",
-      header: "QTY",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
+      id: "actions",
+      header: "Actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const item = row.original;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="cursor-pointer">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
+                <FaCopy size={16} className="text-blue-500"/>Copy product ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
+                <FaEdit size={16} className="text-yellow-500"/>Update
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
+                <FaEye size={16} className="text-green-500"/>View details
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
+                <FaTrash size={16} className="text-red-500"/>Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+            
+          </DropdownMenu>
+          
+        );
+      },
     },
-    {
-      accessorKey: "supplier",
-      header: "Supplier",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
-    },
-    {
-      accessorKey: "category",
-      header: "Category",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
-    },
-    
-    {
-      accessorKey: "name",
-      header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
-    },
-    
   ];
 
   const [sorting, setSorting] = useState([]);
@@ -146,6 +204,17 @@ export function DataTableStockReports({data}) {
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
+      <UpdateCategoryModal
+        open={updateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        category={selectedCategory}
+        userRole={userRole}
+      />
+      <ViewCategoryDetailModal
+        open={detailModalOpen}
+        onClose={() => setDetailModalOpen(false)}
+        category={selectedCategoryDetail}
+      />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
@@ -183,7 +252,7 @@ export function DataTableStockReports({data}) {
             className="max-w-xs"
           />
         </div>
-        <ButtonModalInbound/>
+        <ButtonModalCategory userRole={userRole}/>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -250,4 +319,4 @@ export function DataTableStockReports({data}) {
   );
 }
 
-export default DataTableStockReports;
+export default DataTableCategory;

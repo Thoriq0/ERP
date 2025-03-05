@@ -1,6 +1,6 @@
 import DashboardAdminLayout from '@/Layouts/DashboardAdminLayout';
 import DashboardInventoryLayout from '@/Layouts/DashboardInventoryLayout';
-import DataTableOutbound from "@/Components/DataTableOutbond";
+import DataTableOutbound from "@/Components/DataTables/DataTableOutbond";
 import ToasterComponent from "@/Components/ToasterComponent";
 import { Head } from '@inertiajs/react';
 import React from 'react';

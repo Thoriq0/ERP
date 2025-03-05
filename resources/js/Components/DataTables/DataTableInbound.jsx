@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useState } from "react";
 import {
   flexRender,
@@ -11,9 +9,8 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
-import { FaCopy, FaEdit, FaEye, FaTrash } from "react-icons/fa";
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -22,8 +19,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Input } from "./ui/input";
+} from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
 import {
   Table,
   TableBody,
@@ -31,36 +28,37 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { ButtonModalProduct } from "@/Components/ButtonModalProduct";
-import { ButtonDialogDelete } from "./ButtonDialogDelete";
-import { UpdateProductModal } from "./update/UpdateProductModal";
-import { ViewProdukDetailModal } from "./viewsdetails/ViewProdukDetailModal";
+} from "../ui/table";
+import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
+import { UpdateInboundModal } from "../update/UpdateInboundModal";
+import { ViewInboundDetailModal } from "../viewsdetails/ViewInboundDetailModal";
+import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-export function DataTableProduct({ data, userRole, categoryData, supplierData }) {
+export function DataTableInbound({ data, userRole, productData }) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  // state & select data product dan modal
+  // select data inbound dan modal
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // State untuk modal detail
+  // select data inbound dan modal
   const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [selectedProduk, setSelectedProduk] = useState(null);
+  const [selectedInbound, setSelectedInbound] = useState(null);
 
   const handleDelete = () => {
     if (!selectedId) return;
 
     // Mapping role endpoint
     const rolePaths = {
-      admin: "/admin/product",
-      wrhs: "/wrhs/product",
+      admin: "/admin/inbound",
+      wrhs: "/wrhs/inbound",
     };
-    
+
     const userPath = rolePaths[userRole];
 
     router.delete(`${userPath}/${selectedId}`, {
@@ -68,23 +66,24 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
         toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
-        console.error(err);
+        // console.error(err);
         toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
       },
     });
     setOpen(false);
   };
 
-  const handleUpdate = (product) => {
-    setSelectedProduct(product);
+  const handleUpdate = (inbound) => {
+    setSelectedProduct(inbound);
     setUpdateModalOpen(true);
   };
 
   // handle views details
-  const handleViewDetails = (product) => {
-    setSelectedProduk(product);
+  const handleViewDetails = (inbound) => {
+    setSelectedInbound(inbound);
     setDetailModalOpen(true);
   };
+  
 
   const columns = [
     {
@@ -107,9 +106,12 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
       enableHiding: false,
     },
     {
-      accessorKey: "name",
-      header: "Product Name",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+      accessorKey: "product_id",
+      header: "Product",
+      cell: ({ row }) => {
+        const product = productData.find(prod => prod.id === row.getValue("product_id"));
+        return <div className="capitalize">{product ? product.name : "Unknown"}</div>;
+      },
     },
     {
       accessorKey: "created_at",
@@ -118,7 +120,7 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Created At
+          Date In
           <ArrowUpDown />
         </Button>
       ),
@@ -137,26 +139,37 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
 
         return <div className="lowercase">{formattedDate}</div>;
       },
+      sortingFn: "datetime",
     },
     {
-      accessorKey: "category_id",
-      header: "Category",
-      cell: ({ row }) => {
-        const category = categoryData.find(cat => cat.id === row.getValue("category_id"));
-        return <div className="capitalize">{category ? category.name : "Unknown"}</div>;
-      },
+      accessorKey: "qty",
+      header: "QTY",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
     },
     {
       accessorKey: "supplier_id",
       header: "Supplier",
       cell: ({ row }) => {
-        const supplier = supplierData.find(sup => sup.id === row.getValue("supplier_id"));
-        return <div className="capitalize">{supplier ? supplier.name : "Unknown"}</div>;
+        const product = productData.find(sup => sup.id === row.getValue("product_id"));
+        return <div className="capitalize">{product ? product.supplier?.name : "Unknown"}</div>;
       },
     },
     {
+      accessorKey: "category_id",
+      header: "Category",
+      cell: ({ row }) => {
+        const product = productData.find(prod => prod.id === row.getValue("product_id"));
+        return <div className="capitalize">{product ? product.category?.name : "Unknown"}</div>;
+      },
+    },
+    {
+      accessorKey: "pic",
+      header: "PIC",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
+    },
+    {
       id: "actions",
-      header: "Action",
+      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
@@ -168,17 +181,17 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
                 <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="cursor-pointer">
+            <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500"/>Copy product ID
+                <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
-                <FaEdit size={16} className="text-yellow-500"/>Update
+                <FaEdit size={16} className="text-yellow-500 "/>Update
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
-                <FaEye size={16} className="text-green-500"/>View details
+                <FaEye size={16} className="text-green-500 "/>View details
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
                 <FaTrash size={16} className="text-red-500"/>Delete
@@ -213,27 +226,25 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
-      <UpdateProductModal
-        open={updateModalOpen}
-        onClose={() => setUpdateModalOpen(false)}
-        product={selectedProduct}
-        categoryData={categoryData}
-        supplierData={supplierData}
-        userRole={userRole}
+      <UpdateInboundModal
+          open={updateModalOpen}
+          onClose={() => setUpdateModalOpen(false)}
+          inbound={selectedProduct}
+          productData={productData}
+          userRole={userRole}
       />
-      <ViewProdukDetailModal
+      <ViewInboundDetailModal
         open={detailModalOpen}
         onClose={() => setDetailModalOpen(false)}
-        product={selectedProduk}
-        categoryData={categoryData}
-        supplierData={supplierData}
+        inbound={selectedInbound}
+        productData={productData}
       />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="border-solid border-2 border-primaryPurple">
-                <FiFilter size={24} />Filter
+              <FiFilter size={24} />Filter
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -265,7 +276,7 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
             className="max-w-xs"
           />
         </div>
-        <ButtonModalProduct userRole={userRole} categoryData={categoryData} supplierData={supplierData} />
+        <ButtonModalInbound userRole={userRole} productData={productData} />
       </div>
       <div className="rounded-md border">
         <Table>
@@ -317,4 +328,4 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
   );
 }
 
-export default DataTableProduct;
+export default DataTableInbound;

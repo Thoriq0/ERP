@@ -1,26 +1,23 @@
 import DashboardAdminLayout from "@/Layouts/DashboardAdminLayout";
-import DashboardInventoryLayout from "@/Layouts/DashboardInventoryLayout"; 
-import DataTablePreStock from "@/Components/DataTables/DataTablePreStockValidation";
+import DashbordHumanResouceLayout from "@/Layouts/DashboardHumanResourceLayout"; 
+import DataTableSalary from "@/Components/DataTables/DataTableSalary";
 import ToasterComponent from "@/Components/ToasterComponent";
 
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function PreStockValidation({auth, mustVerifyEmail, status, title, inbound, products, staging}) {
+export default function Salary({auth, mustVerifyEmail, status, title}) {
     const getLayout = (role) => {
         switch (role) {
-            case 'wrhs':
-                return DashboardInventoryLayout; 
+            case 'hr':
+                return DashbordHumanResouceLayout; 
             default:
                 return DashboardAdminLayout;
         }
     };
 
-    const role = auth.user.role;
-    const Layout = getLayout(role);
-    const data = inbound;
-    const productsData = products;
-    const stagingData = staging
+    const Layout = getLayout(auth.user.role);
+    const data = [];
 
     return (
         <Layout auth={auth}>
@@ -30,12 +27,8 @@ export default function PreStockValidation({auth, mustVerifyEmail, status, title
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTablePreStock mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} productData={productsData} stagingData={stagingData}  />
+                <DataTableSalary mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
             </div>
-
         </Layout>
     );
 }
-
-
-

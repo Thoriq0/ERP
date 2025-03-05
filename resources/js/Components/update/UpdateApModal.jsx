@@ -93,7 +93,7 @@ export function UpdateApModal({ userRole, open, onClose, inbound, productData, a
             forceFormData: true,
             onError: (errors) => {
                 setErrors(errors);
-                toast.error("Gagal memperbarui Data Supplier! ❌");
+                toast.error("Gagal memperbarui Data Account Payable! ❌");
             },
         });
     }
@@ -102,8 +102,8 @@ export function UpdateApModal({ userRole, open, onClose, inbound, productData, a
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md">
                 <DialogHeader>
-                    <DialogTitle>Update Data Inbound</DialogTitle>
-                    <DialogDescription>Update data inbound yang masuk, lalu klik Simpan.</DialogDescription>
+                    <DialogTitle>Update Data Account Payable</DialogTitle>
+                    <DialogDescription>Update data Payable yang masuk, lalu klik Simpan.</DialogDescription>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit}>

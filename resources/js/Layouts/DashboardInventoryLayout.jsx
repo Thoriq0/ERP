@@ -1,7 +1,7 @@
 import React from 'react';
 import MainSidebar from '@/Components/MainSidebar';
 import { HiChartPie } from "react-icons/hi";
-import { FaFileAlt, FaTruck, FaArrowCircleDown, FaShippingFast, FaBoxes, FaDatabase  } from "react-icons/fa";
+import { FaFileAlt, FaTruck, FaArrowCircleDown, FaShippingFast, FaBoxes, FaDatabase, FaCube  } from "react-icons/fa";
 
 
 export default function DashboardInventoryLayout({ children, auth }) {
@@ -9,6 +9,7 @@ export default function DashboardInventoryLayout({ children, auth }) {
         { name: "Dashboard", path: "/wrhs/dashboard", icon: <HiChartPie /> },
         { name: "Inbound", path: "/wrhs/inbound", icon: <FaArrowCircleDown  /> },
         { name: "Outbound", path: "/wrhs/outbound", icon: <FaTruck /> },
+        { name: "Pre Stock", path: "/wrhs/prestock", icon: <FaCube /> },
         { name: "Stock", path: "/wrhs/stock", icon: <FaBoxes  /> },
         // { name: "Shipment", path: "/wrhs/shipment", icon: <FaShippingFast  /> },
     ];

@@ -1,6 +1,6 @@
 import DashboardAdminLayout from "@/Layouts/DashboardAdminLayout";
-import DashboardInventoryLayout from "@/Layouts/DashboardInventoryLayout"; 
-import DataTableAccountPayable from "@/Components/DataTableAccountPayable";
+import DashboardFinanceLayout from "@/Layouts/DashboardFinanceLayout"; 
+import DataTableAccountPayable from "@/Components/DataTables/DataTableAccountPayable";
 import ToasterComponent from "@/Components/ToasterComponent";
 
 import { Head } from '@inertiajs/react';
@@ -9,8 +9,8 @@ import React from 'react';
 export default function AccountPayable({auth, mustVerifyEmail, status, title, inbound, products, ap}) {
     const getLayout = (role) => {
         switch (role) {
-            case 'wrhs':
-                return DashboardInventoryLayout; 
+            case 'fnc':
+                return DashboardFinanceLayout; 
             default:
                 return DashboardAdminLayout;
         }

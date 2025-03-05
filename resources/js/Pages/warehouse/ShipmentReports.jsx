@@ -1,5 +1,5 @@
 import DashboardInventoryLayout from '@/Layouts/DashboardInventoryLayout';
-import DataTableShipmentReports from "@/Components/DataTableShipmentReports";
+import DataTableShipmentReports from "@/Components/DataTables/DataTableShipmentReports";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 

@@ -40,6 +40,7 @@ export default function DashboardAdminLayout({ children, auth }) {
             icon: <FaMoneyBillWave />,
             items: [
                 { name: "Account Payable", path: "/admin/ap" },
+                { name: "Payment", path: "/admin/payment" },
                 { name: "Income", path: "/admin/income" },
                 { name: "Outcome", path: "/admin/outcome" },
                 { name: "Budget Control", path: "/admin/budget" },

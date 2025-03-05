@@ -1,6 +1,6 @@
 import DashboardAdminLayout from "@/Layouts/DashboardAdminLayout";
 import DashboardFinanceLayout from "@/Layouts/DashboardFinanceLayout"; 
-import DataTableBudgetControl from "@/Components/DataTableBudgetControl";
+import DataTableBudgetControl from "@/Components/DataTables/DataTableBudgetControl";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 

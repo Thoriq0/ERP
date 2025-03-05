@@ -12,8 +12,9 @@ import {
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
 
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
+// import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -22,8 +23,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Input } from "./ui/input";
+} from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
 import {
   Table,
   TableBody,
@@ -31,64 +32,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { ButtonModalCategory } from "@/Components/ButtonModalCategory";
-import { ButtonDialogDelete } from "./ButtonDialogDelete";
-import { ViewCategoryDetailModal } from "./viewsdetails/ViewCategoryDetailModal"
-import { UpdateCategoryModal } from "./update/UpdateCategoryModal";
-
+} from "../ui/table";
+import { ButtonModalOutcome } from "@/Components/ButtonModalOutcome";
+import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
-import { router } from "@inertiajs/react";
-import toast from "react-hot-toast";
 
-export function DataTableCategory({data, userRole}) {
-  // modal delete
+export function DataTableOutcome({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  // select data supplier dan modal
-  const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-
-  // State untuk modal detail
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [selectedCategoryDetail, setSelectedCategoryDetail] = useState(null);
-
-  // console.log(userRole, "role get");
-
   const handleDelete = () => {
-    if (!selectedId) return;
-
-    // Mapping role endpoint
-    const rolePaths = {
-      admin: "/admin/category",
-      wrhs: "/wrhs/category",
-    };
-
-    const userPath = rolePaths[userRole];
-  
-    router.delete(`${userPath}/${selectedId}`, {
-      onSuccess: () => {
-        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
-      },
-      onError: (err) => {
-        console.error(err);
-        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
-      },
-    });
-    setOpen(false); 
-  };
-
-  const handleUpdate = (category) => {
-    setSelectedCategory(category);
-    setUpdateModalOpen(true);
-  };
-
-  // handle views details
-  const handleViewDetails = (category) => {
-    setSelectedCategoryDetail(category);
-    setDetailModalOpen(true);
+    console.log(`Deleting item with ID: ${selectedId}`);
+    // Tambahkan logic API untuk delete di sini
+    setOpen(false); // Tutup modal setelah delete
   };
 
   const columns = [
@@ -113,7 +69,7 @@ export function DataTableCategory({data, userRole}) {
     },
     {
       accessorKey: "name",
-      header: "Category Name",
+      header: "Name",
       cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
     },
     {
@@ -123,7 +79,7 @@ export function DataTableCategory({data, userRole}) {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Created At
+          Date In
           <ArrowUpDown />
         </Button>
       ),
@@ -144,8 +100,29 @@ export function DataTableCategory({data, userRole}) {
       },
     },
     {
+      accessorKey: "qty",
+      header: "QTY",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
+    },
+    {
+      accessorKey: "supplier",
+      header: "Supplier",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
+    },
+    
+    {
+      accessorKey: "name",
+      header: "PIC",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
+    },
+    
+    {
       id: "actions",
-      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
@@ -157,20 +134,16 @@ export function DataTableCategory({data, userRole}) {
                 <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="cursor-pointer">
+            <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500"/>Copy product ID
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
+                Copy payment ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
-                <FaEdit size={16} className="text-yellow-500"/>Update
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
-                <FaEye size={16} className="text-green-500"/>View details
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
-                <FaTrash size={16} className="text-red-500"/>Delete
+              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem>View payment details</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
+                Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
             
@@ -204,17 +177,6 @@ export function DataTableCategory({data, userRole}) {
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
-      <UpdateCategoryModal
-        open={updateModalOpen}
-        onClose={() => setUpdateModalOpen(false)}
-        category={selectedCategory}
-        userRole={userRole}
-      />
-      <ViewCategoryDetailModal
-        open={detailModalOpen}
-        onClose={() => setDetailModalOpen(false)}
-        category={selectedCategoryDetail}
-      />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
@@ -252,7 +214,7 @@ export function DataTableCategory({data, userRole}) {
             className="max-w-xs"
           />
         </div>
-        <ButtonModalCategory userRole={userRole}/>
+        <ButtonModalOutcome userRole={userRole} />
       </div>
       <div className="rounded-md border">
         <Table>
@@ -319,4 +281,4 @@ export function DataTableCategory({data, userRole}) {
   );
 }
 
-export default DataTableCategory;
+export default DataTableOutcome;

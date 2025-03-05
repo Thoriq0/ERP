@@ -11,9 +11,8 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
-import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -22,8 +21,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Input } from "./ui/input";
+} from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
 import {
   Table,
   TableBody,
@@ -31,61 +30,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { ButtonModalOutbound } from "@/Components/ButtonModalOutbound";
-import { UpdateOutboundModal } from "./update/UpdateOutbound";
-import { ButtonDialogDelete } from "./ButtonDialogDelete";
-import { ViewOutboundDetailModal } from "./viewsdetails/ViewOutboundDetailModal";
+} from "../ui/table";
+import { ButtonDialogDelete } from "../ButtonDialogDelete";
+import { ButtonModalSalary } from "../ButtonModalSalary";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import { router } from "@inertiajs/react";
-import toast from "react-hot-toast";
 
-export function DataTableOutbound({ data, userRole, supplierData, productData }) {
-
+export function DataTableSalary({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  // state data outbound dan modal
-  const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-
-  // State untuk modal detail
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [selectedOutbound, setSelectedOutbound] = useState(null);
-
   const handleDelete = () => {
-    if (!selectedId) return;
-
-    // Mapping role endpoint
-    const rolePaths = {
-      admin: "/admin/outbound",
-      wrhs: "/wrhs/outbound",
-    };
-
-    const userPath = rolePaths[userRole];
-
-    router.delete(`${userPath}/${selectedId}`, {
-      onSuccess: () => {
-        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
-      },
-      onError: (err) => {
-        console.error(err);
-        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
-      },
-    });
-    setOpen(false); 
-  };
-
-  // handle update
-  const handleUpdate = (outbound) => {
-    setSelectedProduct(outbound);
-    setUpdateModalOpen(true);
-  };
-
-  // handle views details
-  const handleViewDetails = (outbound) => {
-    setSelectedOutbound(outbound);
-    setDetailModalOpen(true);
+    console.log(`Deleting item with ID: ${selectedId}`);
+    // Tambahkan logic API untuk delete di sini
+    setOpen(false); // Tutup modal setelah delete
   };
 
   const columns = [
@@ -109,12 +66,9 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
       enableHiding: false,
     },
     {
-      accessorKey: "product_id",
-      header: "Product",
-      cell: ({ row }) => {
-        const product = productData.find(prod => prod.id === row.getValue("product_id"));
-        return <div className="capitalize">{product ? product.name : "Unknown"}</div>;
-      },
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
     },
     {
       accessorKey: "created_at",
@@ -123,14 +77,14 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date Out
+          Date In
           <ArrowUpDown />
         </Button>
       ),
       cell: ({ row }) => {
         const rawDate = row.getValue("created_at");
         const date = new Date(rawDate);
-
+    
         // Format ke "HH:mm dd-MM-yyyy"
         const formattedDate = new Intl.DateTimeFormat("id-ID", {
           hour: "2-digit",
@@ -139,7 +93,7 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
           month: "2-digit",
           year: "numeric",
         }).format(date);
-
+    
         return <div className="lowercase">{formattedDate}</div>;
       },
     },
@@ -149,26 +103,24 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
       cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
     },
     {
-      accessorKey: "receiver",
-      header: "To",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("receiver")}</div>,
+      accessorKey: "supplier",
+      header: "Supplier",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
     },
     {
-      accessorKey: "category_id",
+      accessorKey: "category",
       header: "Category",
-      cell: ({ row }) => {
-        const product = productData.find(prod => prod.id === row.getValue("product_id"));
-        return <div className="capitalize">{product ? product.category?.name : "Unknown"}</div>;
-      },
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
     },
+    
     {
-      accessorKey: "pic",
+      accessorKey: "name",
       header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
     },
+    
     {
       id: "actions",
-      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
@@ -182,21 +134,19 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
+                Copy payment ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
-                <FaEdit size={16} className="text-yellow-500 "/>Update
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
-                <FaEye size={16} className="text-green-500 "/>View details
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
-                <FaTrash size={16} className="text-red-500"/>Delete
+              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem>View payment details</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
+                Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
+            
           </DropdownMenu>
+          
         );
       },
     },
@@ -225,19 +175,6 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
-      <UpdateOutboundModal
-        open={updateModalOpen}
-        onClose={() => setUpdateModalOpen(false)}
-        outbound={selectedProduct}
-        productData={productData}
-        userRole={userRole}
-      />
-      <ViewOutboundDetailModal
-        open={detailModalOpen}
-        onClose={() => setDetailModalOpen(false)}
-        outbound={selectedOutbound}
-        productData={productData}
-      />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
@@ -267,15 +204,15 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
                   )
                 })}
             </DropdownMenuContent>
-          </DropdownMenu>
+        </DropdownMenu>
           <Input
-            placeholder="Search by Name, Date Out, or Category"
+            placeholder="Search by Name, Date In, Supplier or Category"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
-            className="max-w-xs text-sm"
+            className="max-w-xs"
           />
         </div>
-        <ButtonModalOutbound userRole={userRole} supplierData={supplierData} productData={productData} />
+        <ButtonModalSalary userRole={userRole} />
       </div>
       <div className="rounded-md border">
         <Table>
@@ -303,8 +240,10 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
       </div>
       <div className="flex items-center space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
+          
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
+          
         </div>
 
         <button
@@ -327,4 +266,4 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
   );
 }
 
-export default DataTableOutbound;
+export default DataTableSalary;

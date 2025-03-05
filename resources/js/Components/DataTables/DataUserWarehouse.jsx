@@ -12,9 +12,8 @@ import {
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
 
-// import { Button } from "@/components/ui/button";
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -23,8 +22,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Input } from "./ui/input";
+} from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
 import {
   Table,
   TableBody,
@@ -32,19 +31,30 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
-import { ButtonDialogDelete } from "./ButtonDialogDelete";
+} from "../ui/table";
+import { ButtonModalUsrwrhs } from "@/Components/ButtonModalUsrwrhs";
+import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { router } from "@inertiajs/react";
+import toast from "react-hot-toast";
 
-export function DataTableBudgetControl({data}) {
+
+export function DataTableOutbound({data}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  const handleDelete = () => {
-    console.log(`Deleting item with ID: ${selectedId}`);
-    // Tambahkan logic API untuk delete di sini
-    setOpen(false); // Tutup modal setelah delete
+  const handleDelete = (id) => {
+    if (!id) return;
+  
+    router.delete(`/admin/user/${id}`, {
+      onSuccess: () => {
+        toast.success("Penggua berhasil dihapus! 🗑️", { duration: 5000 });
+      },
+      onError: (err) => {
+        console.error(err);
+        toast.error("Gagal menghapus Pengguna! ❌", { duration: 5000 });
+      },
+    });
   };
 
   const columns = [
@@ -73,54 +83,58 @@ export function DataTableBudgetControl({data}) {
       cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
     },
     {
-      accessorKey: "created_at",
+      accessorKey: "email",
       header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Date In
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          Email
           <ArrowUpDown />
         </Button>
       ),
+      cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
       cell: ({ row }) => {
-        const rawDate = row.getValue("created_at");
-        const date = new Date(rawDate);
-    
-        // Format ke "HH:mm dd-MM-yyyy"
-        const formattedDate = new Intl.DateTimeFormat("id-ID", {
-          hour: "2-digit",
-          minute: "2-digit",
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        }).format(date);
-    
-        return <div className="lowercase">{formattedDate}</div>;
+        const roleMap = {
+          fnc: "Finance",
+          wrhs: "Warehouse",
+          hr: "Human Resource",
+        };
+        return <div className="capitalize">{roleMap[row.getValue("role")] || row.getValue("role")}</div>;  
+      }
+    },
+    {
+      accessorKey: "address",
+      header: "Address",
+      cell: ({ row }) => {
+        const address = row.getValue("address") || "";
+        const maxLength = 26;
+        return (
+          <div className="capitalize">
+            {address.length > maxLength ? address.slice(0, maxLength) + "..." : address}
+          </div>
+        );
       },
     },
     {
-      accessorKey: "qty",
-      header: "QTY",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
-    },
-    {
-      accessorKey: "supplier",
-      header: "Supplier",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
-    },
-    {
-      accessorKey: "category",
-      header: "Category",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
-    },
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status");
+        const isActive = status === "active";
     
-    {
-      accessorKey: "name",
-      header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
+        return (
+          <div
+            className={`px-3 py-1 rounded-full text-white w-fit text-sm text-center font-semibold ${
+              isActive ? "bg-green-500" : "bg-red-500"
+            }`}
+          >
+            {status}
+          </div>
+        );
+      },
     },
-    
     {
       id: "actions",
       enableHiding: false,
@@ -208,13 +222,13 @@ export function DataTableBudgetControl({data}) {
             </DropdownMenuContent>
         </DropdownMenu>
           <Input
-            placeholder="Search by Name, Date In, Supplier or Category"
+            placeholder="Search by Name, Email or Role"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
-            className="max-w-xs"
+            className="max-w-xs text-sm"
           />
         </div>
-        <ButtonModalInbound/>
+        <ButtonModalUsrwrhs/>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -245,7 +259,7 @@ export function DataTableBudgetControl({data}) {
           
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
-          
+
         </div>
 
         <button
@@ -281,4 +295,4 @@ export function DataTableBudgetControl({data}) {
   );
 }
 
-export default DataTableBudgetControl;
+export default DataTableOutbound;
