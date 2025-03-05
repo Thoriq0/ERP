@@ -119,7 +119,7 @@ class AdminController extends Controller
     public function apView(){
         // dd();
         return inertia::render('features/AccountPayable', [
-            'title' => 'Account Payable',
+            'title' => 'Admin Finance Account Payable',
             'inbound' => Inbound::all(),
             'products' => Product::with(['category:id,name', 'supplier:id,name'])
                             ->select('id', 'name', 'category_id', 'supplier_id')
@@ -156,5 +156,46 @@ class AdminController extends Controller
             'title' => 'Admin Finance Budget Control',
     
         ]);
+    }
+
+    public function paymentView(){
+        // dd();
+        return inertia::render('features/Payments', [
+            'title' => 'Admin Finance Payment',
+    
+        ]);
+    }
+
+    // features in user human resouce
+    public function employeeView(){
+        // dd();
+        return inertia::render('features/Employee', [
+            'title' => 'Admin HR Employee',
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function workView(){
+        // dd();
+        return inertia::render('features/WorkTime', [
+            'title' => 'Admin HR Work Time Employee',
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function salaryView(){
+        // dd();
+        return inertia::render('features/Salary', [
+            'title' => 'Admin HR Salary Employee',
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function attendanceView(){
+        // dd();
+        return inertia::render('features/Attendance', [
+            'title' => 'Admin HR attendance Employee',
+        ]);
+        // dd(Inbound::all());
     }
 }

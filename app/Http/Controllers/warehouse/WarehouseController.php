@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Outbound;
 use App\Models\Supplier;
+use App\Models\StagingInbound;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
 
@@ -23,7 +24,7 @@ class WarehouseController extends Controller
     public function inboundView(){
         // dd();
         return inertia::render('features/Inbound', [
-            'title' => 'Admin Inventory Inbound',
+            'title' => 'Inventory Inbound',
             'inbound' => Inbound::all(),
             'products' => Product::with(['category:id,name', 'supplier:id,name'])
                             ->select('id', 'name', 'category_id', 'supplier_id')
@@ -36,7 +37,7 @@ class WarehouseController extends Controller
     public function outboundView(){
         // dd();
         return inertia::render('features/Outbound', [
-            'title' => 'Admin Inventory Outbound',
+            'title' => 'Inventory Outbound',
             'outbound' => Outbound::all(),
             'products' => Product::with(['category:id,name', 'supplier:id,name'])
                         ->select('id', 'name', 'category_id', 'supplier_id')
@@ -48,7 +49,7 @@ class WarehouseController extends Controller
     public function stockView(){
         // dd();
         return inertia::render('features/Stock', [
-            'title' => 'Admin Inventory Stock',
+            'title' => 'Inventory Stock',
             'stock' => Stock::with(['product.category', 'product.supplier'])->get(),
         ]);
         // dd(Inbound::all());
@@ -66,7 +67,7 @@ class WarehouseController extends Controller
     public function productView(){
         // dd();
         return inertia::render('features/Product', [
-            'title' => 'Admin Inventory Product',
+            'title' => 'Inventory Product',
             'product' => Product::all(),
             'categories' => Category::select('id', 'name')->get(),
             'suppliers' => Supplier::select('id', 'name')->get(),
@@ -77,7 +78,7 @@ class WarehouseController extends Controller
     public function categoryView(){
         // dd();
         return inertia::render('features/Category', [
-            'title' => 'Admin Inventory Category',
+            'title' => 'Inventory Category',
             'category' => Category::all(),
         ]);
     }
@@ -85,7 +86,7 @@ class WarehouseController extends Controller
     public function supplierView(){
         // dd();
         return inertia::render('features/Supplier', [
-            'title' => 'Admin Inventory Supplier',
+            'title' => 'Inventory Supplier',
             'supplier' => Supplier::all()
         ]);
         // dd(Inbound::all());
@@ -124,4 +125,21 @@ class WarehouseController extends Controller
         ]);
         // dd(Inbound::all());
     }
+
+    public function prestockView(){
+        return inertia::render('features/PreStockValidation', [
+            'title' => 'Validating Stock',
+            'inbound' => Inbound::all(),
+            'products' => Product::with(['category:id,name', 'supplier:id,name'])
+                            ->select('id', 'name', 'category_id', 'supplier_id')
+                            ->get(),
+            'staging' => StagingInbound::with([
+                'inbound.product.category',
+                'inbound.product.supplier'
+            ])->get()
+            // ->where('status', 'validating')->get()
+        ]);
+        
+    }
+
 }
