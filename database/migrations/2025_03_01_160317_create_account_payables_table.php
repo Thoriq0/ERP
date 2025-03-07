@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('account_payables', function (Blueprint $table) {
             $table->id();
+            $table->string('ap_code')->unique();
             $table->foreignId('inbound_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->decimal('unit_price', 15, 2)->nullable(); 
             $table->integer('tax')->nullable();

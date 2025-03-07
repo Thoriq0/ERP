@@ -63,6 +63,9 @@ Route::middleware('auth', 'verified')->group(function () {
         // route account payable action
         Route::put('/admin/ap/{ap}', [InventoryController::class, 'apUpdate'])->name('inventory.ap.update');
 
+        // route payment
+        Route::post('/admin/payment', [InventoryController::class, 'paymentGet'])->name('inventory.payment.get');
+
         // route view features finance
         Route::get('/admin/income', [AdminController::class, 'incomeView'])->name('admin.income');
         Route::get('/admin/outcome', [AdminController::class, 'outcomeView'])->name('admin.outcome');

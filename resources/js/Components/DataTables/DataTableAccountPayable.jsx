@@ -107,12 +107,10 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
       enableHiding: false,
     },
     {
-        accessorKey: "inbound.product.name",
-        header: "Product Name",
+        accessorKey: "ap_code",
+        header: "Invoice",
         cell: ({ row }) => (
-            <div className="capitalize">
-            {row.original.inbound?.product?.name || "Unknown"}
-            </div>
+          <div className="capitalize">{row.getValue("ap_code")}</div>
         ),
     },
     {

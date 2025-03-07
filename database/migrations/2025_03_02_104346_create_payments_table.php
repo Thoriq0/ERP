@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('account_payable_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            // $table->foreignId('inbound_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->string('payment_code')->nullable();
+            $table->string('status_payment');
+            // $table->string('');
             $table->timestamps();
         });
     }

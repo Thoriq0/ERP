@@ -19,6 +19,13 @@ class Inbound extends Model
     {
         return $this->belongsTo(Product::class);
     }
+    
+    // Relasi ke AccountPayable (One to One)
+    public function accountPayable()
+    {
+        return $this->hasOne(AccountPayable::class, 'inbound_id', 'id')
+            ->where('status_payment', 'scheduled');
+    }
 
     use HasFactory;
 }

@@ -13,7 +13,9 @@ use App\Models\StagingInbound;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use Illuminate\Support\Facades\File;
+use Carbon\Carbon;
 
 class InventoryController extends Controller
 {
@@ -24,13 +26,15 @@ class InventoryController extends Controller
         $request->validate([
             'name' => 'required|string',
             'contact' => 'required|integer',
-            'address' => 'string'
+            'address' => 'string',
+            'accountN' => 'required|integer' 
         ]);
 
         Supplier::create([
             'name' => $request->name,
             'contact' => $request->contact,
-            'address' => $request->address
+            'address' => $request->address,
+            'account_number' => $request->accountN
         ]);
 
     }
@@ -168,7 +172,15 @@ class InventoryController extends Controller
             'payment_status' => 'unpaid',
         ]);
 
+        $today = Carbon::now()->format('dmy'); // Format: 030225 (03 Feb 2025)
+
+        // Hitung jumlah record untuk hari ini (biar unik)
+        $recordCount = AccountPayable::whereDate('created_at', Carbon::today())->count() + 1;
+
+        $ap_code = "INV-{$today}-{$recordCount}";
+
         AccountPayable::create([
+            'ap_code' =>$ap_code,
             'inbound_id' => $inbound->id,
             'unit_price' => 0,
             'tax' => 0,
@@ -401,6 +413,11 @@ class InventoryController extends Controller
                 ->update([
                     'payment_status' => $status
                 ]);
+            Payment::create([
+                'account_payable_id' => $inboundId,
+                'payment_code' => 'scheduled',
+                'status_payment' => $status
+            ]);
         }
         
 
@@ -408,5 +425,30 @@ class InventoryController extends Controller
         session()->flash('success', 'Data Category berhasil diperbarui!');
         return redirect()->back();
     }
+
+    public function paymentGet(Request $request) {
+        $payments = $request->input('payments'); 
+        // dd($payments);
+
+        foreach ($payments as $payment) {
+            Payment::where('id', $payment['payment_id'])
+                ->update([
+                    'payment_code' => str_replace('INV', 'PAY', $payment['ap_code']),
+                    'status_payment' => 'paid'
+                ]);
+            AccountPayable::where('id', $payment['account_payable_id'])
+                ->update([
+                    'status_payment' => 'paid'
+                ]);
+            StagingInbound::where('inbound_id', $payment['inbound_id'])
+                ->update([
+                    'payment_status' => 'paid'
+                ]);
+            // dd($payment);
+        }
+        session()->flash('success', 'Data Category berhasil diperbarui!');
+        return redirect()->back();
+    }
+    
 
 }

@@ -60,6 +60,29 @@ export default function DataTablePrestock({ stagingData, userRole }) {
     return;
   }
 
+  // Cek apakah ada produk yang sudah memiliki status_payment 'scheduled'
+  const alreadyPayment = stagingData.filter(
+    (product) => selectedProducts.includes(product.id) && product.payment_status !== "paid"
+  );
+
+  if (alreadyPayment.length > 0) {
+    toast.error("Some products have not been paid!");
+    return;
+  }
+  
+  // const unpaidProducts = stagingData.filter(
+  //   (product) => selectedProducts.includes(product.id) && product.payment_status !== "paid"
+  // );
+
+  
+
+  // if (unpaidProducts.length > 0) {
+  //   console.log("Selected Products:", selectedProducts);
+  // console.log("Unpaid Products:", unpaidProducts);
+  //   toast.error("Some products have not been paid!");
+  //   return;
+  // }
+
     router.post(
       "/admin/validatestock",
       { selected_products: selectedProducts },
@@ -157,30 +180,31 @@ export default function DataTablePrestock({ stagingData, userRole }) {
       ),
     },
     {
-        accessorKey: "stock_status",
-        header: "Stock",
-        cell: ({ row }) => {
-          const status = row.getValue("stock_status");
-          return (
-            <div
-              className={`capitalize text-center rounded-xl text-white p-2 ${
-                status === "On Hold" ? "bg-orange-400" : "bg-lime-400"
-              }`}
-            >
-              {status ?? "N/A"}
-            </div>
-          );
-        },
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status");
+        return (
+          <div
+            className={`capitalize text-center rounded-xl text-white p-2 ${
+              status === "validating" ? "bg-orange-400" : "bg-lime-400"
+            }`}
+          >
+            {status ?? "N/A"}
+          </div>
+        );
       },
-    {
-      accessorKey: "inbound.product.category.name",
-      header: "Category",
-      cell: ({ row }) => (
-        <div className="capitalize">
-          {row.original.inbound?.product?.category?.name || "Unknown"}
-        </div>
-      ),
     },
+    
+    // {
+    //   accessorKey: "inbound.product.category.name",
+    //   header: "Category",
+    //   cell: ({ row }) => (
+    //     <div className="capitalize">
+    //       {row.original.inbound?.product?.category?.name || "Unknown"}
+    //     </div>
+    //   ),
+    // },
     {
       accessorKey: "inbound.product.supplier.name",
       header: "Supplier",
@@ -217,14 +241,14 @@ export default function DataTablePrestock({ stagingData, userRole }) {
       sortingFn: "datetime",
     },
     {
-      accessorKey: "status",
-      header: "Status",
+      accessorKey: "payment_status",
+      header: "Payment",
       cell: ({ row }) => {
-        const status = row.getValue("status");
+        const status = row.getValue("payment_status");
         return (
           <div
             className={`capitalize text-center rounded-xl text-white p-2 ${
-              status === "validating" ? "bg-orange-400" : "bg-lime-400"
+              status === "unpaid" ? "bg-orange-400" : status === "schedule" ? "bg-yellow-400" : "bg-lime-400"
             }`}
           >
             {status ?? "N/A"}
@@ -233,10 +257,22 @@ export default function DataTablePrestock({ stagingData, userRole }) {
       },
     },
     {
-      accessorKey: "payment",
-      header: "Payment",
-
+      accessorKey: "stock_status",
+      header: "Stock",
+      cell: ({ row }) => {
+        const status = row.getValue("stock_status");
+        return (
+          <div
+            className={`capitalize text-center rounded-xl text-white p-2 ${
+              status === "On Hold" ? "bg-orange-400" : "bg-lime-400"
+            }`}
+          >
+            {status ?? "N/A"}
+          </div>
+        );
+      },
     },
+    
   ];
 
   const [sorting, setSorting] = useState([]);

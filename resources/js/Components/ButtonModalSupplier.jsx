@@ -20,6 +20,7 @@ export function ButtonModalSupplier({userRole}) {
     name: "",
     contact: "",
     address: "",
+    accountN: "",
   });
 
   // State untuk error
@@ -62,6 +63,7 @@ export function ButtonModalSupplier({userRole}) {
             name: "",
             contact: "",
             address: "",
+            accountN: "",
           });
         },
         onError: (err) => {
@@ -128,6 +130,20 @@ export function ButtonModalSupplier({userRole}) {
               onChange={handleChange}
             />
             {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
+          </div>
+
+          <div className="mt-4">
+            <InputLabel htmlFor="accountN" value="accountN" />
+            <TextInput
+              id="accountN"
+              type="number"
+              name="accountN"
+              className="mt-1 block w-full"
+              placeholder="Account number supplier"
+              value={values.accountN}
+              onChange={handleChange}
+            />
+            {errors.accountN && <p className="text-red-500 text-sm">{errors.accountN}</p>}
           </div>
 
           <DialogFooter>

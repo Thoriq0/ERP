@@ -5,14 +5,15 @@ namespace App\Http\Controllers\admin;
 use Inertia\Inertia;
 use App\Models\Stock;
 use App\Models\Inbound;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Outbound;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use App\Models\AccountPayable;
 use App\Models\StagingInbound;
 use App\Http\Controllers\Controller;
-use App\Models\AccountPayable;
 
 class AdminController extends Controller
 {
@@ -159,12 +160,22 @@ class AdminController extends Controller
     }
 
     public function paymentView(){
-        // dd();
+        $payments = Payment::select('id', 'account_payable_id', 'status_payment')
+        ->where('status_payment', 'scheduled')
+        ->with([
+            'accountPayable:id,inbound_id,unit_price,tax,total_amount,due_date,status_payment,ap_code',
+            'accountPayable.inbound:id,product_id',
+            'accountPayable.inbound.product:id,name,supplier_id',
+            'accountPayable.inbound.product.supplier:id,name,contact,address,account_number'
+        ])
+        ->get();
+        // dd($payments);
         return inertia::render('features/Payments', [
             'title' => 'Admin Finance Payment',
-    
+            'payments' => $payments
         ]);
     }
+    
 
     // features in user human resouce
     public function employeeView(){

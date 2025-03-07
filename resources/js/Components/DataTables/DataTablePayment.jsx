@@ -33,16 +33,55 @@ import {
 } from "../ui/table";
 import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { router } from "@inertiajs/react";
+import toast from "react-hot-toast";
 
 export function DataTablePayment({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-
+  // console.log(data);
   const handleDelete = () => {
-    console.log(`Deleting item with ID: ${selectedId}`);
+    // console.log(`Deleting item with ID: ${selectedId}`);
     // Tambahkan logic API untuk delete di sini
     setOpen(false); // Tutup modal setelah delete
   };
+
+  const handlePayment = () => {
+    const selectedRows = table.getFilteredSelectedRowModel().rows;
+    if (selectedRows.length === 0) {
+      alert("Pilih minimal satu data untuk pembayaran!");
+      return;
+    }
+  
+    const today = new Date().toISOString().split("T")[0];
+  
+    const payments = selectedRows.map((row) => ({
+      payment_id: row.original.id,
+      account_payable_id: row.original.account_payable?.id,
+      inbound_id: row.original.account_payable?.inbound.id,
+      supplier_id: row.original.account_payable?.inbound?.product?.supplier?.id,
+      total_amount: row.original.account_payable?.total_amount,
+      due_date: row.original.account_payable?.due_date,
+      payment_date: today,
+      supplier_ac: row.original.account_payable?.inbound?.product?.supplier?.account_number || "",
+      ap_code: row.original.account_payable?.ap_code,
+    }));
+  
+    router.post(
+      "/admin/payment",
+      { payments },
+      {
+        onSuccess: () => {
+          toast.success("Pembayaran berhasil diproses! 🎉", { duration: 5000 });
+        },
+        onError: (errors) => {
+          toast.error("Gagal memproses pembayaran! ❌", { duration: 5000 });
+          console.error("Error:", errors);
+        },
+      }
+    );
+  };
+
 
   const columns = [
     {
@@ -65,65 +104,71 @@ export function DataTablePayment({data, userRole}) {
       enableHiding: false,
     },
     {
-      accessorKey: "name",
-      header: "Product Name",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
-    },
-    {
-      accessorKey: "created_at",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Date In
-          <ArrowUpDown />
-        </Button>
+      accessorKey: "account_payable.ap_code",
+      header: "AP Code",
+      cell: ({ row }) => (
+        <div className="capitalize  ">
+          {row.original.account_payable?.ap_code}
+        </div>
       ),
-      cell: ({ row }) => {
-        const rawDate = row.getValue("created_at");
-        const date = new Date(rawDate);
-    
-        // Format ke "HH:mm dd-MM-yyyy"
-        const formattedDate = new Intl.DateTimeFormat("id-ID", {
-          hour: "2-digit",
-          minute: "2-digit",
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        }).format(date);
-    
-        return <div className="lowercase">{formattedDate}</div>;
-      },
     },
     {
-      accessorKey: "qty",
-      header: "QTY",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
+      accessorKey: "account_payable.inbound.product.supplier.name",
+      header: "Supplier Name",
+      cell: ({ row }) => <div className="capitalize">{row.original.account_payable?.inbound?.product?.supplier?.name || "Belum terdaftar"}</div>,
+    },
+    // {
+    //   accessorKey: "inbound.product.supplier.contact",
+    //   header: "Supplier Contact",
+    //   cell: ({ row }) => <div className="capitalize">{row.original.inbound?.product?.supplier?.contact || "Belum terdaftar"}</div>,
+    // },
+    {
+      accessorKey: "account_payable.inbound.product.supplier.account_number",
+      header: "Supplier AC",
+      cell: ({ row }) => (
+        <div className="capitalize">
+          {row.original.account_payable?.inbound?.product?.supplier?.account_number || "Belum terdaftar"}
+        </div>
+      ),
     },
     {
-      accessorKey: "supplier",
-      header: "Unit Price",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
-    },
-    {
-      accessorKey: "category",
-      header: "Tax",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
-    },
-    
-    {
-      accessorKey: "name",
+      accessorKey: "account_payable.total_amount",
       header: "Total Amount",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
+      cell: ({ row }) => (
+        <div className="text-right">
+          {row.original.account_payable?.total_amount
+            ? `Rp ${row.original.account_payable.total_amount.toLocaleString("id-ID")}`
+            : "-"}
+        </div>
+      ),
     },
-
     {
-      accessorKey: "name",
-      header: "Status",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
+        accessorKey: "account_payable.due_date",
+        header: "Due Date",
+        cell: ({ row }) => {
+          const dueDate = row.original.account_payable?.due_date;
+          if (!dueDate) return <div className="text-center">-</div>;
+      
+          const due = new Date(dueDate);
+          const today = new Date();
+          const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+      
+          let emoji = " ";
+          if (diffDays < 0) {
+            emoji = "❌"; // Sudah lewat due date
+          } else if (diffDays === 0) {
+            emoji = "⏳"; // Due date hari ini
+          } else if (diffDays <= 3) {
+            emoji = "⚠️"; // Due date dalam 3 hari ke depan
+          }
+      
+          return (
+            <div className="text-center">
+              {emoji} {due.toLocaleDateString("id-ID")}
+            </div>
+          );
+        },
     },
-    
     {
       id: "actions",
       enableHiding: false,
@@ -218,7 +263,7 @@ export function DataTablePayment({data, userRole}) {
           />
         </div>
         <div className="flex space-x-2">
-            <Button className="bg-indigo-700 hover:bg-indigo-500" >
+            <Button className="bg-indigo-700 hover:bg-indigo-500" onClick={handlePayment} >
                 Payment Product
             </Button>
         </div>
