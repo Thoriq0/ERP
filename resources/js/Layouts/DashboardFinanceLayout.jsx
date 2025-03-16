@@ -1,13 +1,14 @@
 import React from 'react';
 import MainSidebar from '@/Components/MainSidebar';
 import { HiChartPie } from "react-icons/hi";
-import { FaFileAlt, FaArrowCircleUp, FaArrowCircleDown, FaBalanceScale, FaHandHoldingUsd  } from "react-icons/fa";
+import { FaFileAlt, FaArrowCircleUp, FaArrowCircleDown, FaBalanceScale, FaHandHoldingUsd, FaMoneyBillWave  } from "react-icons/fa";
 
 
 export default function DashboardAdminLayout({ children, auth }) {
     const menuItems = [
         { name: "Dashboard", path: "/finance/dashboard", icon: <HiChartPie /> },
         { name: "Account Payable", path: "/finance/ap", icon: <FaHandHoldingUsd />},
+        { name: "Payment", path: "/finance/payment", icon: <FaMoneyBillWave />},
         { name: "Income", path: "/finance/income", icon: <FaArrowCircleUp  /> },
         { name: "Outcome", path: "/finance/outcome", icon: <FaArrowCircleDown  /> },
         { name: "Budget Control", path: "/finance/budget", icon: <FaBalanceScale   /> },

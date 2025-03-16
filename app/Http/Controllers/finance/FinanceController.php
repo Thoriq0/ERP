@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Inbound;
 use App\Models\Product;
 use App\Models\AccountPayable;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
 
@@ -33,6 +34,23 @@ class FinanceController extends Controller
             
         ]);
         // dd(Inbound::all());
+    }
+
+    public function paymentView(){
+        $payments = Payment::select('id', 'account_payable_id', 'status_payment')
+        ->where('status_payment', 'scheduled')
+        ->with([
+            'accountPayable:id,inbound_id,unit_price,tax,total_amount,due_date,status_payment,ap_code',
+            'accountPayable.inbound:id,product_id',
+            'accountPayable.inbound.product:id,name,supplier_id',
+            'accountPayable.inbound.product.supplier:id,name,contact,address,account_number'
+        ])
+        ->get();
+        // dd($payments);
+        return inertia::render('features/Payments', [
+            'title' => 'Payment',
+            'payments' => $payments
+        ]);
     }
 
     public function incomeView(){

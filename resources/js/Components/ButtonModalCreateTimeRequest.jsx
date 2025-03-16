@@ -14,7 +14,7 @@ import React, { useState } from "react";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast"; 
 
-export function ButtonModalWorkTime({userRole}) {
+export function ButtonModalCreateTimeRequest({userRole}) {
   // State untuk form
   const [values, setValues] = useState({
     name: "",

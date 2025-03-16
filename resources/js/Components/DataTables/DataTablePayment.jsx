@@ -49,7 +49,7 @@ export function DataTablePayment({data, userRole}) {
   const handlePayment = () => {
     const selectedRows = table.getFilteredSelectedRowModel().rows;
     if (selectedRows.length === 0) {
-      alert("Pilih minimal satu data untuk pembayaran!");
+      toast.error("Pilih minimal satu data untuk pembayaran!", { duration: 3000 });
       return;
     }
   
@@ -135,7 +135,7 @@ export function DataTablePayment({data, userRole}) {
       accessorKey: "account_payable.total_amount",
       header: "Total Amount",
       cell: ({ row }) => (
-        <div className="text-right">
+        <div >
           {row.original.account_payable?.total_amount
             ? `Rp ${row.original.account_payable.total_amount.toLocaleString("id-ID")}`
             : "-"}
@@ -147,7 +147,7 @@ export function DataTablePayment({data, userRole}) {
         header: "Due Date",
         cell: ({ row }) => {
           const dueDate = row.original.account_payable?.due_date;
-          if (!dueDate) return <div className="text-center">-</div>;
+          if (!dueDate) return <div>-</div>;
       
           const due = new Date(dueDate);
           const today = new Date();
@@ -163,7 +163,7 @@ export function DataTablePayment({data, userRole}) {
           }
       
           return (
-            <div className="text-center">
+            <div>
               {emoji} {due.toLocaleDateString("id-ID")}
             </div>
           );

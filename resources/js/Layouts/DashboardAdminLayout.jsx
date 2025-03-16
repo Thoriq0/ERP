@@ -31,7 +31,8 @@ export default function DashboardAdminLayout({ children, auth }) {
             items: [
                 { name: "Stock List", path: "/admin/stockList" },
                 { name: "Add Item", path: "/admin/add" },
-                { name: "Shipment", path: "/admin/shipment" },
+                { name: "Shipment ", path: "/admin/shipment" },
+                { name: "Delivery", path: "/admin/delivery" },
                 { name: "Reports", path: "/admin/reports" },
             ],
         },
@@ -52,8 +53,7 @@ export default function DashboardAdminLayout({ children, auth }) {
             icon: <FaUsersCog />,
             items: [
                 { name: "Employee", path: "/admin/employee" },
-                { name: "Work Time", path: "/admin/work" },
-                { name: "Salary", path: "/admin/salary" },
+                { name: "Time Off Request", path: "/admin/time" },
                 { name: "Attendence", path: "/admin/attendance" },
                 { name: "Reports", path: "/admin/reports" },
             ],

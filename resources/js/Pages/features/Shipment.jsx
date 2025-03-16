@@ -1,12 +1,14 @@
 import DashboardAdminLayout from "@/Layouts/DashboardAdminLayout";
-import DashboardInventoryLayout from "@/Layouts/DashboardInventoryLayout"; 
-import DataTableInbound from "@/Components/DataTables/DataTableInbound";
+import DashboardInventoryLayout from "@/Layouts/DashboardInventoryLayout";
+import DataTableShipmentOrder from "@/Components/DataTables/DataTableShipmentOrder";
+import DataTableShipmentExecution from "@/Components/DataTables/DataTableShipmentExecution";
 import ToasterComponent from "@/Components/ToasterComponent";
 
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function Shipment({auth, mustVerifyEmail, status, title, inbound, products}) {
+
+export default function Shipment({auth, mustVerifyEmail, status, title}) {
     const getLayout = (role) => {
         switch (role) {
             case 'wrhs':
@@ -16,10 +18,8 @@ export default function Shipment({auth, mustVerifyEmail, status, title, inbound,
         }
     };
 
-    const role = auth.user.role;
-    const Layout = getLayout(role);
-    const data = inbound;
-    const productsData = products;
+    const Layout = getLayout(auth.user.role);
+    const data = [];
 
     return (
         <Layout auth={auth}>
@@ -29,9 +29,10 @@ export default function Shipment({auth, mustVerifyEmail, status, title, inbound,
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableInbound mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} productData={productsData}  />
+                <DataTableShipmentOrder mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
+                <hr className="my-5"/>
+                <DataTableShipmentExecution mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
             </div>
-
         </Layout>
     );
 }

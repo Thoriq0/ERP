@@ -84,7 +84,7 @@ export function UpdateApModal({ userRole, open, onClose, inbound, productData, a
 
         const rolePaths = {
             admin: `/admin/ap/${inbound?.id}`,
-            wrhs: `/wrhs/ap/${inbound?.id}`,
+            fnc: `/fnc/ap/${inbound?.id}`,
         };
 
         const userPath = rolePaths[userRole];

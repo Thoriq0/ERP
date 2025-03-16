@@ -1,12 +1,14 @@
 import DashboardAdminLayout from "@/Layouts/DashboardAdminLayout";
 import DashbordHumanResouceLayout from "@/Layouts/DashboardHumanResourceLayout"; 
-import DataTableWorkTime from "@/Components/DataTables/DataTableWorkTime";
+import DataTableTimeRequest from "@/Components/DataTables/DataTableTimeRequest";
+import DataTableValidasiTimeRequest from "@/Components/DataTables/DataTableValidasiTImeRequest";
 import ToasterComponent from "@/Components/ToasterComponent";
 
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function WorkTime({auth, mustVerifyEmail, status, title}) {
+
+export default function TimeRequest({auth, mustVerifyEmail, status, title}) {
     const getLayout = (role) => {
         switch (role) {
             case 'hr':
@@ -27,7 +29,9 @@ export default function WorkTime({auth, mustVerifyEmail, status, title}) {
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableWorkTime mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
+                <DataTableTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
+                <hr className="my-5"/>
+                <DataTableValidasiTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
             </div>
         </Layout>
     );

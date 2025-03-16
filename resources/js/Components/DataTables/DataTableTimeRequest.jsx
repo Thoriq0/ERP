@@ -32,10 +32,10 @@ import {
   TableRow,
 } from "../ui/table";
 import { ButtonDialogDelete } from "../ButtonDialogDelete";
-import { ButtonModalWorkTime } from "../ButtonModalWorkTime";
+import { ButtonModalCreateTimeRequest } from "../ButtonModalCreateTimeRequest";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
-export function DataTableWorkTime({data, userRole}) {
+export function DataTableTimeRequest({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -99,23 +99,23 @@ export function DataTableWorkTime({data, userRole}) {
     },
     {
       accessorKey: "qty",
-      header: "QTY",
+      header: "Role",
       cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
     },
     {
       accessorKey: "supplier",
-      header: "Supplier",
+      header: "Submission Date",
       cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
     },
     {
       accessorKey: "category",
-      header: "Category",
+      header: "End Date",
       cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
     },
     
     {
       accessorKey: "name",
-      header: "PIC",
+      header: "Status",
       cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
     },
     
@@ -175,7 +175,9 @@ export function DataTableWorkTime({data, userRole}) {
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
+      <h1 className="font-extrabold text-xl">(Title)</h1>
       <div className="flex justify-between items-center py-4">
+        
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -212,7 +214,13 @@ export function DataTableWorkTime({data, userRole}) {
             className="max-w-xs"
           />
         </div>
-        <ButtonModalWorkTime userRole={userRole} />
+        <div className="flex space-x-2">
+            <ButtonModalCreateTimeRequest userRole={userRole} />
+            <Button className="bg-validateTimeRequest">
+                Validate leave
+            </Button>
+            
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -266,4 +274,4 @@ export function DataTableWorkTime({data, userRole}) {
   );
 }
 
-export default DataTableWorkTime;
+export default DataTableTimeRequest;

@@ -1,23 +1,24 @@
 import DashboardAdminLayout from "@/Layouts/DashboardAdminLayout";
-import DashboardFinanceLayout from "@/Layouts/DashboardFinanceLayout"; 
-import DataTablePayment from "@/Components/DataTables/DataTablePayment";
+import DashboardInventoryLayout from "@/Layouts/DashboardInventoryLayout";
+import DataTableDelivery from "@/Components/DataTables/DataTableDelivery";
 import ToasterComponent from "@/Components/ToasterComponent";
 
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function Payments({auth, mustVerifyEmail, status, title, payments}) {
+
+export default function Delivery({auth, mustVerifyEmail, status, title}) {
     const getLayout = (role) => {
         switch (role) {
-            case 'fnc':
-                return DashboardFinanceLayout; 
+            case 'wrhs':
+                return DashboardInventoryLayout; 
             default:
                 return DashboardAdminLayout;
         }
     };
 
     const Layout = getLayout(auth.user.role);
-    const data = payments;
+    const data = [];
 
     return (
         <Layout auth={auth}>
@@ -27,7 +28,7 @@ export default function Payments({auth, mustVerifyEmail, status, title, payments
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTablePayment mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
+                <DataTableDelivery mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
             </div>
         </Layout>
     );

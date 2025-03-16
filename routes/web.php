@@ -30,6 +30,7 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/outbound', [AdminController::class, 'outboundView'])->name('admin.outbound');
         Route::get('/admin/stock', [AdminController::class, 'stockView'])->name('admin.stock');
         Route::get('/admin/shipment', [AdminController::class, 'shipmentView'])->name('admin.shipment');
+        Route::get('/admin/delivery', [AdminController::class, 'deliveryView'])->name('admin.delivery');
         Route::get('/admin/prestock', [AdminController::class, 'prestockView'])->name('admin.prestock');
 
         // route inbound action
@@ -75,8 +76,7 @@ Route::middleware('auth', 'verified')->group(function () {
         
         // route view features human resource
         Route::get('/admin/employee', [AdminController::class, 'employeeView'])->name('admin.employee');
-        Route::get('/admin/work', [AdminController::class, 'workView'])->name('admin.work');
-        Route::get('/admin/salary', [AdminController::class, 'salaryView'])->name('admin.salary');
+        Route::get('/admin/time', [AdminController::class, 'timeView'])->name('admin.time');
         Route::get('/admin/attendance', [AdminController::class, 'attendanceView'])->name('admin.attendance');
         
         // route features logistics
@@ -92,6 +92,7 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/finance/budget', [FinanceController::class, 'budgetView'])->name('finance.budget'); 
         Route::get('/finance/ap', [FinanceController::class, 'apView'])->name('finance.ap');     
         Route::get('/finance/payment', [FinanceController::class, 'paymentView'])->name('finance.payment');     
+        Route::get('/finance/payment', [FinanceController::class, 'paymentView'])->name('finance.payment');
 
         // route account payable action
         Route::put('/finance/ap/{ap}', [FinanceController::class, 'apUpdate'])->name('finance.ap.update');
@@ -102,8 +103,7 @@ Route::middleware('auth', 'verified')->group(function () {
         // view
         Route::get('/hr/dashboard', [HumanResourceController::class, 'view'])->name('hr.dashboard');
         Route::get('/hr/employee', [HumanResourceController::class, 'employeeView'])->name('hr.employee');
-        Route::get('/hr/work', [HumanResourceController::class, 'workView'])->name('hr.work');
-        Route::get('/hr/salary', [HumanResourceController::class, 'salaryView'])->name('hr.salary');
+        Route::get('/hr/time', [HumanResourceController::class, 'timeView'])->name('hr.time');
         Route::get('/hr/attendance', [HumanResourceController::class, 'attendanceView'])->name('hr.attendance');
         
     });
@@ -119,6 +119,7 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/wrhs/supplier', [WarehouseController::class, 'supplierView'])->name('wrhs.supplier');
         Route::get('/wrhs/category', [WarehouseController::class, 'categoryView'])->name('category.supplier');
         Route::get('/wrhs/shipment', [WarehouseController::class, 'shipmentView'])->name('wrhs.shipment');
+        Route::get('/wrhs/delivery', [WarehouseController::class, 'deliveryView'])->name('wrhs.delivery');
         Route::get('/wrhs/inboundreports', [WarehouseController::class, 'inboundReportsView'])->name('wrhs.inboundreports');
         Route::get('/wrhs/outboundreports', [WarehouseController::class, 'outboundreportsView'])->name('wrhs.outboundreports');
         Route::get('/wrhs/stockreports', [WarehouseController::class, 'stockreportsView'])->name('wrhs.stockreports');

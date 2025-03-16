@@ -33,6 +33,7 @@ import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
 import { UpdateInboundModal } from "../update/UpdateInboundModal";
 import { ViewInboundDetailModal } from "../viewsdetails/ViewInboundDetailModal";
 import { ButtonDialogDelete } from "../ButtonDialogDelete";
+import { ButtonModalImportInbound } from "../ButtonModalImportInbound"
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
@@ -115,6 +116,7 @@ export function DataTableInbound({ data, userRole, productData }) {
     },
     {
       accessorKey: "created_at",
+      enableSorting: true,
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -220,7 +222,10 @@ export function DataTableInbound({ data, userRole, productData }) {
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: { sorting, columnFilters, columnVisibility, rowSelection },
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { 
+      pagination: { pageSize: 10 },
+      sorting: [{ id: "created_at", desc: true }] // Default sorting ke data terbaru
+    },
   });
 
   return (
@@ -276,7 +281,10 @@ export function DataTableInbound({ data, userRole, productData }) {
             className="max-w-xs"
           />
         </div>
-        <ButtonModalInbound userRole={userRole} productData={productData} />
+        <div className="flex space-x-2">
+          <ButtonModalInbound userRole={userRole} productData={productData} />
+          <ButtonModalImportInbound />
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>

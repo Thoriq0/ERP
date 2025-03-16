@@ -187,7 +187,7 @@ export default function DataTablePrestock({ stagingData, userRole }) {
         return (
           <div
             className={`capitalize text-center rounded-xl text-white p-2 ${
-              status === "validating" ? "bg-orange-400" : "bg-lime-400"
+              status === "validating" ? "bg-[#FFC107]" : "bg-[#28A745]"
             }`}
           >
             {status ?? "N/A"}
@@ -248,7 +248,7 @@ export default function DataTablePrestock({ stagingData, userRole }) {
         return (
           <div
             className={`capitalize text-center rounded-xl text-white p-2 ${
-              status === "unpaid" ? "bg-orange-400" : status === "schedule" ? "bg-yellow-400" : "bg-lime-400"
+              status === "unpaid" ? "bg-[#dc3545]" : status === "paid" ? "bg-[#28A745]": "bg-[#FFC107]"
             }`}
           >
             {status ?? "N/A"}
@@ -264,7 +264,7 @@ export default function DataTablePrestock({ stagingData, userRole }) {
         return (
           <div
             className={`capitalize text-center rounded-xl text-white p-2 ${
-              status === "On Hold" ? "bg-orange-400" : "bg-lime-400"
+              status === "On Hold" ? "bg-[#FFC107]" : "bg-[#28A745]"
             }`}
           >
             {status ?? "N/A"}
@@ -292,7 +292,10 @@ export default function DataTablePrestock({ stagingData, userRole }) {
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: { sorting, columnFilters, columnVisibility, rowSelection },
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { 
+      pagination: { pageSize: 10 },
+      sorting: [{ id: "created_at", desc: true }] // Default sorting ke data terbaru
+    },
   });
 
   return (

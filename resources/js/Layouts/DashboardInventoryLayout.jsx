@@ -1,27 +1,38 @@
 import React from 'react';
 import MainSidebar from '@/Components/MainSidebar';
 import { HiChartPie } from "react-icons/hi";
-import { FaFileAlt, FaTruck, FaArrowCircleDown, FaShippingFast, FaBoxes, FaDatabase, FaCube  } from "react-icons/fa";
+import { FaFileAlt, FaTruck } from "react-icons/fa";
+import { HiInbox } from "react-icons/hi";
 
 
 export default function DashboardInventoryLayout({ children, auth }) {
     const menuItems = [
         { name: "Dashboard", path: "/wrhs/dashboard", icon: <HiChartPie /> },
-        { name: "Inbound", path: "/wrhs/inbound", icon: <FaArrowCircleDown  /> },
-        { name: "Outbound", path: "/wrhs/outbound", icon: <FaTruck /> },
-        { name: "Pre Stock", path: "/wrhs/prestock", icon: <FaCube /> },
-        { name: "Stock", path: "/wrhs/stock", icon: <FaBoxes  /> },
-        // { name: "Shipment", path: "/wrhs/shipment", icon: <FaShippingFast  /> },
     ];
 
     const dropdownMenus = [
         {
-            title: "Master Data",
-            icon: <FaDatabase   />,
+            title: "Inventory",
+            icon: <HiInbox />,
             items: [
                 { name: "Product", path: "/wrhs/product" },
                 { name: "Supplier", path: "/wrhs/supplier" },
-                { name: "Category", path: "/wrhs/category"}
+                { name: "Category", path: "/wrhs/category"},
+                { name: "Inbound", path: "/wrhs/inbound" },
+                { name: "Outbound", path: "/wrhs/outbound" },
+                { name: "Pre Stock", path: "/wrhs/prestock" },
+                { name: "Stock", path: "/wrhs/stock" }
+            ],
+        },
+        {
+            title: "Logistic",
+            icon: <FaTruck />,
+            items: [
+                { name: "Stock List", path: "/wrhs/stockList" },
+                { name: "Add Item", path: "/wrhs/add" },
+                { name: "Shipment ", path: "/wrhs/shipment" },
+                { name: "Delivery", path: "/wrhs/delivery" },
+                { name: "Reports", path: "/wrhs/reports" },
             ],
         },
         {

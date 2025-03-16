@@ -31,6 +31,7 @@ export default {
     			'orangeShipped': '#FFECC287',
     			'mintGreenDelivered': '#C2FFCA87',
     			'activeMenuSidebar': '#D9D9D940',
+				'validateTimeRequest': '#027A48',
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
     			card: {

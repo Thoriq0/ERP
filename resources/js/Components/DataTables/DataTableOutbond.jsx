@@ -167,6 +167,22 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
       cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
     },
     {
+      accessorKey: "payment_status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("payment_status");
+        return (
+          <div
+            className={`capitalize text-center rounded-xl text-white p-2 ${
+              status === "unpaid" ? "bg-orange-400" : status === "schedule" ? "bg-yellow-400" : "bg-lime-400"
+            }`}
+          >
+            {status ?? "N/A"}
+          </div>
+        );
+      },
+    },
+    {
       id: "actions",
       header: "Actions",
       enableHiding: false,

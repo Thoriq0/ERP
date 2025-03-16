@@ -167,7 +167,22 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
             <div className="capitalize">{row.getValue("total_amount")}</div>
         ),
     },
-    
+    {
+      accessorKey: "payment_status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("payment_status");
+        return (
+          <div
+            className={`capitalize text-center rounded-xl text-white p-2 ${ status === "paid" ? "bg-green-400" :
+              status === "unpaid" ? "bg-orange-400" : status === "schedule" ? "bg-yellow-400" : "bg-lime-400"
+            }`}
+          >
+            {status ?? "N/A"}
+          </div>
+        );
+      },
+    },
     {
       id: "actions",
       header: "Actions",

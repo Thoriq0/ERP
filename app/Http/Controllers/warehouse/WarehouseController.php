@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 
 class WarehouseController extends Controller
 {
+    // view
     public function view(){
         return Inertia::render('warehouse/Dashboard', [
             'title' => 'Dashboard WareHouse'
@@ -59,6 +60,15 @@ class WarehouseController extends Controller
         // dd();
         return inertia::render('features/Shipment', [
             'title' => 'Inventory Shipment',
+            'inbound' => Inbound::all()
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function deliveryView(){
+        // dd();
+        return inertia::render('features/Delivery', [
+            'title' => 'Inventory Delivery',
             'inbound' => Inbound::all()
         ]);
         // dd(Inbound::all());

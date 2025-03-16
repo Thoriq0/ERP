@@ -20,18 +20,10 @@ class HumanResourceController extends Controller
         ]);
     }
 
-    public function workView(){
+    public function timeView(){
         // dd();
-        return inertia::render('features/WorkTime', [
-            'title' => 'Admin HR Work Time Employee',
-        ]);
-        // dd(Inbound::all());
-    }
-
-    public function salaryView(){
-        // dd();
-        return inertia::render('features/Salary', [
-            'title' => 'Admin HR Salary Employee',
+        return inertia::render('features/TimeRequest', [
+            'title' => 'Admin HR Time Off Request',
         ]);
         // dd(Inbound::all());
     }

@@ -149,8 +149,9 @@ export function ButtonModalOutbound({ userRole, productData}) {
             />
             {errors.qty && <p className="text-red-500 text-sm">{errors.qty}</p>}
           </div>
-
-          <div className="mt-4">
+          
+          {/* take doqwn sementara */}
+          {/* <div className="mt-4">
             <InputLabel htmlFor="receiver" value="Penerima" />
             <TextInput
               id="receiver"
@@ -162,7 +163,7 @@ export function ButtonModalOutbound({ userRole, productData}) {
               onChange={handleChange}
             />
             {errors.receiver && <p className="text-red-500 text-sm">{errors.receiver}</p>}
-          </div>
+          </div> */}
 
           <div className="mt-4">
             <InputLabel htmlFor="pic" value="Penanggung Jawab Produk" />

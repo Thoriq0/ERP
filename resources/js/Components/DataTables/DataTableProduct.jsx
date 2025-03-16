@@ -107,6 +107,11 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
       enableHiding: false,
     },
     {
+      accessorKey: "id",
+      header: "SKU",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
+    },
+    {
       accessorKey: "name",
       header: "Product Name",
       cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,

@@ -2,14 +2,13 @@ import React from 'react';
 import MainSidebar from '@/Components/MainSidebar';
 import { HiChartPie} from "react-icons/hi";
 import { FaClipboardList, FaUserTie, FaFileAlt } from "react-icons/fa";
-import { MdAccessTime, MdPayment } from "react-icons/md";
+import { MdAccessTime } from "react-icons/md";
 
 export default function DashboardAdminLayout({ children, auth }) {
     const menuItems = [
         { name: "Dashboard", path: "/hr/dashboard", icon: <HiChartPie /> },
         { name: "Employee", path: "/hr/employee", icon: <FaUserTie /> },
-        { name: "Work Time", path: "/hr/work", icon: <MdAccessTime  /> },
-        { name: "Salary", path: "/hr/salary", icon: <MdPayment /> },
+        { name: "Time Off Request", path: "/hr/time", icon: <MdAccessTime  /> },
         { name: "Attendance", path: "/hr/attendance", icon: <FaClipboardList  /> },
     ];
 
