@@ -15,26 +15,33 @@ import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import Select from "react-select";
 
-export function ButtonModalOutbound({ userRole, productData}) {
+export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
   // State untuk form
   const [values, setValues] = useState({
     product: null,
     qty: "",
     receiver: "",
-    pic: "",
+    pic: null,
     image: null,
+    document: null
   });
-
+  
   // Untuk Disabled Feild
   const [supplierName, setSupplierName] = useState("");
+  const [picName, setPicName] = useState("");
 
   // State untuk error
   const [errors, setErrors] = useState({});
 
   // SET DROPDOWN SEARCH  
-  const productOptions = productData.map((prod) => ({
-    value: prod.id,
-    label: prod.name
+  const productOptions = dataStocks.map(stock => ({
+    value: stock.product.id, 
+    label: stock.product.name 
+  }));
+
+  const picOptions = usr.map(user => ({
+    value: user.id, 
+    label: user.name 
   }));
 
   // Handle perubahan input
@@ -42,15 +49,23 @@ export function ButtonModalOutbound({ userRole, productData}) {
     const { name, value, type, files } = e.target;
     setValues((prevValues) => ({
       ...prevValues,
-      [name]: type === "file" ? files[0] : value,
+      [name]: type === "file" ? Array.from(files) : value,
     }));
+
+  }
+  
+  function handleSelectChangeUsr(name, selectedOption) {
+    const selectedPic = usr.find((user) => user.id === selectedOption?.value);
+    
+    setValues((prev) => ({ ...prev, [name]: selectedOption }));
+    setPicName(selectedPic?.name || "");
   }
 
   function handleSelectChange(name, selectedOption) {
-    const selectedProduct = productData.find((prod) => prod.id === selectedOption?.value);
+    const selectedStock = dataStocks.find((stock) => stock.product.id === selectedOption?.value);
     
     setValues((prev) => ({ ...prev, [name]: selectedOption }));
-    setSupplierName(selectedProduct?.supplier?.name || "");
+    setSupplierName(selectedStock?.product?.supplier?.name || "");
   }
 
   // Handle submit
@@ -66,12 +81,25 @@ export function ButtonModalOutbound({ userRole, productData}) {
   
     const userPath = rolePaths[userRole];
 
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+      if ((key === "image" || key === "document") && value) {
+        for (let i = 0; i < value.length; i++) {
+          formData.append(`${key}[]`, value[i]); // Kirim multiple file
+        }
+      } else {
+        formData.append(key, value?.value || value);
+      }
+    });
+
     // Kirim data ke backend
     router.post(
       userPath,
+      formData,
       {
         ...values,
-        product: values.product?.value || "",  
+        product: values.product?.value || "", 
+        pic: values.pic?.value || "",
       },
       {
         forceFormData: true, 
@@ -83,8 +111,9 @@ export function ButtonModalOutbound({ userRole, productData}) {
             product: null,
             qty: "",
             receiver: "",
-            pic: "",
+            pic: null,
             image: null,
+            document: null
           });
           setSupplierName("");
           setCategoryName("");
@@ -150,8 +179,7 @@ export function ButtonModalOutbound({ userRole, productData}) {
             {errors.qty && <p className="text-red-500 text-sm">{errors.qty}</p>}
           </div>
           
-          {/* take doqwn sementara */}
-          {/* <div className="mt-4">
+          <div className="mt-4">
             <InputLabel htmlFor="receiver" value="Penerima" />
             <TextInput
               id="receiver"
@@ -163,21 +191,22 @@ export function ButtonModalOutbound({ userRole, productData}) {
               onChange={handleChange}
             />
             {errors.receiver && <p className="text-red-500 text-sm">{errors.receiver}</p>}
-          </div> */}
+          </div>
 
           <div className="mt-4">
             <InputLabel htmlFor="pic" value="Penanggung Jawab Produk" />
-            <TextInput
+            <Select
               id="pic"
-              type="text"
-              name="pic"
-              className="mt-1 block w-full"
-              placeholder="Nama Penanggung Jawab Produk"
-              value={values.pic}
-              onChange={handleChange}
+              options={picOptions}
+              isSearchable={true}
+              placeholder="Pilih PIC"
+              value={values.pic} 
+              onChange={(selected) => handleSelectChangeUsr("pic", selected)} 
+              className="mt-1"
             />
             {errors.pic && <p className="text-red-500 text-sm">{errors.pic}</p>}
           </div>
+
 
           <div className="mt-4">
             <InputLabel htmlFor="image" value="Surat Jalan" />
@@ -185,11 +214,25 @@ export function ButtonModalOutbound({ userRole, productData}) {
               id="image"
               type="file"
               accept="image/*"
+              multiple
               name="image"
               className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               onChange={handleChange}
             />
             {errors.image && <p className="text-red-500 text-sm">{errors.image}</p>}
+          </div>
+
+          <div className="mt-4">
+            <InputLabel htmlFor="document" value="Dokumen (PDF)" />
+            <input
+              id="document"
+              type="file"
+              accept="application/pdf"
+              multiple
+              name="document"
+              className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              onChange={handleChange}
+            />
           </div>
 
           <DialogFooter>

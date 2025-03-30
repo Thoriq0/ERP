@@ -20,7 +20,9 @@ export function ButtonModalSupplier({userRole}) {
     name: "",
     contact: "",
     address: "",
-    accountN: "",
+    accountNumber: "",
+    accountName: "",
+    accountBankName: ""
   });
 
   // State untuk error
@@ -56,14 +58,16 @@ export function ButtonModalSupplier({userRole}) {
       {
         forceFormData: true,
         onSuccess: () => {
-          toast.success("Produk berhasil disimpan! 🎉", {
+          toast.success("Supplier berhasil disimpan! 🎉", {
             duration: 5000,
           });
           setValues({
             name: "",
             contact: "",
             address: "",
-            accountN: "",
+            accountNumber: "",
+            accountName: "",
+            accountBankName: ""
           });
         },
         onError: (err) => {
@@ -133,17 +137,45 @@ export function ButtonModalSupplier({userRole}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="accountN" value="accountN" />
+            <InputLabel htmlFor="accountNumber" value="Account Number" />
             <TextInput
-              id="accountN"
+              id="accountNumber"
               type="number"
-              name="accountN"
+              name="accountNumber"
               className="mt-1 block w-full"
               placeholder="Account number supplier"
-              value={values.accountN}
+              value={values.accountNumber}
               onChange={handleChange}
             />
-            {errors.accountN && <p className="text-red-500 text-sm">{errors.accountN}</p>}
+            {errors.accountN && <p className="text-red-500 text-sm">{errors.accountNumber}</p>}
+          </div>
+
+          <div className="mt-4">
+            <InputLabel htmlFor="accountName" value="Account Name" />
+            <TextInput
+              id="accountName"
+              type="text"
+              name="accountName"
+              className="mt-1 block w-full"
+              placeholder="Account Name supplier"
+              value={values.accountName}
+              onChange={handleChange}
+            />
+            {errors.accountN && <p className="text-red-500 text-sm">{errors.accountName}</p>}
+          </div>
+
+          <div className="mt-4">
+            <InputLabel htmlFor="accountBankName" value="Account Bank Name" />
+            <TextInput
+              id="accountBankName"
+              type="text"
+              name="accountBankName"
+              className="mt-1 block w-full"
+              placeholder="Account Name supplier"
+              value={values.accountBankName}
+              onChange={handleChange}
+            />
+            {errors.accountN && <p className="text-red-500 text-sm">{errors.accountBankName}</p>}
           </div>
 
           <DialogFooter>

@@ -33,37 +33,43 @@ import {
 } from "../ui/table";
 import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { FaCopy, FaEdit, FaEye, FaTrash } from "react-icons/fa";
+import { ViewPaymentDetail } from "../viewsdetails/ViewPaymentDetail";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
 export function DataTablePayment({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+
+  // Modal View
+  const [selectedPaymentViews, setSelectedPaymentViews] = useState(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+
   // console.log(data);
   const handleDelete = () => {
     // console.log(`Deleting item with ID: ${selectedId}`);
-    // Tambahkan logic API untuk delete di sini
-    setOpen(false); // Tutup modal setelah delete
+    setOpen(false);
   };
-
+  // console.log(data)
   const handlePayment = () => {
     const selectedRows = table.getFilteredSelectedRowModel().rows;
     if (selectedRows.length === 0) {
       toast.error("Pilih minimal satu data untuk pembayaran!", { duration: 3000 });
       return;
     }
-  
+    // console.log(selectedRows)
     const today = new Date().toISOString().split("T")[0];
   
     const payments = selectedRows.map((row) => ({
-      payment_id: row.original.id,
+      payment_id: row.original.id || "",
       account_payable_id: row.original.account_payable?.id,
-      inbound_id: row.original.account_payable?.inbound.id,
-      supplier_id: row.original.account_payable?.inbound?.product?.supplier?.id,
+      inbound_id: row.original.account_payable?.inbound_id,
+      // supplier_id: row.original.account_payable?.inbound?.product?.supplier?.id,
       total_amount: row.original.account_payable?.total_amount,
       due_date: row.original.account_payable?.due_date,
       payment_date: today,
-      supplier_ac: row.original.account_payable?.inbound?.product?.supplier?.account_number || "",
+      // supplier_ac: row.original.account_payable?.inbound?.product?.supplier?.account_number || "",
       ap_code: row.original.account_payable?.ap_code,
     }));
   
@@ -80,6 +86,12 @@ export function DataTablePayment({data, userRole}) {
         },
       }
     );
+  };
+
+  // handle views details
+  const handleViewDetails = (payment) => {
+    setSelectedPaymentViews(payment);
+    setDetailModalOpen(true);
   };
 
 
@@ -115,19 +127,14 @@ export function DataTablePayment({data, userRole}) {
     {
       accessorKey: "account_payable.inbound.product.supplier.name",
       header: "Supplier Name",
-      cell: ({ row }) => <div className="capitalize">{row.original.account_payable?.inbound?.product?.supplier?.name || "Belum terdaftar"}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.original.account_payable?.inbound?.product?.supplier?.name || "Bundling Invoice"}</div>,
     },
-    // {
-    //   accessorKey: "inbound.product.supplier.contact",
-    //   header: "Supplier Contact",
-    //   cell: ({ row }) => <div className="capitalize">{row.original.inbound?.product?.supplier?.contact || "Belum terdaftar"}</div>,
-    // },
     {
       accessorKey: "account_payable.inbound.product.supplier.account_number",
       header: "Supplier AC",
       cell: ({ row }) => (
         <div className="capitalize">
-          {row.original.account_payable?.inbound?.product?.supplier?.account_number || "Belum terdaftar"}
+          {row.original.account_payable?.inbound?.product?.supplier?.account_number || "Bundling Invoice"}
         </div>
       ),
     },
@@ -184,14 +191,12 @@ export function DataTablePayment({data, userRole}) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-                Copy payment ID
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)} className="cursor-pointer">
+                <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
-                Delete
+              <DropdownMenuItem onClick={() => handleViewDetails(item)}  className="cursor-pointer">
+                <FaEye size={16} className="text-green-500"/>View details
               </DropdownMenuItem>
             </DropdownMenuContent>
             
@@ -225,6 +230,11 @@ export function DataTablePayment({data, userRole}) {
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
+      <ViewPaymentDetail
+              open={detailModalOpen}
+              onClose={() => setDetailModalOpen(false)}
+              payment={selectedPaymentViews}
+            />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>

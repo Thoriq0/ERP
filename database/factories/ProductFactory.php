@@ -7,7 +7,7 @@ use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\products>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
  */
 class ProductFactory extends Factory
 {
@@ -18,10 +18,9 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $category = Category::inRandomOrder()->first() ?? Category::factory()->create(); // Ambil kategori acak atau buat baru
-        $supplier = Supplier::inRandomOrder()->first() ?? Supplier::factory()->create(); // Ambil supplier acak atau buat baru
-        
-        // Nama produk berdasarkan kategori
+        $category = Category::inRandomOrder()->first() ?? Category::factory()->create();
+        $supplier = Supplier::inRandomOrder()->first() ?? Supplier::factory()->create();
+
         $productNames = [
             'Electronics' => ['Samsung 4K Smart TV', 'Apple MacBook Pro', 'Sony Wireless Headphones', 'Logitech Gaming Mouse', 'Canon EOS Camera'],
             'Fashion' => ['Nike Running Shoes', 'Adidas Hoodie', 'Levi’s Slim Fit Jeans', 'Gucci Sunglasses', 'Puma Sports Jacket'],
@@ -36,18 +35,55 @@ class ProductFactory extends Factory
             'Musical Instruments' => ['Yamaha Acoustic Guitar', 'Roland Digital Piano', 'Fender Electric Guitar', 'Casio Keyboard', 'Pearl Drum Set'],
             'Pet Supplies' => ['Royal Canin Dog Food', 'Tetra Aquarium Filter', 'Cat Scratching Post', 'Pet Grooming Kit', 'Rabbit Cage with Feeder'],
             'Gaming' => ['Gaming Mouse', 'Mechanical Keyboard', 'Gaming Monitor', 'Gaming Headset', 'RGB Mouse Pad'],
-            'Musical Instruments' => ['Yamaha Acoustic Guitar', 'Roland Digital Piano', 'Fender Electric Guitar', 'Casio Keyboard', 'Pearl Drum Set'],
-            'Pet Supplies' => ['Royal Canin Dog Food', 'Tetra Aquarium Filter', 'Cat Scratching Post', 'Pet Grooming Kit', 'Rabbit Cage with Feeder'],
             'Office Supplies' => ['Ballpoint Pens', 'Notebook', 'Office Chair', 'Stapler', 'Desk Lamp'],
-            'Gardening Tools' => ['Garden Shovel', 'Watering Can', 'Pruning Shears', 'Lawn Mower', 'Plant Pots'],
+            'Gardening Tools' => ['Garden Shovel', 'Watering Can', 'Pruning Shears', 'Lawn Mower', 'Plant Pots'],  
         ];
 
-        $productName = $productNames[$category->name][array_rand($productNames[$category->name])];
+        // Pastikan kategori yang dipilih ada di array
+        if (!isset($productNames[$category->name])) {
+            $productName = 'Default Product Name';
+        } else {
+            $productName = $productNames[$category->name][array_rand($productNames[$category->name])];
+        }
+
+        $sku = $this->generateSku($productName, $supplier->name, $category->name);
 
         return [
             'name' => $productName,
+            'sku' => $sku,
             'category_id' => $category->id,
             'supplier_id' => $supplier->id,
         ];
+
+    }
+
+    /**
+     * Generate SKU from product name, supplier name, and category name.
+     */
+    private function generateSku($productName, $supplierName, $categoryName)
+    {
+        return $this->getThreeLetters($productName) . '-' . $this->getThreeLetters($supplierName) . '-' . $this->getThreeLetters($categoryName);
+    }
+
+    /**
+     * Extracts 3 letters from a given string.
+     * If the string has only 1 or 2 characters, it repeats the last character to make it 3.
+     */
+    private function getThreeLetters($string)
+    {
+        $words = explode(' ', $string);
+        $letters = '';
+        
+        foreach ($words as $word) {
+            $letters .= strtoupper(substr($word, 0, 1));
+        }
+        
+        if (strlen($letters) < 3) {
+            $letters = str_pad($letters, 3, substr($letters, -1));
+        } else {
+            $letters = substr($letters, 0, 3);
+        }
+        
+        return $letters;
     }
 }

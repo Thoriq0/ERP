@@ -6,7 +6,6 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import InputLabel from "../InputLabel";
@@ -15,21 +14,59 @@ import toast from "react-hot-toast";
 
 export function UpdateProductModal({ userRole, open, onClose, product, categoryData, supplierData }) {
   const {flash} = usePage().props;
+  const [customSku, setCustomSku] = useState(false);
   const { data, setData, put, errors, setErrors, reset } = useForm({
     name: product?.name || "",
     category_id: product?.category_id || "",
     supplier_id: product?.supplier_id || "",
+    sku: ""
   });
-  // console.log(product);
+  
+  function generateSKU(name, category, supplier) {
+      function getCode(str) {
+        if (!str) return ""; // Jika null atau undefined, langsung return kosong
+        str = str.trim().replace(/\s+/g, " "); // Hapus spasi berlebih di awal, akhir, dan antar kata
+    
+        const words = str.split(" ");
+        const length = words.length;
+    
+        if (length === 0) return ""; // Jika hasil split kosong, return kosong
+        if (length === 1) {
+            return words[0].substring(0, 3).toUpperCase();
+        } else if (length === 2) {
+            return (words[0][0] + words[1][0] + words[1].slice(-1)).toUpperCase();
+        } else if (length === 3) {
+            return (words[0][0] + words[1][0] + words[2][0]).toUpperCase();
+        } else {
+            return (words[0][0] + words[Math.floor(length / 2)][0] + words[length - 1][0]).toUpperCase();
+        }
+    }
+  
+    return `${getCode(name)}-${getCode(supplier)}-${getCode(category)}`;
+  }
+
   useEffect(() => {
     if (product) {
-      setData({
-        name: product.name || "",
-        category_id: product.category_id || "",
-        supplier_id: product.supplier_id || "",
-      });
+        const category = categoryData.find(cat => cat.id === product.category_id)?.name || "";
+        const supplier = supplierData.find(sup => sup.id === product.supplier_id)?.name || "";
+
+        setData({
+            name: product.name || "",
+            category_id: product.category_id || "",
+            supplier_id: product.supplier_id || "",
+            sku: generateSKU(product.name, category, supplier)
+        });
     }
-  }, [product]);
+}, [product]);
+
+useEffect(() => {
+  const category = categoryData.find(cat => String(cat.id) === String(data.category_id))?.name || "";
+  const supplier = supplierData.find(sup => String(sup.id) === String(data.supplier_id))?.name || "";
+  
+  setData("sku", generateSKU(data.name, category, supplier));
+}, [data.name, data.category_id, data.supplier_id]);
+
+
 
   useEffect(() => {
     if (flash?.success) {
@@ -43,7 +80,6 @@ export function UpdateProductModal({ userRole, open, onClose, product, categoryD
 
   function handleSubmit(e) {
     e.preventDefault();
-    // console.log("Data yang dikirim:", data);
     const rolePaths = {
       admin: `/admin/product/${product?.id}`,
       wrhs: `/wrhs/product/${product?.id}`,
@@ -55,7 +91,7 @@ export function UpdateProductModal({ userRole, open, onClose, product, categoryD
       forceFormData: true,
       onError: (errors) => {
         setErrors(errors);
-        toast.error("Gagal memperbarui Data Supplier! ❌");
+        toast.error("Gagal memperbarui Data Produk! ❌");
       },
     });
   }
@@ -117,6 +153,27 @@ export function UpdateProductModal({ userRole, open, onClose, product, categoryD
                     </select>
                     {errors.supplier_id && <p className="text-red-500 text-sm">{errors.supplier_id}</p>}
                 </div>
+                <div className="mt-4">
+                    <InputLabel htmlFor="sku" value="SKU" />
+                    <input
+                        id="sku"
+                        type="text"
+                        name="sku"
+                        className="mt-1 block w-full border p-2 rounded-md" 
+                        value={data.sku}
+                        onChange={(e) => setData("sku", e.target.value)}
+                        readOnly={!customSku}
+                    />
+                    <div className="mt-2">
+                        <input
+                            type="checkbox"
+                            id="customSku"
+                            checked={customSku}
+                            onChange={() => setCustomSku(!customSku)}
+                        />
+                        <label htmlFor="customSku" className="ml-2">Gunakan SKU Custom</label>
+                    </div>
+                </div>
                 <DialogFooter>
                     <Button type="button" className="bg-white text-black border border-gray-400 mt-5 hover:bg-white" onClick={onClose}>
                         Cancel
@@ -124,8 +181,6 @@ export function UpdateProductModal({ userRole, open, onClose, product, categoryD
                     <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple mt-5">
                         Simpan
                     </Button>
-
-
                 </DialogFooter>
             </form>
         </DialogContent>

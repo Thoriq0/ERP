@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -29,9 +29,20 @@ import {
 } from "../ui/table";
 import toast from "react-hot-toast";
 import { router } from "@inertiajs/react";
+import { usePage } from "@inertiajs/react";
 
 export default function DataTablePrestock({ stagingData, userRole }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const { flash } = usePage().props;
+
+  useEffect(() => {
+    if (flash?.success) {
+      toast.success(flash.success, { duration: 5000 });
+    }
+    if (flash?.error) {
+      toast.error(flash.error, { duration: 5000 });
+    }
+  }, [flash]);
 
   // Handle Transfer Stock
   const handleTransferStock = () => {
@@ -87,7 +98,6 @@ export default function DataTablePrestock({ stagingData, userRole }) {
       "/admin/validatestock",
       { selected_products: selectedProducts },
       {
-        onSuccess: () => toast.success("Products successfully transferred!"),
         onError: (err) => {
           console.error(err);
           toast.error("Transfer failed!");
@@ -120,7 +130,6 @@ export default function DataTablePrestock({ stagingData, userRole }) {
     userPath, // ✅ Gunakan path sesuai role
     { selected_products: selectedProducts }, // ✅ Kirim hanya array ID
     {
-      onSuccess: () => toast.success("Stock successfully validated!"),
       onError: (err) => {
         console.error(err);
         toast.error("Validation failed!");

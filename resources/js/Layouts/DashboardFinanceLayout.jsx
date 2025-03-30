@@ -11,7 +11,8 @@ export default function DashboardAdminLayout({ children, auth }) {
         { name: "Payment", path: "/finance/payment", icon: <FaMoneyBillWave />},
         { name: "Income", path: "/finance/income", icon: <FaArrowCircleUp  /> },
         { name: "Outcome", path: "/finance/outcome", icon: <FaArrowCircleDown  /> },
-        { name: "Budget Control", path: "/finance/budget", icon: <FaBalanceScale   /> },
+        { name: "Billed Party", path: "/finance/bp", icon: <FaArrowCircleDown  /> },
+        // { name: "Budget Control", path: "/finance/budget", icon: <FaBalanceScale   /> },
     ];
 
     const dropdownMenus = [

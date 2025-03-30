@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('inbounds', function (Blueprint $table) {
             $table->id();
+            $table->string('inbound_code')->nullable();
             $table->foreignId('product_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->integer('qty');
-            $table->string('pic');
-            $table->string('image')->nullable();
+            $table->foreignId('pic')->constrained('users')->onUpdate('cascade');
+            $table->string('created_by');
+            $table->string('qc_status')->default('checking');
+            $table->json('image')->nullable();
+            $table->json('pdf')->nullable();
         });
     }
 

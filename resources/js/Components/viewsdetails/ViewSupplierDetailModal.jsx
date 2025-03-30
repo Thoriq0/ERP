@@ -36,7 +36,22 @@ export function ViewSupplierDetailModal({ open, onClose, supplier }) {
             <span>{supplier?.address || "Tidak Diketahui"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Tanggal Masuk</strong>
+            <strong className="min-w-[150px]">Rekening Bank</strong>
+            <span className="mr-2">:</span>
+            <span>{supplier?.account_number || "Tidak Diketahui"}</span>
+          </div>
+          <div className="flex">
+            <strong className="min-w-[150px]">A/N Rekening</strong>
+            <span className="mr-2">:</span>
+            <span>{supplier?.account_name || "Tidak Diketahui"}</span>
+          </div>
+          <div className="flex">
+            <strong className="min-w-[150px]">Nama Bank</strong>
+            <span className="mr-2">:</span>
+            <span>{supplier?.account_bank_name || "Tidak Diketahui"}</span>
+          </div>
+          <div className="flex">
+            <strong className="min-w-[150px]">Tanggal Dibuat</strong>
             <span className="mr-2">:</span>
             <span>{new Date(supplier?.created_at).toLocaleString("id-ID")}</span>
           </div>

@@ -39,10 +39,9 @@ import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-export function DataTableInbound({ data, userRole, productData }) {
+export function DataTableInbound({ data, userRole, productData, roleName, user }) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-
   // select data inbound dan modal
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -64,11 +63,11 @@ export function DataTableInbound({ data, userRole, productData }) {
 
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
-        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
+        toast.success("Inbound berhasil dihapus! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
         // console.error(err);
-        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
+        toast.error("Gagal menghapus Inbound! ❌", { duration: 5000 });
       },
     });
     setOpen(false);
@@ -87,25 +86,25 @@ export function DataTableInbound({ data, userRole, productData }) {
   
 
   const columns = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+    // {
+    //   id: "select",
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
       accessorKey: "product_id",
       header: "Product",
@@ -167,7 +166,16 @@ export function DataTableInbound({ data, userRole, productData }) {
     {
       accessorKey: "pic",
       header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
+      cell: ({ row }) => {
+        const pic = user.find(usr => usr.id === row.getValue("pic"));
+        const picName = pic ? pic.name : "Unknown";
+    
+        return (
+          <div className="capitalize">
+            {picName.length > 9 ? picName.slice(0, 9) + "..." : picName}
+          </div>
+        );
+      },
     },
     {
       id: "actions",
@@ -195,9 +203,13 @@ export function DataTableInbound({ data, userRole, productData }) {
               <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
                 <FaEye size={16} className="text-green-500 "/>View details
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
+              {item.qc_status === "check" ? (
+              ""
+              ):(
+                <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
                 <FaTrash size={16} className="text-red-500"/>Delete
-              </DropdownMenuItem>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -237,12 +249,15 @@ export function DataTableInbound({ data, userRole, productData }) {
           inbound={selectedProduct}
           productData={productData}
           userRole={userRole}
+          user={user}
       />
       <ViewInboundDetailModal
         open={detailModalOpen}
         onClose={() => setDetailModalOpen(false)}
         inbound={selectedInbound}
         productData={productData}
+        userRole={userRole}
+        user={user}
       />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
@@ -282,8 +297,8 @@ export function DataTableInbound({ data, userRole, productData }) {
           />
         </div>
         <div className="flex space-x-2">
-          <ButtonModalInbound userRole={userRole} productData={productData} />
-          <ButtonModalImportInbound />
+          <ButtonModalInbound userRole={userRole} productData={productData} roleName={roleName} user={user} />
+          <ButtonModalImportInbound userRole={userRole}/>
         </div>
       </div>
       <div className="rounded-md border">

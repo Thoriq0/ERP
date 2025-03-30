@@ -33,8 +33,8 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { ButtonModalOutcome } from "@/Components/ButtonModalOutcome";
-import { ButtonDialogDelete } from "../ButtonDialogDelete";
+// import { ButtonModalOutcome } from "@/Components/ButtonModalOutcome";
+// import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 export function DataTableOutcome({data, userRole}) {
@@ -46,31 +46,35 @@ export function DataTableOutcome({data, userRole}) {
     // Tambahkan logic API untuk delete di sini
     setOpen(false); // Tutup modal setelah delete
   };
-
   const columns = [
+    // {
+    //   id: "select",
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
+      accessorKey: "paid_code",
+      header: "Paid Code",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("paid_code")}</div>,
     },
     {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+      accessorKey: "references",
+      header: "References",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("references")}</div>,
     },
     {
       accessorKey: "created_at",
@@ -100,27 +104,10 @@ export function DataTableOutcome({data, userRole}) {
       },
     },
     {
-      accessorKey: "qty",
-      header: "QTY",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
+      accessorKey: "total",
+      header: "Total",
+      cell: ({ row }) => <div className="capitalize">Rp.{row.getValue("total").toLocaleString("id-ID")}</div>,
     },
-    {
-      accessorKey: "supplier",
-      header: "Supplier",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
-    },
-    {
-      accessorKey: "category",
-      header: "Category",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
-    },
-    
-    {
-      accessorKey: "name",
-      header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
-    },
-    
     {
       id: "actions",
       enableHiding: false,
@@ -137,14 +124,14 @@ export function DataTableOutcome({data, userRole}) {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-                Copy payment ID
+                Copy Paid Code
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
+              {/* <DropdownMenuItem>View customer</DropdownMenuItem>
               <DropdownMenuItem>View payment details</DropdownMenuItem>
               <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
                 Delete
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
             
           </DropdownMenu>
@@ -176,7 +163,7 @@ export function DataTableOutcome({data, userRole}) {
 
   return (
     <div className="w-full">
-      <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
+      {/* <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} /> */}
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
@@ -213,8 +200,9 @@ export function DataTableOutcome({data, userRole}) {
             onChange={(event) => table.setGlobalFilter(event.target.value)}
             className="max-w-xs"
           />
+          
         </div>
-        <ButtonModalOutcome userRole={userRole} />
+        {/* <ButtonModalOutcome userRole={userRole} /> */}
       </div>
       <div className="rounded-md border">
         <Table>

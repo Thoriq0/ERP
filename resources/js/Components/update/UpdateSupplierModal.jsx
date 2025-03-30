@@ -19,7 +19,11 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
     name: supplier?.name || "",
     contact: supplier?.contact || "",
     address: supplier?.address || "",
+    accountNumber: supplier?.account_number ||"",
+    accountName: supplier?.account_name || "",
+    accountBankName: supplier?.account_bank_name || ""
   });
+  console.log(supplier)
 
   useEffect(() => {
     if (supplier) {
@@ -27,6 +31,9 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
         name: supplier.name,
         contact: supplier.contact,
         address: supplier.address,
+        accountNumber: supplier.account_number,
+        accountName: supplier.account_name,
+        accountBankName: supplier.account_bank_name
       });
     }
   }, [supplier]);
@@ -109,6 +116,45 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
               onChange={(e) => setData("address", e.target.value)}
             />
             {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
+          </div>
+          <div className="mt-4">
+            <InputLabel htmlFor="accountNumber" value="Account Number" />
+            <input
+              id="accountNumber"
+              type="number"
+              name="accountNumber"
+              className="mt-1 block w-full border p-2 rounded-md"
+              placeholder="Account Number"
+              value={data.accountNumber || ""}
+              onChange={(e) => setData("accountNumber", e.target.value)}
+            />
+            {errors.accountNumber && <p className="text-red-500 text-sm">{errors.accountNumber}</p>}
+          </div>
+          <div className="mt-4">
+            <InputLabel htmlFor="accountName" value="Account Name" />
+            <input
+              id="accountName"
+              type="text"
+              name="accountName"
+              className="mt-1 block w-full border p-2 rounded-md"
+              placeholder="Account Name"
+              value={data.accountName || ""}
+              onChange={(e) => setData("accountName", e.target.value)}
+            />
+            {errors.accountName && <p className="text-red-500 text-sm">{errors.accountName}</p>}
+          </div>
+          <div className="mt-4">
+            <InputLabel htmlFor="accountBankName" value="Account Bank Name" />
+            <input
+              id="accountBankName"
+              type="text"
+              name="accountBankName"
+              className="mt-1 block w-full border p-2 rounded-md"
+              placeholder="Account Bank Name"
+              value={data.accountBankName || ""}
+              onChange={(e) => setData("accountBankName", e.target.value)}
+            />
+            {errors.accountBankName && <p className="text-red-500 text-sm">{errors.accountBankName}</p>}
           </div>
           <DialogFooter>
             <Button

@@ -51,7 +51,7 @@ export function UpdateCategoryModal({ userRole, open, onClose, category }) {
       forceFormData: true,
       onError: (err) => {
         setErrors(err);
-        toast.error("Gagal memperbarui Data Supplier! ❌", { duration: 5000 });
+        toast.error("Gagal memperbarui Data Kategori! ❌", { duration: 5000 });
       },
     });
   }

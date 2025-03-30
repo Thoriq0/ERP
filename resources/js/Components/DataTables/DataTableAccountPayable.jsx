@@ -29,16 +29,16 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { ButtonModalInbound } from "@/Components/ButtonModalInbound";
+import { ButtonModalAp } from "@/Components/ButtonModalAp";
 import { UpdateApModal } from "../update/UpdateApModal";
-import { ViewInboundDetailModal } from "../viewsdetails/ViewInboundDetailModal";
+import { ViewApDetailModal } from "../viewsdetails/ViewApDetailModal"; 
 import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-export default function DataTableAccountPayable({ data, userRole, productData, apData }) {
+export default function DataTableAccountPayable({ data, userRole, productData, apData, bp }) {
   
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -56,8 +56,8 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
 
     // Mapping role endpoint
     const rolePaths = {
-      admin: "/admin/inbound",
-      wrhs: "/wrhs/inbound",
+      admin: "/admin/ap",
+      wrhs: "/fnc/ap",
     };
 
     const userPath = rolePaths[userRole];
@@ -87,25 +87,25 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
   
 
   const columns = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+    // {
+    //   id: "select",
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
         accessorKey: "ap_code",
         header: "Invoice",
@@ -143,35 +143,35 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
         accessorKey: "inbound.qty",
         header: "QTY",
         cell: ({ row }) => (
-            <div className="capitalize">{row.original.inbound?.qty ?? "N/A"}</div>
+            <div className="capitalize">{row.original.inbound?.qty ?? "Bundle"}</div>
         ),
     },
     {
         accessorKey: "unit_price",
         header: "Unit Price",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("unit_price")}</div>
+            <div className="capitalize">{row.getValue("unit_price") === null ? 'Bundle' : row.getValue("unit_price") === 0 ? 0 : row.getValue("unit_price")}</div>
         ),
     },
     {
         accessorKey: "tax",
         header: "Tax",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("tax")}</div>
+            <div className="capitalize">{row.getValue("tax") ? `${row.getValue("tax")} %` : 'Include'}</div>
         ),
     },
     {
         accessorKey: "total_amount",
         header: "Total Amount",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("total_amount")}</div>
+            <div className="capitalize">Rp.{row.getValue("total_amount").toLocaleString("id-ID")}</div>
         ),
     },
     {
-      accessorKey: "payment_status",
+      accessorKey: "status_payment",
       header: "Status",
       cell: ({ row }) => {
-        const status = row.getValue("payment_status");
+        const status = row.getValue("status_payment");
         return (
           <div
             className={`capitalize text-center rounded-xl text-white p-2 ${ status === "paid" ? "bg-green-400" :
@@ -189,6 +189,7 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
+        const isPaid = item.status_payment === "paid";
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -203,15 +204,17 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
                 <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
-                <FaEdit size={16} className="text-yellow-500 "/>Update
-              </DropdownMenuItem>
+              {!isPaid && (
+                <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
+                  <FaEdit size={16} className="text-yellow-500"/> Update
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
                 <FaEye size={16} className="text-green-500 "/>View details
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
+              {/* <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
                 <FaTrash size={16} className="text-red-500"/>Delete
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -246,15 +249,19 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
           open={updateModalOpen}
           onClose={() => setUpdateModalOpen(false)}
           inbound={selectedProduct}
+          select={selectedProduct}
           productData={productData}
           userRole={userRole}
           apData={apData}
+          bp={bp}
       />
-      <ViewInboundDetailModal
+      <ViewApDetailModal
         open={detailModalOpen}
         onClose={() => setDetailModalOpen(false)}
         inbound={selectedInbound}
         productData={productData}
+        apData={apData} 
+        bp={bp}
       />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
@@ -293,7 +300,11 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
             className="max-w-xs"
           />
         </div>
-        <ButtonModalInbound userRole={userRole} productData={productData} />
+        <ButtonModalAp inbound={selectedProduct}
+          productData={productData}
+          userRole={userRole}
+          apData={apData}
+          bp={bp} />
       </div>
       <div className="rounded-md border">
         <Table>

@@ -36,6 +36,11 @@ class SupplierFactory extends Factory
 
         return [
             'name' => fake()->unique()->randomElement($suppliers),
+            'contact' => fake()->phoneNumber(),
+            'address' => fake()->address(),
+            'account_number' => fake()->randomNumber(9, true),
+            'account_name' => fake()->name(),
+            'account_bank_name' => fake()->company(),
         ];
     }
 }

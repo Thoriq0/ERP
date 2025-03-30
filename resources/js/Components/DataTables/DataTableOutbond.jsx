@@ -40,7 +40,7 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-export function DataTableOutbound({ data, userRole, supplierData, productData }) {
+export function DataTableOutbound({ data, userRole, supplierData, productData, dataStocks, usr }) {
 
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -48,7 +48,7 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
   // state data outbound dan modal
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-
+  
   // State untuk modal detail
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [selectedOutbound, setSelectedOutbound] = useState(null);
@@ -89,31 +89,31 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
   };
 
   const columns = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+    // {
+    //   id: "select",
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
       accessorKey: "product_id",
       header: "Product",
       cell: ({ row }) => {
-        const product = productData.find(prod => prod.id === row.getValue("product_id"));
-        return <div className="capitalize">{product ? product.name : "Unknown"}</div>;
+        const stock = dataStocks.find(stock => stock.product.id === row.getValue("product_id"));
+        return <div className="capitalize">{stock ? stock.product.name : "Unknown"}</div>;
       },
     },
     {
@@ -157,24 +157,24 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
       accessorKey: "category_id",
       header: "Category",
       cell: ({ row }) => {
-        const product = productData.find(prod => prod.id === row.getValue("product_id"));
-        return <div className="capitalize">{product ? product.category?.name : "Unknown"}</div>;
+        const stock = dataStocks.find(stock => stock.product.id === row.getValue("product_id"));
+        return <div className="capitalize">{stock ? stock.product.category?.name : "Unknown"}</div>;
       },
-    },
+    },    
     {
       accessorKey: "pic",
       header: "PIC",
       cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
     },
     {
-      accessorKey: "payment_status",
+      accessorKey: "out_status",
       header: "Status",
       cell: ({ row }) => {
-        const status = row.getValue("payment_status");
+        const status = row.getValue("out_status");
         return (
           <div
             className={`capitalize text-center rounded-xl text-white p-2 ${
-              status === "unpaid" ? "bg-orange-400" : status === "schedule" ? "bg-yellow-400" : "bg-lime-400"
+              status === "preparing" ? "bg-orange-400" : status === "shipping process" ? "bg-yellow-400" : "bg-lime-400"
             }`}
           >
             {status ?? "N/A"}
@@ -202,15 +202,24 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
                 <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
+              {item.out_status === "preparing" ? (
+                <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
                 <FaEdit size={16} className="text-yellow-500 "/>Update
-              </DropdownMenuItem>
+                </DropdownMenuItem>
+              ) : (
+                <></>
+              )}
+              
               <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
                 <FaEye size={16} className="text-green-500 "/>View details
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
-                <FaTrash size={16} className="text-red-500"/>Delete
-              </DropdownMenuItem>
+              {item.out_status === "preparing" ? (
+                <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
+                  <FaTrash size={16} className="text-red-500"/>Delete
+                </DropdownMenuItem>
+              ) : (
+                <></>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -291,7 +300,7 @@ export function DataTableOutbound({ data, userRole, supplierData, productData })
             className="max-w-xs text-sm"
           />
         </div>
-        <ButtonModalOutbound userRole={userRole} supplierData={supplierData} productData={productData} />
+        <ButtonModalOutbound userRole={userRole} dataStocks={dataStocks} usr={usr} />
       </div>
       <div className="rounded-md border">
         <Table>

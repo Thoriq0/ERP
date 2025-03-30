@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\BilledParty;
 use App\Models\User;
 use App\Models\Inbound;
 use App\Models\Product;
@@ -22,7 +23,8 @@ class DatabaseSeeder extends Seeder
         User::factory(12)->create();
         Category::factory(15)->create();
         Supplier::factory(15)->create();
-        Product::factory(30)->create();
+        Product::factory(20)->create();
+        BilledParty::factory(12)->create();
         // Inbound::factory(8)->create();
         // Outbound::factory(8)->create();
 

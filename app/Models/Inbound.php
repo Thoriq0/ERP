@@ -27,5 +27,10 @@ class Inbound extends Model
             ->where('status_payment', 'scheduled');
     }
 
+    // Relasi ke User (Many to One)
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
     use HasFactory;
 }

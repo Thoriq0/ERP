@@ -4,7 +4,7 @@ import DataTableOutcome from "@/Components/DataTables/DataTableOutcome";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function Shipment({auth, mustVerifyEmail, status, title}) {
+export default function Shipment({auth, mustVerifyEmail, status, title, expense}) {
     const getLayout = (role) => {
         switch (role) {
             case 'fnc':
@@ -15,7 +15,7 @@ export default function Shipment({auth, mustVerifyEmail, status, title}) {
     };
 
     const Layout = getLayout(auth.user.role);
-    const data = [];
+    const data = expense;
 
     return (
         <Layout auth={auth}>

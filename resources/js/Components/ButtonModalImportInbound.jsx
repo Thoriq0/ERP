@@ -14,61 +14,55 @@ import React, { useState } from "react";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast"; 
 import { FaFileImport } from "react-icons/fa6";
+import { FaFileExport } from "react-icons/fa6";
 
 export function ButtonModalImportInbound({userRole}) {
-  // State untuk form
-  const [values, setValues] = useState({
-    name: "",
-  });
-
-  // State untuk error
+  const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({});
 
-  // Handle perubahan input
   function handleChange(e) {
-    const { name, value, type, files } = e.target;
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: type === "file" ? files[0] : value,
-    }));
+    setFile(e.target.files[0]);
   }
 
-  // Handle submit
   function handleSubmit(e) {
     e.preventDefault();
-    setErrors({}); // Reset error sebelum submit
+    setErrors({});
+    
+    if (!file) {
+      // toast.error("Harap pilih file sebelum mengimpor!");
+      return;
+    }
 
-    // Mapping role endpoint
     const rolePaths = {
-      admin: "/admin/category",
-      wrhs: "/wrhs/category",
+      admin: "/admin/ibnd/",
+      wrhs: "/wrhs/inbound/importinbound",
     };
-  
+
     const userPath = rolePaths[userRole];
 
+    if (!userPath) {
+        toast.error("Role tidak valid! ❌");
+        return;
+    }
 
-    // Kirim data ke backend
-    router.post(
-      userPath,
-      values,
-      {
-        forceFormData: true,
-        onSuccess: () => {
-          toast.success("Produk berhasil disimpan! 🎉", {
-            duration: 5000,
-          });
-          setValues({
-            name: "",
-          });
-        },
-        onError: (err) => {
-          setErrors(err); // Simpan error ke state
-          toast.error("Gagal menyimpan produk! ❌", {
-              duration: 5000,
-          });
-        },
-      }
-    );
+    const formData = new FormData();
+    formData.append("file", file);
+
+    router.post(userPath, formData, {
+      forceFormData: true,
+      onSuccess: () => {
+        toast.success("File berhasil diunggah! 🎉");
+        setFile(null);
+      },
+      onError: (err) => {
+        setErrors(err);
+        toast.error("Gagal mengunggah file! ❌");
+      },
+    });
+  }
+
+  function handleExport() {
+    window.location.href = "/admin/inbound/export";
   }
 
   return (
@@ -90,21 +84,21 @@ export function ButtonModalImportInbound({userRole}) {
             <div className="mt-4">
                 <InputLabel htmlFor="download" value="Download Template File Data Inbound" className="mb-2" />
                 <div className="flex items-center">
-                    <button className="bg-validateTimeRequest p-2 rounded-md text-white">Download</button>
-                    <p className="text-[12px] ml-2">* jika belum atau ingin melihat template silahkan download</p>
+                    <button onClick={handleExport} className="bg-validateTimeRequest p-2 rounded-md text-white"><FaFileExport size={16} className="inline-block"/> Download</button>
+                    <p className="text-[12px] ml-2">Template for importing inbound data : Please ensure the id_product column is filled with the corresponding ID from the Product sheet. The Product sheet will not be included in the import process.</p>
                 </div>   
             </div>
             <hr className="mt-5 bg-[#D5D7DA]"></hr>
             <div className="mt-4">
-                <InputLabel htmlFor="image" value="Masukan File Data Inbound" className="mb-2" />
-                <input
-                id="image"
+              <InputLabel htmlFor="file" value="Masukan File Data Inbound" className="mb-2" />
+              <input
+                id="file"
                 type="file"
-                accept="image/*"
-                name="image"
+                accept=".csv,.xlsx,.xls"
+                name="file"
                 className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 onChange={handleChange}
-                />
+              />
             </div>
 
           <DialogFooter>

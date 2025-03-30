@@ -6,7 +6,7 @@ import ToasterComponent from "@/Components/ToasterComponent";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function Inbound({auth, mustVerifyEmail, status, title, inbound, products}) {
+export default function Inbound({auth, mustVerifyEmail, status, title, inbound, products, usr}) {
     const getLayout = (role) => {
         switch (role) {
             case 'wrhs':
@@ -17,6 +17,7 @@ export default function Inbound({auth, mustVerifyEmail, status, title, inbound, 
     };
 
     const role = auth.user.role;
+    const roleName = auth.user.name;
     const Layout = getLayout(role);
     const data = inbound;
     const productsData = products;
@@ -29,7 +30,7 @@ export default function Inbound({auth, mustVerifyEmail, status, title, inbound, 
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableInbound mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} productData={productsData}  />
+                <DataTableInbound mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} productData={productsData} roleName={roleName} user={usr}  />
             </div>
 
         </Layout>

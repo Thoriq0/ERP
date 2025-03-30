@@ -6,7 +6,7 @@ import ToasterComponent from "@/Components/ToasterComponent";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function AccountPayable({auth, mustVerifyEmail, status, title, inbound, products, ap}) {
+export default function AccountPayable({auth, mustVerifyEmail, status, title, inbound, products, ap, bp}) {
     const getLayout = (role) => {
         switch (role) {
             case 'fnc':
@@ -30,7 +30,7 @@ export default function AccountPayable({auth, mustVerifyEmail, status, title, in
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableAccountPayable mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} productData={productsData} apData={AccountPayableData} />
+                <DataTableAccountPayable mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} productData={productsData} apData={AccountPayableData} bp={bp} />
             </div>
 
         </Layout>

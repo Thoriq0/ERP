@@ -32,9 +32,10 @@ import {
   TableRow,
 } from "../ui/table";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 
 
-export function DataTableShipmentExecution({data}) {
+export function DataTableShipmentExecution({data, userRole}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -45,33 +46,34 @@ export function DataTableShipmentExecution({data}) {
   };
 
     const columns = [
-     {
-       id: "select",
-       header: ({ table }) => (
-         <Checkbox
-           checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-           aria-label="Select all"
-         />
-       ),
-       cell: ({ row }) => (
-         <Checkbox
-           checked={row.getIsSelected()}
-           onCheckedChange={(value) => row.toggleSelected(!!value)}
-           aria-label="Select row"
-         />
-       ),
-       enableSorting: false,
-       enableHiding: false,
-     },
-     {
-       accessorKey: "product_id",
-       header: "Product",
-       cell: ({ row }) => {
-         const product = productData.find(prod => prod.id === row.getValue("product_id"));
-         return <div className="capitalize">{product ? product.name : "Unknown"}</div>;
-       },
-     },
+    //  {
+    //    id: "select",
+    //    header: ({ table }) => (
+    //      <Checkbox
+    //        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+    //        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //        aria-label="Select all"
+    //      />
+    //    ),
+    //    cell: ({ row }) => (
+    //      <Checkbox
+    //        checked={row.getIsSelected()}
+    //        onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //        aria-label="Select row"
+    //      />
+    //    ),
+    //    enableSorting: false,
+    //    enableHiding: false,
+    //  },
+      {
+      accessorKey: "outbound.product.name",
+      header: "Product",
+      cell: ({ row }) => (
+        <div className="capitalize">
+          {row.original.outbound?.product?.name ?? "Unknown"}
+        </div>
+      ),
+    },
      {
        accessorKey: "created_at",
        header: ({ column }) => (
@@ -84,7 +86,7 @@ export function DataTableShipmentExecution({data}) {
          </Button>
        ),
        cell: ({ row }) => {
-         const rawDate = row.getValue("created_at");
+         const rawDate = row.original.outbound?.created_at ?? "Unknown";
          const date = new Date(rawDate);
  
          // Format ke "HH:mm dd-MM-yyyy"
@@ -99,45 +101,48 @@ export function DataTableShipmentExecution({data}) {
          return <div className="lowercase">{formattedDate}</div>;
        },
      },
+      {
+      accessorKey: "outbound.qty",
+      header: "QTY",
+      cell: ({ row }) => <div className="capitalize">{row.original.outbound?.qty ?? "0"}</div>,
+      },
+      {
+        accessorKey: "outbound.product.category.name",
+        header: "Category",
+        cell: ({ row }) => (
+          <div className="capitalize">
+            {row.original.outbound?.product?.category?.name ?? "Unknown"}
+          </div>
+        ),
+      },
      {
-       accessorKey: "qty",
-       header: "QTY",
-       cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
-     },
+      accessorKey: "outbound.receiver",
+      header: "Receiver",
+      cell: ({ row }) => (
+        <div className="capitalize">
+          {row.original.outbound?.receiver ?? "Unknown"}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "delivery_estimate",
+      header: "Delivery Estimate",
+      cell: ({ row }) => {
+        const rawDate = row.original.delivery_estimate;
+        return rawDate ? new Date(rawDate).toLocaleDateString("id-ID") : "N/A";
+      },
+    },
      {
-       accessorKey: "category_id",
-       header: "Category",
-       cell: ({ row }) => {
-         const product = productData.find(prod => prod.id === row.getValue("product_id"));
-         return <div className="capitalize">{product ? product.category?.name : "Unknown"}</div>;
-       },
-     },
-     {
-       accessorKey: "pic",
-       header: "PIC",
-       cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
-     },
-     {
-       accessorKey: "pic",
-       header: "Delivery Estimate",
-       cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
-     },
-     {
-       accessorKey: "payment_status",
-       header: "Status",
-       cell: ({ row }) => {
-         const status = row.getValue("payment_status");
-         return (
-           <div
-             className={`capitalize text-center rounded-xl text-white p-2 ${
-               status === "unpaid" ? "bg-orange-400" : status === "schedule" ? "bg-yellow-400" : "bg-lime-400"
-             }`}
-           >
-             {status ?? "N/A"}
-           </div>
-         );
-       },
-     },
+      accessorKey: "status_shipment",
+      header: "Shipment Status",
+      cell: ({ row }) => (
+        <div className={`capitalize text-center rounded-xl text-white p-2 ${
+          row.original.status_shipment === "preparing" ? "bg-orange-400" : "bg-lime-400"
+        }`}>
+          {row.original.status_shipment ?? "Tidak Tersedia"}
+        </div>
+      ),
+    },
      {
        id: "actions",
        header: "Actions",

@@ -18,7 +18,9 @@ return new class extends Migration
             $table->integer('qty');
             $table->string('receiver');
             $table->string('pic');
-            $table->string('image')->nullable();
+            $table->string('out_status')->default('preparing');
+            $table->json('image')->nullable();
+            $table->json('document')->nullable();
         });
     }
 

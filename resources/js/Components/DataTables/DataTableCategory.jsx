@@ -70,11 +70,11 @@ export function DataTableCategory({data, userRole}) {
   
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
-        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
+        toast.success("Kategori berhasil dihapus! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
         console.error(err);
-        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
+        toast.error("Gagal menghapus Kategori! ❌", { duration: 5000 });
       },
     });
     setOpen(false); 
@@ -92,25 +92,25 @@ export function DataTableCategory({data, userRole}) {
   };
 
   const columns = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+    // {
+    //   id: "select",
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
       accessorKey: "name",
       header: "Category Name",

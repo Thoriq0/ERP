@@ -14,12 +14,14 @@ import { useForm, usePage } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import Select from "react-select";
 
-export function UpdateInboundModal({ userRole, open, onClose, inbound, productData }) {
+export function UpdateInboundModal({ userRole, open, onClose, inbound, productData, user }) {
   const { flash } = usePage().props;
-  const { data, setData, errors, setErrors, put } = useForm({
-    product_id: inbound?.product_id || "",
-    qty: Number(inbound?.qty) || 0,
-    pic: inbound?.pic || "",
+  const { data, setData, errors, setErrors, post } = useForm({
+    product_id: inbound?.product_id ?? "",
+    qty: Number(inbound?.qty) ?? 0,
+    pic: inbound?.pic ?? "",
+    image: null,
+    document: null,
   });
 
   // State untuk menyimpan produk yang dipilih
@@ -35,6 +37,8 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
     label: prod.name,
   }));
 
+  const [picName, setPicName] = useState("Tidak Di Ketahui");
+
   // Handle perubahan input pada select produk
   function handleSelectChange(name, selectedOption) {
     const selectedProduct = productData.find((prod) => prod.id === selectedOption?.value);
@@ -45,38 +49,43 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
     }));
 
     setSelectedProduct({
-      supplierName: selectedProduct?.supplier?.name || "",
-      categoryName: selectedProduct?.category?.name || "",
+      supplierName: selectedProduct?.supplier?.name ?? "",
+      categoryName: selectedProduct?.category?.name ?? "",
       product: selectedOption,
     });
+    
   }
 
   // Handle perubahan input selain select
   function handleChange(e) {
     const { name, value, type, files } = e.target;
+    // Ambil maksimal 4 file
+    // const selectedFiles = Array.from(files).slice(0, 4);
     setData((prevValues) => ({
       ...prevValues,
-      [name]: type === "file" ? files[0] : value,
+      [name]: type === "file" ? Array.from(files) : value,
     }));
+
   }
 
   useEffect(() => {
     if (inbound) {
       const selectedProduct = productData.find((prod) => prod.id === inbound.product_id);
-
+      const foundUser = user.find((usr) => usr.id === inbound.pic);
       setData({
         product_id: inbound.product_id,
-        qty: inbound.qty,
-        pic: inbound.pic,
+        qty: inbound?.qty ?? 0,
+        pic: inbound?.pic ?? "",
+        qcs: inbound?.qc_status ?? "",
       });
 
       setSelectedProduct({
-        supplierName: selectedProduct?.supplier?.name || "",
-        categoryName: selectedProduct?.category?.name || "",
-        product: { value: inbound.product_id, label: selectedProduct?.name || "" },
+        supplierName: selectedProduct?.supplier?.name ?? "",
+        categoryName: selectedProduct?.category?.name ?? "",
+        product: { value: inbound.product_id, label: selectedProduct?.name ?? "" },
       });
-      console.log("Inbound Data:", inbound);
-      console.log("Selected Product on Initial:", selectedProduct);
+
+      setPicName(foundUser?.name ?? "Tidak Diketahui");
     }
   }, [inbound, productData]);
 
@@ -100,9 +109,20 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
       wrhs: `/wrhs/inbound/${inbound?.id}`,
     };
 
-    const userPath = rolePaths[userRole];
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if ((key === "image" || key === "document") && value) {
+        for (let i = 0; i < value.length; i++) {
+          formData.append(`${key}[]`, value[i]); 
+        }
+      } else {
+        formData.append(key, value?.value || value);
+      }
+    });
 
-    put(userPath, data, {
+    const userPath = rolePaths[userRole];
+    console.log([...formData.entries()]);
+    post(userPath, formData, {
       forceFormData: true,
       onError: (errors) => {
         setErrors(errors);
@@ -110,6 +130,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
       },
     });
   }
+
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -121,68 +142,127 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <div className="mt-4">
-            <InputLabel htmlFor="product_id" value="Product" />
-            <Select
-              id="product"
-              options={productOptions}
-              isSearchable={true}
-              placeholder="Pilih Product"
-              value={selectedProduct.product}
-              onChange={(selected) => handleSelectChange("product", selected)}
-              className="mt-1"
-              isDisabled={true}
-            />
-            {errors.product_id && <p className="text-red-500 text-sm">{errors.product_id}</p>}
-          </div>
+          {data.qcs === 'checking' ? (
+            <>
+            <div className="mt-4">
+              <InputLabel htmlFor="product_id" value="Product" />
+              <Select
+                id="product"
+                options={productOptions}
+                isSearchable={true}
+                placeholder="Pilih Product"
+                value={selectedProduct?.product ?? ""}
+                onChange={(selected) => handleSelectChange("product", selected)}
+                className="mt-1"
+                // isDisabled={true}
+              />
+              {errors.product_id && <p className="text-red-500 text-sm">{errors.product_id}</p>}
+            </div>
 
-          <div className="mt-4">
-            <InputLabel htmlFor="qty" value="Jumlah Produk" />
-            <input
-              id="qty"
-              type="number"
-              name="qty"
-              className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Jumlah Produk Masuk"
-              value={data.qty}
-              onChange={(e) => setData("qty", e.target.value)}
-            />
-            {errors.qty && <p className="text-red-500 text-sm">{errors.qty}</p>}
-          </div>
+            <div className="mt-4">
+              <InputLabel htmlFor="qty" value="Jumlah Produk" />
+              <input
+                id="qty"
+                type="number"
+                name="qty"
+                className="mt-1 block w-full border p-2 rounded-md"
+                placeholder="Jumlah Produk Masuk"
+                value={data?.qty ?? 0}
+                onChange={(e) => setData("qty", e.target.value)}
+              />
+              {errors.qty && <p className="text-red-500 text-sm">{errors.qty}</p>}
+            </div>
 
-          <div className="mt-4">
-            <InputLabel htmlFor="pic" value="Penerima Produk" />
-            <input
-              id="pic"
-              type="text"
-              name="pic"
-              className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Nama Penerima Produk"
-              value={data.pic}
-              onChange={(e) => setData("pic", e.target.value)}
-            />
-            {errors.pic && <p className="text-red-500 text-sm">{errors.pic}</p>}
-          </div>
+            <div className="mt-4">
+              <InputLabel htmlFor="pic" value="Penerima Produk" />
+              <input
+                id="pic"
+                type="text"
+                name="pic"
+                className="mt-1 block w-full border p-2 rounded-md bg-gray-200"
+                placeholder="Nama Penerima Produk"
+                value={picName ?? ""}
+                onChange={(e) => setData("pic", e.target.value)}
+                readOnly
+              />
+              {errors.pic && <p className="text-red-500 text-sm">{errors.pic}</p>}
+            </div>
 
-          <div className="mt-4">
-            <InputLabel htmlFor="supplierName" value="Nama Supplier" />
-            <TextInput
-              type="text"
-              className="mt-1 block w-full bg-gray-200"
-              value={selectedProduct.supplierName}
-              disabled
-            />
-          </div>
+            <div className="mt-4">
+              <InputLabel htmlFor="supplierName" value="Nama Supplier" />
+              <TextInput
+                type="text"
+                className="mt-1 block w-full bg-gray-200"
+                value={selectedProduct?.supplierName ?? ""}
+                disabled
+              />
+            </div>
 
-          <div className="mt-4">
-            <InputLabel htmlFor="categoryName" value="Kategori Produk" />
-            <TextInput
-              type="text"
-              className="mt-1 block w-full bg-gray-200"
-              value={selectedProduct.categoryName}
-              disabled
-            />
-          </div>
+            <div className="mt-4">
+              <InputLabel htmlFor="categoryName" value="Kategori Produk" />
+              <TextInput
+                type="text"
+                className="mt-1 block w-full bg-gray-200"
+                value={selectedProduct?.categoryName ?? ""}
+                disabled
+              />
+            </div>
+
+            <div className="mt-4">
+              <InputLabel htmlFor="image" value="Surat Terima" />
+              <input
+                id="image"
+                type="file"
+                accept="image/*"
+                name="image"
+                multiple
+                className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="mt-4">
+              <InputLabel htmlFor="document" value="Dokumen (PDF)" />
+              <input
+                id="document"
+                type="file"
+                accept="application/pdf"
+                multiple
+                name="document"
+                className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                onChange={handleChange}
+              />
+            </div>
+            </>
+          ) : (
+            <>
+            <div className="mt-4">
+              <InputLabel htmlFor="image" value="Surat Jalan" />
+              <input
+                id="image"
+                type="file"
+                accept="image/*"
+                name="image"
+                multiple
+                className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="mt-4">
+              <InputLabel htmlFor="document" value="Dokumen (PDF)" />
+              <input
+                id="document"
+                type="file"
+                accept="application/pdf"
+                multiple
+                name="document"
+                className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                onChange={handleChange}
+              />
+            </div>
+            </>
+          )}
 
           <DialogFooter>
             <Button
