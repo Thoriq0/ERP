@@ -9,7 +9,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import React, { useState } from "react";
 
 export default function Login({ status, canResetPassword}) {
-
+    
     const [showPassword, setShowPassword] = React.useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',

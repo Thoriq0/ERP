@@ -1,5 +1,5 @@
 import DashboardAdminLayout from "@/Layouts/DashboardAdminLayout";
-import DashboardInventoryLayout from "@/Layouts/DashboardInventoryLayout"; 
+import DashboardFinanceLayout from "@/Layouts/DashboardFinanceLayout"; 
 import ToasterComponent from "@/Components/ToasterComponent";
 
 import { Head } from '@inertiajs/react';
@@ -9,8 +9,8 @@ import DataTableBilledParty from "@/Components/DataTables/DataTableBilledParty";
 export default function BilledParty({auth, mustVerifyEmail, status, title, bp}) {
     const getLayout = (role) => {
         switch (role) {
-            case 'wrhs':
-                return DashboardInventoryLayout; 
+            case 'fnc':
+                return DashboardFinanceLayout; 
             default:
                 return DashboardAdminLayout;
         }

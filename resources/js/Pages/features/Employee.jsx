@@ -6,7 +6,7 @@ import ToasterComponent from "@/Components/ToasterComponent";
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function Employee({auth, mustVerifyEmail, status, title}) {
+export default function Employee({auth, mustVerifyEmail, status, title, employee}) {
     const getLayout = (role) => {
         switch (role) {
             case 'hr':
@@ -16,8 +16,9 @@ export default function Employee({auth, mustVerifyEmail, status, title}) {
         }
     };
 
-    const Layout = getLayout(auth.user.role);
-    const data = [];
+    const role = auth.user.role;
+    const Layout = getLayout(role);
+    const data = employee;
 
     return (
         <Layout auth={auth}>
@@ -27,8 +28,9 @@ export default function Employee({auth, mustVerifyEmail, status, title}) {
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableEmployee mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
+                <DataTableEmployee mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} />
             </div>
+            
         </Layout>
     );
 }
