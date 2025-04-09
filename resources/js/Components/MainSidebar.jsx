@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
-import { FaUser, FaSignOutAlt, FaCog, FaBell, FaCreditCard } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaChevronRight, FaBell, FaCreditCard } from "react-icons/fa";
 import { HiChevronUpDown } from "react-icons/hi2";
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+} from "@/components/ui/avatar"
 
 export default function MainSidebar({ title, menuItems, logo, dropdownMenus, user }) {
     const { url, component } = usePage();
@@ -40,7 +45,7 @@ export default function MainSidebar({ title, menuItems, logo, dropdownMenus, use
                     isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
                 }`}
             >
-                <div className="flex flex-row my-5 ml-5">
+                <div className="flex flex-row mt-5 mb-2 ml-5">
                     {logo && (
                         <div className="flex items-center justify-center">
                             <img src={logo} alt="Logo" className="w-[50px] h-auto" />
@@ -48,7 +53,7 @@ export default function MainSidebar({ title, menuItems, logo, dropdownMenus, use
                     )}
                     <h2 className="text-2xl font-bold mt-2 ml-3">{title}</h2>
                 </div>
-                <div className='h-px w-[90%] mx-auto mb-2 bg-[#C8C6C6] mt-2'></div>
+                <div className='h-px w-[90%] mx-auto bg-[#C8C6C6] mt-3'></div>
 
                 <nav className="flex flex-col p-4 space-y-2 overflow-y-auto h-[calc(100%-150px)] custom-scrollbar">
                     {menuItems.map((item) => (
@@ -63,6 +68,7 @@ export default function MainSidebar({ title, menuItems, logo, dropdownMenus, use
                             {item.name}
                         </Link>
                     ))}
+                    
 
                     {dropdownMenus.map((dropdown) => {
                         const isActive = isDropdownActive(dropdown);
@@ -76,47 +82,50 @@ export default function MainSidebar({ title, menuItems, logo, dropdownMenus, use
                                         {dropdown.icon}
                                         <span className="ml-2">{dropdown.title}</span>
                                     </span>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className={`w-4 h-4 transform transition-transform ${
-                                            openDropdowns[dropdown.title] || isActive ? "rotate-180" : ""
+                                    <FaChevronRight
+                                        className={`w-2 h-3 transform transition-transform duration-300 ${
+                                            openDropdowns[dropdown.title] || isActive ? "rotate-90" : ""
                                         }`}
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-                                    </svg>
+                                    />
                                 </button>
                                 {(openDropdowns[dropdown.title] || isActive) && (
-                                    <div className="pl-6 space-y-2 ml-2">
+                                    <div className="ml-4 border-l border-gray-400 pl-4 ">
                                         {dropdown.items.map((subItem) => (
                                             <Link
                                                 key={subItem.path}
                                                 href={subItem.path}
-                                                className={`flex items-center p-2 rounded hover:bg-[#D9D9D940] ${
+                                                className={`flex text-sm items-center p-2 rounded hover:bg-[#D9D9D940] ${
                                                     url.startsWith(subItem.path) ? "bg-activeMenuSidebar font-semibold" : ""
                                                 }`}
                                             >
                                                 {subItem.name}
                                             </Link>
                                         ))}
+                                        
                                     </div>
                                 )}
                             </div>
                         );
                     })}
-                    <div className='h-px w-full mx-auto bg-[#C8C6C6]'></div>    
+                     
                 </nav>
 
                 {/* Account Menu */}
-                <div className="absolute bottom-5 left-4 right-4">
+                 
+                <div className="absolute bottom-4 left-4 right-4">
                     <button
                         onClick={() => toggleDropdown("Account")}
-                        className="flex w-full items-center justify-between rounded bg-[#D9D9D940] p-2 text-sm"
+                        className="flex w-full items-center justify-around rounded bg-[#D9D9D940] p-2 text-sm"
                     >
-                        <span>{user.name}</span>
+                        <Avatar className="h-8 w-8 rounded-lg">
+                            <AvatarImage src="https://github.com/shadcn.png" />
+                            <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                        </Avatar>
+                        <span className="flex flex-col items-start">
+                            <span className="truncate font-semibold">{user.name}</span>
+                            <span className="truncate text-xs">{user.email}</span>
+                        </span>
+
                         <HiChevronUpDown size={20} />
                     </button>
 

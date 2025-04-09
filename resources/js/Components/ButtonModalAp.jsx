@@ -67,7 +67,7 @@ export function ButtonModalAp({ userRole, bp }) {
     e.preventDefault();
     const rolePaths = {
       admin: `/admin/ap`,
-      fnc: `/fnc/ap`,
+      fnc: `/finance/ap`,
     };
     post(rolePaths[userRole], data, {
       forceFormData: true,

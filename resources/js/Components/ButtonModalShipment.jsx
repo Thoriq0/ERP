@@ -51,7 +51,7 @@ export function ButtonModalShipment({ userRole, selectedId, shipment }) {
 
     const rolePaths = {
       admin: "/admin/shipmentorder",
-      wrhs: "/wrhs/category",
+      wrhs: "/wrhs/shipmentorder",
     };
 
     const userPath = rolePaths[userRole];

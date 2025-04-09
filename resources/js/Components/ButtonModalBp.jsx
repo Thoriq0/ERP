@@ -46,7 +46,7 @@ export function ButtonModalBp({userRole}) {
     // Mapping role endpoint
     const rolePaths = {
       admin: "/admin/bp",
-      wrhs: "/finance/bp",
+      fnc: "/finance/bp",
     };
   
     const userPath = rolePaths[userRole];
