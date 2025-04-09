@@ -1,7 +1,7 @@
 import React from 'react';
 import MainSidebar from '@/Components/MainSidebar';
 import { HiChartPie, HiUser, HiInbox } from "react-icons/hi";
-import { FaWarehouse, FaUsersCog, FaTruck, FaMoneyBillWave } from "react-icons/fa";
+import { FaWarehouse, FaUsersCog, FaTruck, FaMoneyBillWave, FaFileAlt } from "react-icons/fa";
 
 export default function DashboardAdminLayout({ children, auth }) {
     const menuItems = [
@@ -22,7 +22,7 @@ export default function DashboardAdminLayout({ children, auth }) {
                 { name: "Pre-Stock", path: "/admin/prestock" },
                 { name: "Outbound", path: "/admin/outbound" },
                 { name: "Stock", path: "/admin/stock" },
-                { name: "Reports", path: "/admin/reports" },
+                // { name: "Reports", path: "/admin/reports" },
             ],
         },
         {
@@ -33,7 +33,7 @@ export default function DashboardAdminLayout({ children, auth }) {
                 { name: "Add Item", path: "/admin/add" },
                 { name: "Shipment ", path: "/admin/shipment" },
                 { name: "Delivery", path: "/admin/delivery" },
-                { name: "Reports", path: "/admin/reports" },
+                // { name: "Reports", path: "/admin/logisticReports" },
             ],
         },
         {
@@ -46,7 +46,7 @@ export default function DashboardAdminLayout({ children, auth }) {
                 { name: "Outcome", path: "/admin/outcome" },
                 // { name: "Budget Control", path: "/admin/budget" },
                 { name: "Billed Party", path: "/admin/bp" },
-                { name: "Reports", path: "/admin/reports" },
+                // { name: "Reports", path: "/admin/financeReports" },
             ],
         },
         {
@@ -56,7 +56,23 @@ export default function DashboardAdminLayout({ children, auth }) {
                 { name: "Employee", path: "/admin/employee" },
                 { name: "Time Off Request", path: "/admin/time" },
                 { name: "Attendence", path: "/admin/attendance" },
-                { name: "Reports", path: "/admin/reports" },
+                // { name: "Reports", path: "/admin/hrReports" },
+            ],
+        },
+        {
+            title: "Reports",
+            icon: <FaFileAlt />,
+            items: [
+                { name: "Report Inbound", path: "/admin/reportinbound" },
+                { name: "Report Outbound", path: "/admin/reportoutbound" },
+                { name: "Report Stock", path: "/admin/reportstock" },
+                { name: "Report Shipment", path: "/admin/hrReports" },
+                { name: "Report Delivery", path: "/admin/hrReports" },
+                { name: "Report Outcome", path: "/admin/hrReports" },
+                { name: "Report Payment", path: "/admin/hrReports" },
+                { name: "Report Acount Payable", path: "/admin/hrReports" },
+                { name: "Report Employee", path: "/admin/hrReports" },
+                { name: "Report Attandance", path: "/admin/hrReports" },
             ],
         },
     ];
