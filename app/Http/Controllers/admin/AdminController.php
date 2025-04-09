@@ -14,6 +14,7 @@ use App\Models\Outbound;
 use App\Models\Shipment;
 use App\Models\Supplier;
 use App\Models\BilledParty;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\AccountPayable;
 use App\Models\StagingInbound;
@@ -227,6 +228,7 @@ class AdminController extends Controller
         // dd();
         return inertia::render('features/Employee', [
             'title' => 'Admin HR Employee',
+            'employee' => Employee::all()
         ]);
         // dd(Inbound::all());
     }
@@ -246,4 +248,44 @@ class AdminController extends Controller
         ]);
         // dd(Inbound::all());
     }
+
+    public function reportInboundView(){
+        // dd();
+        return inertia::render('report/InboundReports', [
+            'title' => 'Admin Reports Inbound',
+            'inbound' => Inbound::all(),
+            'products' => Product::with(['category:id,name', 'supplier:id,name,contact,address'])
+                            ->select('id', 'name', 'category_id', 'supplier_id')
+                            ->get(),
+            'usr' => User::all(),
+            
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function reportOutboundView(){
+        // dd();
+        return inertia::render('report/OutboundReports', [
+            'title' => 'Admin Report Outbound',
+            'outbound' => Outbound::all(),
+            'products' => Product::with(['category:id,name', 'supplier:id,name'])
+                        ->select('id', 'name', 'category_id', 'supplier_id')
+                        ->get(),
+            'stocks' => Stock::with(['product:id,name,category_id,supplier_id', 'product.category:id,name', 'product.supplier:id,name'])
+            ->select('id', 'qty', 'warehouse', 'product_id')
+            ->get(),
+            'usr' => User::select('id', 'name')->get()
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function reportStockView(){
+        // dd();
+        return inertia::render('report/StockReports', [
+            'title' => 'Admin Reports Stock',
+            'stock' => Stock::with(['product.category', 'product.supplier'])->get(),
+        ]);
+        // dd(Inbound::all());
+    }
+
 }

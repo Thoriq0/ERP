@@ -4,10 +4,12 @@ namespace App\Http\Controllers\warehouse;
 
 use Inertia\Inertia;
 use App\Models\Stock;
+use App\Models\User;
 use App\Models\Inbound;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Outbound;
+use App\Models\Shipment;
 use App\Models\Supplier;
 use App\Models\StagingInbound;
 use Illuminate\Http\Request;
@@ -27,9 +29,10 @@ class WarehouseController extends Controller
         return inertia::render('features/Inbound', [
             'title' => 'Inventory Inbound',
             'inbound' => Inbound::all(),
-            'products' => Product::with(['category:id,name', 'supplier:id,name'])
+            'products' => Product::with(['category:id,name', 'supplier:id,name,contact,address'])
                             ->select('id', 'name', 'category_id', 'supplier_id')
                             ->get(),
+            'usr' => User::all(),
             
         ]);
         // dd(Inbound::all());
@@ -43,6 +46,10 @@ class WarehouseController extends Controller
             'products' => Product::with(['category:id,name', 'supplier:id,name'])
                         ->select('id', 'name', 'category_id', 'supplier_id')
                         ->get(),
+            'stocks' => Stock::with(['product:id,name,category_id,supplier_id', 'product.category:id,name', 'product.supplier:id,name'])
+            ->select('id', 'qty', 'warehouse', 'product_id')
+            ->get(),
+            'usr' => User::select('id', 'name')->get()
         ]);
         // dd(Inbound::all());
     }
@@ -60,7 +67,27 @@ class WarehouseController extends Controller
         // dd();
         return inertia::render('features/Shipment', [
             'title' => 'Inventory Shipment',
-            'inbound' => Inbound::all()
+            'shipmentO' => Shipment::with([
+                'outbound:id,qty,out_status,product_id,receiver,created_at', 
+                'outbound.product:id,name,category_id,supplier_id',
+                'outbound.product.category:id,name',
+                'outbound.product.supplier:id,name'
+            ])
+            ->where('status_shipment', 'preparing')
+            ->select('id', 'outbound_id', 'delivery_estimate', 'status_shipment')
+            ->get(),
+
+            'shipmentE' => Shipment::with([
+                'outbound:id,qty,out_status,product_id,receiver,created_at', 
+                'outbound.product:id,name,category_id,supplier_id',
+                'outbound.product.category:id,name',
+                'outbound.product.supplier:id,name'
+            ])
+            ->where('status_shipment', 'shipping process')
+            ->select('id', 'outbound_id', 'delivery_estimate', 'status_shipment')
+            ->get(),
+
+            'smallShip' => Shipment::with(['outbound.product:id,name'])->select('id', 'outbound_id')->get(),
         ]);
         // dd(Inbound::all());
     }

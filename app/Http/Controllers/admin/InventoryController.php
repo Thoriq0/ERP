@@ -12,6 +12,7 @@ use App\Models\Outbound;
 use App\Models\Shipment;
 use App\Models\Supplier;
 use App\Models\BilledParty;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Exports\InboundExport;
 // use Illuminate\Support\Facades\DB;
@@ -805,5 +806,56 @@ class InventoryController extends Controller
         }
         // dd($request->all());
         return redirect()->back()->with('success', 'Produk Proses Pengiriman! 🚚');
+    }
+
+    // ---- EMPLOYEE ----
+    public function employeeStore(Request $request){
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|string',
+            'departemen' => 'string',
+            'dateOfBirth' => 'required|date',
+            'gender' => 'string',
+            'phone' => 'string',
+            'address' => 'required|string',
+        ]);
+        
+        Employee::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'departemen' => $request->departemen,
+            'dateOfBirth' => $request->dateOfBirth,
+            'gender' => $request->gender,
+            'phone' => $request->phone,
+            'address' => $request->address,
+        ]);   
+    }
+    public function employeeDestroy(Employee $employee){
+        $employee->delete();
+        return redirect()->back();
+    }
+    public function employeeUpdate(Request $request, Employee $employee){
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|string',
+            'departemen' => 'string',
+            'dateOfBirth' => 'required|date',
+            'gender' => 'string',
+            'phone' => 'string',
+            'address' => 'required|string',
+        ]);
+    
+        $employee->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'departemen' => $request->departemen,
+            'dateOfBirth' => $request->dateOfBirth,
+            'gender' => $request->gender,
+            'phone' => $request->phone,
+            'address' => $request->address,
+        ]);
+    
+        session()->flash('success', 'Data Karyawan berhasil diperbarui! 🎉');
+        return redirect()->back();
     }
 }

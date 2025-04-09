@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Inbound;
 use App\Models\Product;
 use App\Models\AccountPayable;
+use App\Models\BilledParty;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
@@ -21,16 +22,18 @@ class FinanceController extends Controller
     public function apView(){
         // dd();
         return inertia::render('features/AccountPayable', [
-            'title' => 'Account Payable',
+            'title' => 'Admin Finance Account Payable',
             'inbound' => Inbound::all(),
             'products' => Product::with(['category:id,name', 'supplier:id,name'])
                             ->select('id', 'name', 'category_id', 'supplier_id')
                             ->get(),
-            'ap' => AccountPayable::with([
+            'ap' => AccountPayable::select()->whereIn('status_payment', ['scheduled', 'unpaid', 'paid'])->with([
                 'inbound.product.category',
                 'inbound.product.supplier',
+                'billedParty'
                 // 'inbound.qty'
-            ])->get()
+            ])->get(),
+            'bp' => BilledParty::all()
             
         ]);
         // dd(Inbound::all());
@@ -40,15 +43,16 @@ class FinanceController extends Controller
         $payments = Payment::select('id', 'account_payable_id', 'status_payment')
         ->where('status_payment', 'scheduled')
         ->with([
-            'accountPayable:id,inbound_id,unit_price,tax,total_amount,due_date,status_payment,ap_code',
-            'accountPayable.inbound:id,product_id',
+            'accountPayable:id,inbound_id,unit_price,tax,total_amount,due_date,status_payment,ap_code,item_description,discount,note,terms_condition,billed_party_id,status_inbound',
+            'accountPayable.billedParty:id,bill_to,account_bill,account_bill_name,account_bank_name',
+            'accountPayable.inbound:id,product_id,qty',
             'accountPayable.inbound.product:id,name,supplier_id',
-            'accountPayable.inbound.product.supplier:id,name,contact,address,account_number'
+            'accountPayable.inbound.product.supplier:id,name,contact,account_number,account_name,account_bank_name'
         ])
         ->get();
         // dd($payments);
         return inertia::render('features/Payments', [
-            'title' => 'Payment',
+            'title' => 'Finance Payment',
             'payments' => $payments
         ]);
     }
@@ -69,11 +73,13 @@ class FinanceController extends Controller
         ]);
     }
 
-    public function budgetView(){
-        // dd();
-        return inertia::render('features/Budget', [
-            'title' => 'Finance Budget Control',
-    
+    public function bpView(){
+        // dd()
+        return inertia::render('features/BilledParty', [
+            'title' => 'Billed Party',
+            'bp' => BilledParty::all()
         ]);
     }
+
+
 }
