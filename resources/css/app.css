@@ -11,6 +11,8 @@
 .custom-scrollbar::-webkit-scrollbar-thumb {
     @apply bg-[#717680] rounded-[4px];
 }
+
+
 @layer base {
   :root {
 
