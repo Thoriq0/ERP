@@ -9,21 +9,15 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
-
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
+import { Button } from "../../ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Input } from "../ui/input";
+} from "../../ui/dropdown-menu";
+import { Input } from "../../ui/input";
 import {
   Table,
   TableBody,
@@ -31,68 +25,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
-
-import { ButtonModalBp } from "../ButtonModalBp";
-import { ButtonDialogDelete } from "../ButtonDialogDelete";
-import { UpdateBpModal } from "../update/UpdateBpModal";
-import { ViewBpDetailModal } from "../viewsdetails/ViewBpDetailModal";
+} from "../../ui/table";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import { FaCopy, FaEdit, FaEye, FaTrash } from "react-icons/fa";
-import { router } from "@inertiajs/react";
-import toast from "react-hot-toast";
+import { ArrowUpDown } from "lucide-react";
 
-export function DataTableBilledParty({data, userRole}) {
-  const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
-
-  // select data bp dan modal
-  const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [selectedBp, setselectedBp] = useState(null);
-  const [selectedContact, setSelectedContact] = useState(null);
-  const [selectedAddress, setSelectedAddress] = useState(null);
-
-  // State untuk modal detail
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [selectedBpViews, setselectedBpViews] = useState(null);
-
-  // console.log(userRole, "role get");
-
-  const handleDelete = () => {
-    if (!selectedId) return;
-
-    // Mapping role endpoint
-    const rolePaths = {
-      admin: "/admin/bp",
-      fnc: "/finance/bp",
-    };
-
-    const userPath = rolePaths[userRole];
-  
-    router.delete(`${userPath}/${selectedId}`, {
-      onSuccess: () => {
-        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
-      },
-      onError: (err) => {
-        console.error(err);
-        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
-      },
-    });
-    setOpen(false); 
-  };
-
-  const handleUpdate = (bp,contact, address) => {
-    setselectedBp(bp);
-    setSelectedContact(contact);
-    setSelectedAddress(address);
-    setUpdateModalOpen(true);
-  };
-
-  // handle views details
-  const handleViewDetails = (bp) => {
-    setselectedBpViews(bp);
-    setDetailModalOpen(true);
-  };
+export function ReportsDataTableOutbound({ data, dataStocks }) {
 
   const columns = [
     // {
@@ -115,9 +52,12 @@ export function DataTableBilledParty({data, userRole}) {
     //   enableHiding: false,
     // },
     {
-      accessorKey: "bill_to",
-      header: "Bill Party",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("bill_to")}</div>,
+      accessorKey: "product_id",
+      header: "Product",
+      cell: ({ row }) => {
+        const stock = dataStocks.find(stock => stock.product.id === row.getValue("product_id"));
+        return <div className="capitalize">{stock ? stock.product.name : "Unknown"}</div>;
+      },
     },
     {
       accessorKey: "created_at",
@@ -126,14 +66,14 @@ export function DataTableBilledParty({data, userRole}) {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Created At
+          Date Out
           <ArrowUpDown />
         </Button>
       ),
       cell: ({ row }) => {
         const rawDate = row.getValue("created_at");
         const date = new Date(rawDate);
-    
+
         // Format ke "HH:mm dd-MM-yyyy"
         const formattedDate = new Intl.DateTimeFormat("id-ID", {
           hour: "2-digit",
@@ -142,80 +82,49 @@ export function DataTableBilledParty({data, userRole}) {
           month: "2-digit",
           year: "numeric",
         }).format(date);
-    
+
         return <div className="lowercase">{formattedDate}</div>;
       },
-      sortingFn: "datetime",
     },
     {
-      accessorKey: "contact_bill",
-      header: "Contact",
-      cell: ({ row }) => (
-        <div className="capitalize">
-          {row.getValue("contact_bill")?.trim() || "Belum Terdaftar"}
-        </div>
-      ),
+      accessorKey: "qty",
+      header: "QTY",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
     },
     {
-      accessorKey: "address_bill",
-      header: "Address",
+      accessorKey: "receiver",
+      header: "To",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("receiver")}</div>,
+    },
+    {
+      accessorKey: "category_id",
+      header: "Category",
       cell: ({ row }) => {
-        const address = row.getValue("address_bill")?.trim() || "Belum Terdaftar";
-        return (
-          <div className="capitalize">
-            {address.length > 20 ? address.slice(0, 20) + "..." : address}
-          </div>
-        );
+        const stock = dataStocks.find(stock => stock.product.id === row.getValue("product_id"));
+        return <div className="capitalize">{stock ? stock.product.category?.name : "Unknown"}</div>;
       },
-    },
+    },    
     {
-        accessorKey: "account_bank_name",
-        header: "Bank Name",
-        cell: ({ row }) => {
-          const address = row.getValue("account_bank_name")?.trim() || "Belum Terdaftar";
-          return (
-            <div className="capitalize">
-              {address.length > 20 ? address.slice(0, 20) + "..." : address}
-            </div>
-          );
-        },
-      },
-    {
-      id: "actions",
-      header: "Actions",
-      enableHiding: false,
-      cell: ({ row }) => {
-        const item = row.original;
-        return (
-          <DropdownMenu >
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="cursor-pointer">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleUpdate(item, item.contact, item.address)} className="cursor-pointer">
-                <FaEdit size={16} className="text-yellow-500"/>Update
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleViewDetails(item)}  className="cursor-pointer">
-                <FaEye size={16} className="text-green-500"/>View details
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
-                <FaTrash size={16} className="text-red-500"/> Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-            
-          </DropdownMenu>
-          
-        );
-      },
+      accessorKey: "pic",
+      header: "PIC",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
     },
+    // {
+    //   accessorKey: "out_status",
+    //   header: "Status",
+    //   cell: ({ row }) => {
+    //     const status = row.getValue("out_status");
+    //     return (
+    //       <div
+    //         className={`capitalize text-center rounded-xl text-white p-2 ${
+    //           status === "preparing" ? "bg-orange-400" : status === "shipping process" ? "bg-[#FFC107]" : "bg-lime-400"
+    //         }`}
+    //       >
+    //         {status ?? "N/A"}
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
 
   const [sorting, setSorting] = useState([]);
@@ -240,20 +149,6 @@ export function DataTableBilledParty({data, userRole}) {
 
   return (
     <div className="w-full">
-      <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
-      <UpdateBpModal
-          open={updateModalOpen}
-          onClose={() => setUpdateModalOpen(false)}
-          bp={selectedBp}
-          contactData={selectedContact}
-          addressData={selectedAddress}
-          userRole={userRole}
-      />
-      <ViewBpDetailModal
-        open={detailModalOpen}
-        onClose={() => setDetailModalOpen(false)}
-        bp={selectedBpViews}
-      />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
@@ -283,15 +178,19 @@ export function DataTableBilledParty({data, userRole}) {
                   )
                 })}
             </DropdownMenuContent>
-        </DropdownMenu>
+          </DropdownMenu>
           <Input
-            placeholder="Search by Name, Date In, Supplier or Category"
+            placeholder="Search by Name, Date Out, or Category"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
-            className="max-w-xs"
+            className="max-w-xs text-sm"
           />
         </div>
-        <ButtonModalBp userRole={userRole}/>
+        <div className="flex space-x-2">
+            <Button className="bg-PurpleFive hover:bg-indigo-700" >
+                Download
+            </Button>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -319,10 +218,8 @@ export function DataTableBilledParty({data, userRole}) {
       </div>
       <div className="flex items-center space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
-          
         </div>
 
         <button
@@ -332,19 +229,6 @@ export function DataTableBilledParty({data, userRole}) {
           >
             <AiOutlineLeft className="mr-1" /> Back
         </button>
-
-        {/* Nomor halaman */}
-        {/* <div className="flex space-x-2">
-          {Array.from({ length: table.getPageCount() }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => table.setPageIndex(i)}
-              className={`px-3 py-1 border rounded-md ${table.getState().pagination.pageIndex === i ? "bg-PurpleFive text-white" : "bg-white"}`}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div> */}
 
         <button
           className="px-3 py-1 border rounded-md flex items-center bg-PurpleFive text-white disabled:opacity-50"
@@ -358,4 +242,4 @@ export function DataTableBilledParty({data, userRole}) {
   );
 }
 
-export default DataTableBilledParty;
+export default ReportsDataTableOutbound;

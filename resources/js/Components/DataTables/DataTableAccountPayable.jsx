@@ -57,7 +57,7 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
     // Mapping role endpoint
     const rolePaths = {
       admin: "/admin/ap",
-      wrhs: "/fnc/ap",
+      fnc: "/finance/ap",
     };
 
     const userPath = rolePaths[userRole];
@@ -174,8 +174,8 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
         const status = row.getValue("status_payment");
         return (
           <div
-            className={`capitalize text-center rounded-xl text-white p-2 ${ status === "paid" ? "bg-green-400" :
-              status === "unpaid" ? "bg-orange-400" : status === "schedule" ? "bg-yellow-400" : "bg-lime-400"
+            className={`capitalize text-center rounded-xl text-white p-2 ${ status === "paid" ? "bg-[#28A745]" :
+              status === "unpaid" ? "bg-[#dc3545]" : status === "schedule" ? "bg-yellow-400" : "bg-lime-400"
             }`}
           >
             {status ?? "N/A"}

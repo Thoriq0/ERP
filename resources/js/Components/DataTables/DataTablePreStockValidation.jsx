@@ -50,57 +50,61 @@ export default function DataTablePrestock({ stagingData, userRole }) {
       toast.error("No products selected!");
       return;
     }
-
-  // Cek apakah ada produk yang belum berstatus 'validated'
-  const unvalidatedProducts = stagingData.filter(
-    (product) => selectedProducts.includes(product.id) && product.status !== "validated"
-  );
-
-  if (unvalidatedProducts.length > 0) {
-    toast.error("Some products have not been validated. Please validate them first!");
-    return;
-  }
-
-  // Cek apakah ada produk yang sudah memiliki stock_status 'In Stock'
-  const alreadyInStock = stagingData.filter(
-    (product) => selectedProducts.includes(product.id) && product.stock_status === "In Stock"
-  );
-
-  if (alreadyInStock.length > 0) {
-    toast.error("Some products are already in stock and cannot be transferred!");
-    return;
-  }
-
-  // Cek apakah ada produk yang sudah memiliki status_payment 'scheduled'
-  const alreadyPayment = stagingData.filter(
-    (product) => selectedProducts.includes(product.id) && product.payment_status !== "paid"
-  );
-
-  if (alreadyPayment.length > 0) {
-    toast.error("Some products have not been paid!");
-    return;
-  }
   
-  // const unpaidProducts = stagingData.filter(
-  //   (product) => selectedProducts.includes(product.id) && product.payment_status !== "paid"
-  // );
-
+    // Cek apakah ada produk yang belum berstatus 'validated'
+    const unvalidatedProducts = stagingData.filter(
+      (product) => selectedProducts.includes(product.id) && product.status !== "validated"
+    );
   
-
-  // if (unpaidProducts.length > 0) {
-  //   console.log("Selected Products:", selectedProducts);
-  // console.log("Unpaid Products:", unpaidProducts);
-  //   toast.error("Some products have not been paid!");
-  //   return;
-  // }
-
+    if (unvalidatedProducts.length > 0) {
+      toast.error("Some products have not been validated. Please validate them first!");
+      return;
+    }
+  
+    // Cek apakah ada produk yang sudah memiliki stock_status 'In Stock'
+    const alreadyInStock = stagingData.filter(
+      (product) => selectedProducts.includes(product.id) && product.stock_status === "In Stock"
+    );
+  
+    if (alreadyInStock.length > 0) {
+      toast.error("Some products are already in stock and cannot be transferred!");
+      return;
+    }
+  
+    // Cek apakah ada produk yang sudah memiliki status_payment 'scheduled'
+    const alreadyPayment = stagingData.filter(
+      (product) => selectedProducts.includes(product.id) && product.payment_status !== "paid"
+    );
+  
+    if (alreadyPayment.length > 0) {
+      toast.error("Some products have not been paid!");
+      return;
+    }
+  
+    // Mapping role endpoint
+    const rolePaths = {
+      admin: "/admin/validatestock",
+      wrhs: "/wrhs/validatestock",
+    };
+  
+    const userPath = rolePaths[userRole];
+  
+    if (!userPath) {
+      toast.error("You don't have permission to validate stock!");
+      return;
+    }
+  
+    // Kirim data ke endpoint berdasarkan role
     router.post(
-      "/admin/validatestock",
+      userPath,
       { selected_products: selectedProducts },
       {
+        onSuccess: () => {
+          toast.success("Stock validation successful! 🎉", { duration: 5000 });
+        },
         onError: (err) => {
           console.error(err);
-          toast.error("Transfer failed!");
+          toast.error("Stock validation failed! ❌", { duration: 5000 });
         },
       }
     );

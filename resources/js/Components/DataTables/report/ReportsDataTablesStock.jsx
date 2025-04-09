@@ -9,21 +9,17 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
-import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
+import { Button } from "../../ui/button";
+import { Checkbox } from "../../ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Input } from "../ui/input";
+} from "../../ui/dropdown-menu";
+import { Input } from "../../ui/input";
 import {
   Table,
   TableBody,
@@ -31,62 +27,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import { ButtonModalOutbound } from "@/Components/ButtonModalOutbound";
-import { UpdateOutboundModal } from "../update/UpdateOutbound";
-import { ButtonDialogDelete } from "../ButtonDialogDelete";
-import { ViewOutboundDetailModal } from "../viewsdetails/ViewOutboundDetailModal";
+} from "../../ui/table";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import { router } from "@inertiajs/react";
-import toast from "react-hot-toast";
 
-export function DataTableOutbound({ data, userRole, supplierData, productData, dataStocks, usr }) {
-
-  const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
-
-  // state data outbound dan modal
-  const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  
-  // State untuk modal detail
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [selectedOutbound, setSelectedOutbound] = useState(null);
-
-  const handleDelete = () => {
-    if (!selectedId) return;
-
-    // Mapping role endpoint
-    const rolePaths = {
-      admin: "/admin/outbound",
-      wrhs: "/wrhs/outbound",
-    };
-
-    const userPath = rolePaths[userRole];
-
-    router.delete(`${userPath}/${selectedId}`, {
-      onSuccess: () => {
-        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
-      },
-      onError: (err) => {
-        console.error(err);
-        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
-      },
-    });
-    setOpen(false); 
-  };
-
-  // handle update
-  const handleUpdate = (outbound) => {
-    setSelectedProduct(outbound);
-    setUpdateModalOpen(true);
-  };
-
-  // handle views details
-  const handleViewDetails = (outbound) => {
-    setSelectedOutbound(outbound);
-    setDetailModalOpen(true);
-  };
+export function ReportsDataTableStock({ data, userRole }) {
 
   const columns = [
     // {
@@ -109,26 +53,23 @@ export function DataTableOutbound({ data, userRole, supplierData, productData, d
     //   enableHiding: false,
     // },
     {
-      accessorKey: "product_id",
+      accessorKey: "product.name",
       header: "Product",
-      cell: ({ row }) => {
-        const stock = dataStocks.find(stock => stock.product.id === row.getValue("product_id"));
-        return <div className="capitalize">{stock ? stock.product.name : "Unknown"}</div>;
-      },
+      cell: ({ row }) => <div className="capitalize">{row.original.product?.name || "Unknown"}</div>,
     },
     {
-      accessorKey: "created_at",
+      accessorKey: "updated_at",
       header: ({ column }) => (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date Out
+          Last Update
           <ArrowUpDown />
         </Button>
       ),
       cell: ({ row }) => {
-        const rawDate = row.getValue("created_at");
+        const rawDate = row.getValue("updated_at");
         const date = new Date(rawDate);
 
         // Format ke "HH:mm dd-MM-yyyy"
@@ -149,81 +90,19 @@ export function DataTableOutbound({ data, userRole, supplierData, productData, d
       cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
     },
     {
-      accessorKey: "receiver",
-      header: "To",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("receiver")}</div>,
+      accessorKey: "product.supplier.name",
+      header: "Supplier",
+      cell: ({ row }) => <div className="capitalize">{row.original.product?.supplier?.name || "Unknown"}</div>,
     },
     {
-      accessorKey: "category_id",
+      accessorKey: "product.category.name",
       header: "Category",
-      cell: ({ row }) => {
-        const stock = dataStocks.find(stock => stock.product.id === row.getValue("product_id"));
-        return <div className="capitalize">{stock ? stock.product.category?.name : "Unknown"}</div>;
-      },
-    },    
-    {
-      accessorKey: "pic",
-      header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.original.product?.category?.name || "Unknown"}</div>,
     },
     {
-      accessorKey: "out_status",
-      header: "Status",
-      cell: ({ row }) => {
-        const status = row.getValue("out_status");
-        return (
-          <div
-            className={`capitalize text-center rounded-xl text-white p-2 ${
-              status === "preparing" ? "bg-orange-400" : status === "shipping process" ? "bg-[#FFC107]" : "bg-lime-400"
-            }`}
-          >
-            {status ?? "N/A"}
-          </div>
-        );
-      },
-    },
-    {
-      id: "actions",
-      header: "Actions",
-      enableHiding: false,
-      cell: ({ row }) => {
-        const item = row.original;
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {item.out_status === "preparing" ? (
-                <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
-                <FaEdit size={16} className="text-yellow-500 "/>Update
-                </DropdownMenuItem>
-              ) : (
-                <></>
-              )}
-              
-              <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
-                <FaEye size={16} className="text-green-500 "/>View details
-              </DropdownMenuItem>
-              {item.out_status === "preparing" ? (
-                <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
-                  <FaTrash size={16} className="text-red-500"/>Delete
-                </DropdownMenuItem>
-              ) : (
-                <></>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      },
+      accessorKey: "warehouse",
+      header: "Warehouse",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("warehouse")}</div>,
     },
   ];
 
@@ -249,20 +128,6 @@ export function DataTableOutbound({ data, userRole, supplierData, productData, d
 
   return (
     <div className="w-full">
-      <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
-      <UpdateOutboundModal
-        open={updateModalOpen}
-        onClose={() => setUpdateModalOpen(false)}
-        outbound={selectedProduct}
-        productData={productData}
-        userRole={userRole}
-      />
-      <ViewOutboundDetailModal
-        open={detailModalOpen}
-        onClose={() => setDetailModalOpen(false)}
-        outbound={selectedOutbound}
-        productData={productData}
-      />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
@@ -294,13 +159,17 @@ export function DataTableOutbound({ data, userRole, supplierData, productData, d
             </DropdownMenuContent>
           </DropdownMenu>
           <Input
-            placeholder="Search by Name, Date Out, or Category"
+            placeholder="Search by Name, Date In, Supplier or Category"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
-            className="max-w-xs text-sm"
+            className="max-w-xs"
           />
         </div>
-        <ButtonModalOutbound userRole={userRole} dataStocks={dataStocks} usr={usr} />
+        <div className="flex space-x-2">
+            <Button className="bg-PurpleFive hover:bg-indigo-700" >
+                Download
+            </Button>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -352,4 +221,4 @@ export function DataTableOutbound({ data, userRole, supplierData, productData, d
   );
 }
 
-export default DataTableOutbound;
+export default ReportsDataTableStock;

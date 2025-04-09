@@ -33,16 +33,60 @@ import {
 } from "../ui/table";
 import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { ButtonModalEmployee } from "../ButtonModalEmployee";
+import { ViewEmployeeDetailModal } from "../viewsdetails/ViewEmployeeDetailModal";
+import { UpdateEmployeeModal } from "../update/UpdateEmployeeModal";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { FaCopy, FaEdit, FaEye, FaTrash } from "react-icons/fa";
+import { router } from "@inertiajs/react";
+import toast from "react-hot-toast";
 
 export function DataTableEmployee({data, userRole}) {
+
+  // state modal delete
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
+  // state update data employee
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+
+  // State untuk modal detail
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [selectedEmployeeDetail, setSelectedEmployeeDetail] = useState(null);
+
   const handleDelete = () => {
-    console.log(`Deleting item with ID: ${selectedId}`);
-    // Tambahkan logic API untuk delete di sini
-    setOpen(false); // Tutup modal setelah delete
+    if (!selectedId) return;
+
+    // Mapping role endpoint
+    const rolePaths = {
+      admin: "/admin/employee",
+      hr: "/hr/employee",
+    };
+
+    const userPath = rolePaths[userRole];
+  
+    router.delete(`${userPath}/${selectedId}`, {
+      onSuccess: () => {
+        toast.success("Data Karyawan berhasil dihapus! 🗑️", { duration: 5000 });
+      },
+      onError: (err) => {
+        console.error(err);
+        toast.error("Gagal menghapus data karyawan! ❌", { duration: 5000 });
+      },
+    });
+    setOpen(false); 
+  };
+
+  // handle update
+  const handleUpdate = (employee) => {
+    setSelectedEmployee(employee);
+    setUpdateModalOpen(true);
+  };
+
+  // handle views details
+  const handleViewDetails = (employee) => {
+    setSelectedEmployeeDetail(employee);
+    setDetailModalOpen(true);
   };
 
   const columns = [
@@ -98,29 +142,30 @@ export function DataTableEmployee({data, userRole}) {
       },
     },
     {
-      accessorKey: "qty",
-      header: "QTY",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
+      accessorKey: "email",
+      header: "Email",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("email")}</div>,
     },
     {
-      accessorKey: "supplier",
-      header: "Supplier",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
+      accessorKey: "departemen",
+      header: "Departemen",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("departemen")}</div>,
     },
     {
-      accessorKey: "category",
-      header: "Category",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
+      accessorKey: "phone",
+      header: "Contact",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("phone")}</div>,
     },
     
     {
-      accessorKey: "name",
-      header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
+      accessorKey: "address",
+      header: "Address",
+      cell: ({ row }) => <div className="capitalize ">{row.getValue("address")}</div>,
     },
     
     {
       id: "actions",
+      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
@@ -135,13 +180,20 @@ export function DataTableEmployee({data, userRole}) {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
+                <FaCopy size={16} className="text-blue-500 "/>
                 Copy payment ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
-                Delete
+              <DropdownMenuItem onClick={()=> handleUpdate(item)}
+              className="cursor-pointer">
+                <FaEdit size={16} className="text-yellow-500"/>Update
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={()=> handleViewDetails(item)} className="cursor-pointer">
+                <FaEye size={16}className="text-green-500" />
+                View details
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
+                <FaTrash size={16} className="text-red-500"/> Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
             
@@ -175,6 +227,17 @@ export function DataTableEmployee({data, userRole}) {
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
+      <UpdateEmployeeModal
+        open={updateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        employee={selectedEmployee}
+        userRole={userRole}
+      />
+      <ViewEmployeeDetailModal 
+        open={detailModalOpen}
+        onClose={() => setDetailModalOpen(false)}
+        employee={selectedEmployeeDetail}
+      />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>
