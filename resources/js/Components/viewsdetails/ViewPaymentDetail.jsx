@@ -37,7 +37,7 @@ export function ViewPaymentDetail({ open, onClose, payment }) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-h-[500px] md:max-w-[720px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
+      <DialogContent className="max-h-[500px] max-w-[370px] md:max-w-[750px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
           <DialogTitle>Detail Data Payment</DialogTitle>
           <DialogDescription>

@@ -68,17 +68,18 @@ export function ViewInboundDetailModal({ open, onClose, inbound, productData, us
   return (
     <>
       <Dialog open={open} onOpenChange={onClose}>
-        <DialogContent className="md:max-w-[680px] max-h-[550px] border p-6 rounded-lg shadow-lg overflow-y-auto">
+        <DialogContent className="max-w-[375px] md:max-w-[750px] max-h-[550px] border p-8 md:p-10 rounded-lg shadow-lg overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold">Detail Data Inbound</DialogTitle>
             <DialogDescription className="text-sm text-gray-500">
               Berikut adalah detail data inbound.
             </DialogDescription>
+            <hr />
           </DialogHeader>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 border p-4 rounded-md">
             <div className="space-y-2">
-              <h3 className="font-semibold text-lg">Detail Produk</h3>
+              <h3 className="font-semibold text-lg mb-5">Detail Produk</h3>
               <div className="flex justify-between border-b pb-1">
                 <span className="font-medium">Produk:</span>
                 <span className="ttext-end break-all pl-6">{product?.name || "Tidak Diketahui"}</span>
@@ -94,7 +95,7 @@ export function ViewInboundDetailModal({ open, onClose, inbound, productData, us
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-semibold text-lg">Detail Supplier</h3>
+              <h3 className="font-semibold text-lg mb-5">Detail Supplier</h3>
               <div className="flex justify-between border-b pb-1">
                 <span className="font-medium">Supplier:</span>
                 <span className="text-end break-all pl-6">{product?.supplier?.name || "Tidak Diketahui"}</span>
@@ -170,7 +171,7 @@ export function ViewInboundDetailModal({ open, onClose, inbound, productData, us
           </div>
 
           <DialogFooter className="mt-4">
-            <Button className="bg-gray-300 text-black hover:bg-gray-400" onClick={onClose}>Tutup</Button>
+            <Button className=" max-w-[100px] md:w-full bg-gray-300 text-black hover:bg-gray-400" onClick={onClose}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

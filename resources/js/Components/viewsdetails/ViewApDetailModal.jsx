@@ -39,17 +39,18 @@ export function ViewApDetailModal({ open, onClose, inbound, productData, apData,
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-h-[550px] md:max-w-[750px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
+      <DialogContent className="max-h-[550px] max-w-[370px] md:max-w-[750px] overflow-y-auto border border-gray-300 p-2 py-5 md:p-10 rounded-md">
         <DialogHeader>
           <DialogTitle>Detail Data Inbound</DialogTitle>
           <DialogDescription>
             Berikut adalah detail data inbound.
           </DialogDescription>
+          <hr />
         </DialogHeader>
         <div ref={invoiceRef} className="p-4">
         {item === 0 ? (
 
-            <div className="mt-4 space-y-2">
+            <div className="mt-4 space-y-2 text-sm md:text-md">
                 {/* Header */}
                 <div className="flex justify-between items-center border-b pb-4 mb-4">
                     <img src="/images/Logo.svg" alt="Company Logo" className="h-16" />
@@ -88,7 +89,7 @@ export function ViewApDetailModal({ open, onClose, inbound, productData, apData,
                 </div>
                 <div className="p-4 border rounded-lg shadow bg-gray-50">
                     
-                    <table className="w-full text-sm text-left border-collapse">
+                    <table className="w-full text-sm text-left border-collapse ">
                         <thead>
                             <tr className="border-b bg-gray-200">
                                 <th className="py-2 text-center w-12">No</th>
@@ -195,13 +196,13 @@ export function ViewApDetailModal({ open, onClose, inbound, productData, apData,
         <DialogFooter>
           <Button
             type="button"
-            className="bg-gray-200 text-black border border-gray-400 mt-5 hover:bg-gray-300"
+            className="bg-gray-200 text-black border border-gray-400 mt-5 mx-auto w-3/4 mb-5 md:mx-0 md:mb-0 md:w-[80px] hover:bg-gray-300"
             onClick={onClose}
           >
             Close
           </Button>
           {item === 0 ? (
-            <Button onClick={downloadInvoice} className="bg-gray-200 text-black border border-gray-400 mt-5 hover:bg-gray-300">
+            <Button onClick={downloadInvoice} className="bg-primaryPurple border border-gray-400 mt-5 mx-auto w-3/4 md:w-[200px] hover:bg-PurpleFive">
             Download Invoice
           </Button>
           ) : (

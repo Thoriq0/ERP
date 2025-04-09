@@ -38,14 +38,15 @@ export function ViewProdukDetailModal({ open, onClose, product, supplierData, ca
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
+      <DialogContent className="max-h-[500px] max-w-[375px] md:max-w-[750px] overflow-y-auto border border-gray-300 p-5 md:p-8 rounded-md">
         <DialogHeader>
           <DialogTitle>Detail Data Produk</DialogTitle>
           <DialogDescription>
             Berikut adalah detail data Produk.
           </DialogDescription>
+          <hr />
         </DialogHeader>
-        <div className="mt-4 space-y-2">
+        <div className="mt-4 space-y-2 text-sm">
           <div className="flex">
             <strong className="min-w-[150px]">SKU</strong>
             <span className="mr-2">:</span>
@@ -84,7 +85,7 @@ export function ViewProdukDetailModal({ open, onClose, product, supplierData, ca
         <DialogFooter>
           <Button
             type="button"
-            className="bg-gray-200 text-black border border-gray-400 mt-5 hover:bg-gray-300"
+            className="max-w-[100px] md:w-full bg-gray-200 text-black border border-gray-400 mt-5 hover:bg-gray-300"
             onClick={onClose}
           >
             Close
