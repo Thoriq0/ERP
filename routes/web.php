@@ -21,7 +21,7 @@ Route::middleware('auth', 'verified')->group(function () {
         // route userwarehouse action & view
         Route::resource('/admin/user', WarehouseUserController::class);
 
-        // route view features inventory/warehouse
+        // ======= route view features inventory/warehouse ======= 
         Route::get('/admin/dashboard', [AdminController::class, 'view'])->name('admin.dashboard');
         Route::get('/admin/product', [AdminController::class, 'productView'])->name('admin.product');
         Route::get('/admin/category', [AdminController::class, 'categoryView'])->name('admin.category');
@@ -32,6 +32,9 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/shipment', [AdminController::class, 'shipmentView'])->name('admin.shipment');
         Route::get('/admin/delivery', [AdminController::class, 'deliveryView'])->name('admin.delivery');
         Route::get('/admin/prestock', [AdminController::class, 'prestockView'])->name('admin.prestock');
+        // Route::get('/admin/reports', [AdminController::class, 'reportInventoryView'])->name('admin.reports');
+        // ======= end route view features inventory/warehouse ======= 
+
 
         // route inbound action
         Route::post('/admin/inbound', [InventoryController::class, 'inboundStore'])->name('inventory.inbound.store');
@@ -74,29 +77,43 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::put('/admin/bp/{billedParty}', [InventoryController::class, 'bpUpdate'])->name('inventory.bp.update');
         Route::delete('/admin/bp/{billedParty}', [InventoryController::class, 'bpDestroy'])->name('inventory.bp.destroy');
 
-        // route shipmentaction
+        // route shipmentaction action
         Route::post('/admin/shipmentorder', [InventoryController::class, 'shipmentOrder'])->name('inventory.shipmentorder');
 
-        // route payment
+        // route payment action
         Route::post('/admin/payment', [InventoryController::class, 'paymentGet'])->name('inventory.payment.get');
 
-        // route view features finance
+        // ======= route view features finance =======
         Route::get('/admin/income', [AdminController::class, 'incomeView'])->name('admin.income');
         Route::get('/admin/outcome', [AdminController::class, 'outcomeView'])->name('admin.outcome');
         Route::get('/admin/budget', [AdminController::class, 'budgetView'])->name('admin.budget');
         Route::get('/admin/ap', [AdminController::class, 'apView'])->name('admin.ap');
         Route::get('/admin/payment', [AdminController::class, 'paymentView'])->name('admin.payment');
         Route::get('/admin/bp', [AdminController::class, 'bpView'])->name('admin.bp');
-        
-        // route view features human resource
+        // ======= end route view features finance =======
+
+
+        // ======= route view features human resource ======= 
         Route::get('/admin/employee', [AdminController::class, 'employeeView'])->name('admin.employee');
         Route::get('/admin/time', [AdminController::class, 'timeView'])->name('admin.time');
         Route::get('/admin/attendance', [AdminController::class, 'attendanceView'])->name('admin.attendance');
-        
-        // route features logistics
+        // ======= end route view features human resource ======= 
+
+
+        // ======= route action employee =======
+        Route::post('/admin/employee', [InventoryController::class, 'employeeStore'])->name('inventory.employee.store');
+        Route::delete('/admin/employee/{employee}', [InventoryController::class, 'employeeDestroy'])->name('inventory.employee.destroy');
+        Route::put('/admin/employee/{employee}', [InventoryController::class, 'employeeUpdate'])->name('inventory.employee.update');
+        // ======= end route action employee =======
+
+
+        // route view reports
+        Route::get('/admin/reportinbound', [AdminController::class, 'reportInboundView'])->name('admin.reportinbound');
+        Route::get('/admin/reportoutbound', [AdminController::class, 'reportOutboundView'])->name('admin.reportoutbound');
+        Route::get('/admin/reportstock', [AdminController::class, 'reportStockView'])->name('admin.reportstock');
     });
 
-    // ==== FINANCE (fnc) ====
+    // ==== ROLE FINANCE (fnc) ====
     Route::middleware('rolechecking:fnc')->group(function(){
         // view
         Route::get('/finance/dashboard', [FinanceController::class, 'view'])->name('finance.dashboard');
@@ -106,13 +123,23 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/finance/budget', [FinanceController::class, 'budgetView'])->name('finance.budget'); 
         Route::get('/finance/ap', [FinanceController::class, 'apView'])->name('finance.ap');     
         Route::get('/finance/payment', [FinanceController::class, 'paymentView'])->name('finance.payment');     
-        Route::get('/finance/payment', [FinanceController::class, 'paymentView'])->name('finance.payment');
+        Route::get('/finance/bp', [FinanceController::class, 'bpView'])->name('finance.bp');
 
         // route account payable action
-        Route::put('/finance/ap/{ap}', [FinanceController::class, 'apUpdate'])->name('finance.ap.update');
+        Route::post('/finance/ap', [InventoryController::class, 'apStore'])->name('inventory.ap.store');
+        Route::put('/finance/ap/{ap}', [InventoryController::class, 'apUpdate'])->name('inventory.ap.update');
+        Route::delete('/finance/ap/{accountPayable}', [InventoryController::class, 'apDestroy'])->name('inventory.ap.destroy');
+
+        // route payment action
+        Route::post('/finance/payment', [InventoryController::class, 'paymentGet'])->name('inventory.payment.get');
+
+        // route billed party action
+        Route::post('/finance/bp', [InventoryController::class, 'bpStore'])->name('inventory.bp.store');
+        Route::put('/finance/bp/{billedParty}', [InventoryController::class, 'bpUpdate'])->name('inventory.bp.update');
+        Route::delete('/finance/bp/{billedParty}', [InventoryController::class, 'bpDestroy'])->name('inventory.bp.destroy');
     });
 
-    // ==== HUMAN RESOURCE (hr) ====
+    // ==== ROLE HUMAN RESOURCE (hr) ====
     Route::middleware('rolechecking:hr')->group(function(){
         // view
         Route::get('/hr/dashboard', [HumanResourceController::class, 'view'])->name('hr.dashboard');
@@ -120,9 +147,11 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/hr/time', [HumanResourceController::class, 'timeView'])->name('hr.time');
         Route::get('/hr/attendance', [HumanResourceController::class, 'attendanceView'])->name('hr.attendance');
         
+        // Route employee action
+        Route::post('/hr/employee', [InventoryController::class, 'employeeStore'])->name('hr.employee.store');
     });
 
-    // ==== Warehouse/Inventory (wrhs) ====
+    // ==== ROLE Warehouse/Inventory (wrhs) ====
     Route::middleware('rolechecking:wrhs')->group(function(){
         // view
         Route::get('/wrhs/dashboard', [WarehouseController::class, 'view'])->name('wrhs.dashboard');
@@ -164,6 +193,9 @@ Route::middleware('auth', 'verified')->group(function () {
         // route category
         Route::post('/wrhs/category', [InventoryController::class, 'categoryStore'])->name('wrhs.category.store');
         Route::delete('/wrhs/category/{category}', [InventoryController::class, 'categoryDestroy'])->name('wrhs.category.destroy');
+
+        // route shipmentaction action
+        Route::post('/wrhs/shipmentorder', [InventoryController::class, 'shipmentOrder'])->name('inventory.shipmentorder');
 
     });
 
