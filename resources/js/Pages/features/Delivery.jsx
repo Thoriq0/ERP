@@ -7,7 +7,7 @@ import { Head } from '@inertiajs/react';
 import React from 'react';
 
 
-export default function Delivery({auth, mustVerifyEmail, status, title}) {
+export default function Delivery({auth, mustVerifyEmail, status, title, shipmentE}) {
     const getLayout = (role) => {
         switch (role) {
             case 'wrhs':
@@ -18,8 +18,8 @@ export default function Delivery({auth, mustVerifyEmail, status, title}) {
     };
 
     const Layout = getLayout(auth.user.role);
-    const data = [];
-
+    const data = shipmentE;
+    const role = auth.user.role;
     return (
         <Layout auth={auth}>
             <ToasterComponent />
@@ -28,7 +28,7 @@ export default function Delivery({auth, mustVerifyEmail, status, title}) {
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableDelivery mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
+                <DataTableDelivery mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} />
             </div>
         </Layout>
     );

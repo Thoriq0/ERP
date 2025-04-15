@@ -13,17 +13,28 @@ import TextInput from "./TextInput";
 import React, { useState } from "react";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast"; 
+import { Textarea } from "flowbite-react";
+import DatePicker from "react-multi-date-picker";
+import Select from "react-select";
 
-export function ButtonModalCreateTimeRequest({userRole}) {
-  // State untuk form
+export function ButtonModalCreateTimeRequest({ userRole, employee }) {
   const [values, setValues] = useState({
     name: "",
+    note: "",
+    leave_dates: [],
   });
 
-  // State untuk error
+  const employeeOptions = employee.map((empy) => ({
+    value: empy.id,
+    label: empy.name,
+  }));
+
+  function handleSelectChange(name, selectedOption) {
+    setValues((prev) => ({ ...prev, [name]: selectedOption }));
+  }
+
   const [errors, setErrors] = useState({});
 
-  // Handle perubahan input
   function handleChange(e) {
     const { name, value, type, files } = e.target;
     setValues((prevValues) => ({
@@ -32,42 +43,50 @@ export function ButtonModalCreateTimeRequest({userRole}) {
     }));
   }
 
-  // Handle submit
   function handleSubmit(e) {
     e.preventDefault();
-    setErrors({}); // Reset error sebelum submit
+    setErrors({});
 
-    // Mapping role endpoint
     const rolePaths = {
-      admin: "/admin/category",
-      wrhs: "/wrhs/category",
+      admin: "/admin/timeoff",
+      wrhs: "/wrhs/timeoff",
+      fnc: "/fnc/timeoff",
     };
-  
+
     const userPath = rolePaths[userRole];
-
-
-    // Kirim data ke backend
-    router.post(
-      userPath,
-      values,
-      {
-        forceFormData: true,
-        onSuccess: () => {
-          toast.success("Produk berhasil disimpan! 🎉", {
-            duration: 5000,
-          });
-          setValues({
-            name: "",
-          });
-        },
-        onError: (err) => {
-          setErrors(err); // Simpan error ke state
-          toast.error("Gagal menyimpan produk! ❌", {
-              duration: 5000,
-          });
-        },
-      }
+    
+    // Format tanggal ke string
+    const formattedDates = values.leave_dates.map((date) =>
+      date.format("YYYY-MM-DD")
     );
+
+    const formData = {
+      ...values,
+      leave_dates: formattedDates,
+      name: values.name?.label || "",
+      employee_id: values.name?.value || null,
+      leave_dates: formattedDates,
+    };
+
+    router.post(userPath, formData, {
+      forceFormData: true,
+      onSuccess: () => {
+        toast.success("Data berhasil disimpan! 🎉", {
+          duration: 5000,
+        });
+        setValues({
+          name: "",
+          note: "",
+          leave_dates: [],
+        });
+      },
+      onError: (err) => {
+        setErrors(err);
+        toast.error("Gagal menyimpan data! ❌", {
+          duration: 5000,
+        });
+      },
+    });
   }
 
   return (
@@ -84,18 +103,44 @@ export function ButtonModalCreateTimeRequest({userRole}) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
+          
           <div className="mt-4">
-            <InputLabel htmlFor="name" value="Nama Karyawan" />
-            <TextInput
+            <InputLabel htmlFor="name" value="name" />
+            <Select
               id="name"
-              type="text"
-              name="name"
-              className="mt-1 block w-full"
-              placeholder="Nama Category"
+              options={employeeOptions}
+              isSearchable={true}
+              placeholder="Pilih Karyawan"
               value={values.name}
+              onChange={(selected) => handleSelectChange("name", selected)}
+              className="mt-1"
+            />
+          </div>
+
+          <div className="mt-4">
+            <InputLabel htmlFor="note" value="Alasan Cuti" />
+            <Textarea
+              id="note"
+              name="note"
+              className="mt-1 block w-full"
+              placeholder="Contoh: Sakit, Keperluan keluarga, dll"
+              value={values.note}
               onChange={handleChange}
             />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+            {errors.note && <p className="text-red-500 text-sm">{errors.note}</p>}
+          </div>
+
+          <div className="mt-4">
+            <InputLabel htmlFor="leave_dates" value="Tanggal Cuti" />
+            <DatePicker
+              multiple
+              value={values.leave_dates}
+              onChange={(dates) => setValues({ ...values, leave_dates: dates })}
+              className="w-full mt-1"
+            />
+            {errors.leave_dates && (
+              <p className="text-red-500 text-sm">{errors.leave_dates}</p>
+            )}
           </div>
 
           <DialogFooter>

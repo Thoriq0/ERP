@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use App\Models\AccountPayable;
 use App\Models\StagingInbound;
 use App\Http\Controllers\Controller;
+use App\Models\LeaveQuota;
 
 class AdminController extends Controller
 {
@@ -145,7 +146,15 @@ class AdminController extends Controller
         // dd();
         return inertia::render('features/Delivery', [
             'title' => 'Admin Inventory Delivery',
-    
+            'shipmentE' => Shipment::with([
+                'outbound:id,qty,out_status,product_id,receiver,created_at', 
+                'outbound.product:id,name,category_id,supplier_id',
+                'outbound.product.category:id,name',
+                'outbound.product.supplier:id,name'
+            ])
+            ->whereIn('status_shipment', ['shipping process', 'Delivered'])
+            ->select('id', 'outbound_id', 'delivery_estimate', 'status_shipment')
+            ->get(),
         ]);
     }
 
@@ -237,8 +246,10 @@ class AdminController extends Controller
         // dd();
         return inertia::render('features/TimeRequest', [
             'title' => 'Admin HR Time Off Request',
+            'emplys' => Employee::all(),
+            'lq' => LeaveQuota::all()
         ]);
-        // dd(Inbound::all());
+        // dd(Employee::all());
     }
 
     public function attendanceView(){

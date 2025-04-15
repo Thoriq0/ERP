@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
-
+import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -34,6 +34,7 @@ import {
 } from "../ui/table";
 import { ButtonModalUsrwrhs } from "@/Components/ButtonModalUsrwrhs";
 import { ButtonDialogDelete } from "../ButtonDialogDelete";
+import { UpdateUserModal } from "../update/UpdateUserModal";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
@@ -42,11 +43,13 @@ import toast from "react-hot-toast";
 export function DataTableOutbound({data}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-
-  const handleDelete = (id) => {
-    if (!id) return;
+  const [users, setUsers] = useState([]);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   
-    router.delete(`/admin/user/${id}`, {
+  const handleDelete = (user) => {
+    if (!user) return;
+  
+    router.delete(`/admin/user/${user}`, {
       onSuccess: () => {
         toast.success("Penggua berhasil dihapus! 🗑️", { duration: 5000 });
       },
@@ -57,6 +60,11 @@ export function DataTableOutbound({data}) {
     });
   };
 
+  const handleUpdate = (item) => {
+    setUpdateModalOpen(true);
+    setUsers(item);
+  };
+  
   const columns = [
     // {
     //   id: "select",
@@ -122,13 +130,16 @@ export function DataTableOutbound({data}) {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status");
-        const isActive = status === "active";
+        const bgColor =
+              status === "validating"
+                ? "bg-yellow-200 text-black"
+                : status === "active"
+                ? "bg-green-500 text-white"
+                : "bg-red-500 text-white";
     
         return (
           <div
-            className={`px-3 py-1 rounded-full text-white w-fit text-sm text-center font-semibold ${
-              isActive ? "bg-green-500" : "bg-red-500"
-            }`}
+              className={`px-3 py-1 rounded-full w-fit text-sm text-center font-semibold ${bgColor}`}
           >
             {status}
           </div>
@@ -150,14 +161,15 @@ export function DataTableOutbound({data}) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-                Copy payment ID
-              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
-                Delete
+              <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
+                <FaEdit size={16} className="text-yellow-500 "/>Update
+              </DropdownMenuItem>
+              {/* <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
+                <FaEye size={16} className="text-green-500 "/>View details
+              </DropdownMenuItem> */}
+              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
+              <FaTrash size={16} className="text-red-500"/>Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
             
@@ -190,7 +202,13 @@ export function DataTableOutbound({data}) {
 
   return (
     <div className="w-full">
-      <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
+      <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} selected={selectedId} />
+      <UpdateUserModal
+        open={updateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        userSelected={selectedId}
+        users={users}
+      />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
           <DropdownMenu>

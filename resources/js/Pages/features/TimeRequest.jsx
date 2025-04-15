@@ -8,7 +8,7 @@ import { Head } from '@inertiajs/react';
 import React from 'react';
 
 
-export default function TimeRequest({auth, mustVerifyEmail, status, title}) {
+export default function TimeRequest({auth, mustVerifyEmail, status, title, emplys, lq}) {
     const getLayout = (role) => {
         switch (role) {
             case 'hr':
@@ -19,8 +19,10 @@ export default function TimeRequest({auth, mustVerifyEmail, status, title}) {
     };
 
     const Layout = getLayout(auth.user.role);
-    const data = [];
-
+    const role = auth.user.role;
+    const data = lq;
+    const datas = [];
+    
     return (
         <Layout auth={auth}>
             <ToasterComponent />
@@ -29,9 +31,9 @@ export default function TimeRequest({auth, mustVerifyEmail, status, title}) {
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
+                <DataTableTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} employee={emplys} />
                 <hr className="my-5"/>
-                <DataTableValidasiTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
+                <DataTableValidasiTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={datas} userRole={role}/>
             </div>
         </Layout>
     );

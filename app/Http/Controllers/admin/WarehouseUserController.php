@@ -76,7 +76,18 @@ class WarehouseUserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'role' => 'required|string',
+            'status' => 'required|string',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        $user->update($validated);
+        return redirect()->back();
     }
 
     /**

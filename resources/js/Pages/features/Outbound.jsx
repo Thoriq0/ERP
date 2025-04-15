@@ -17,6 +17,7 @@ export default function Outbound({auth, mustVerifyEmail, status, title, outbound
 
     const role = auth.user.role;
     const Layout = getLayout(role);
+    const roleName = auth.user.name;
     const data = outbound;
     const productsData = products;
     const suppliersData = suppliers;
@@ -29,7 +30,7 @@ export default function Outbound({auth, mustVerifyEmail, status, title, outbound
                 <h1 className="text-xl font-bold">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableOutbound mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} supplierData={suppliersData} productData={productsData} dataStocks={stocks} usr={usr} />
+                <DataTableOutbound mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} supplierData={suppliersData} productData={productsData} dataStocks={stocks} usr={usr} roleName={roleName} />
             </div>
 
         </Layout>

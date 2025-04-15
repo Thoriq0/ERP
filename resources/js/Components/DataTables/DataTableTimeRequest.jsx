@@ -35,7 +35,7 @@ import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { ButtonModalCreateTimeRequest } from "../ButtonModalCreateTimeRequest";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
-export function DataTableTimeRequest({data, userRole}) {
+export function DataTableTimeRequest({data, userRole, employee}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -66,9 +66,9 @@ export function DataTableTimeRequest({data, userRole}) {
       enableHiding: false,
     },
     {
-      accessorKey: "name",
+      accessorKey: "createdBy",
       header: "Name",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.getValue("createdBy")}</div>,
     },
     {
       accessorKey: "created_at",
@@ -77,7 +77,7 @@ export function DataTableTimeRequest({data, userRole}) {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date In
+          Created At
           <ArrowUpDown />
         </Button>
       ),
@@ -97,28 +97,38 @@ export function DataTableTimeRequest({data, userRole}) {
         return <div className="lowercase">{formattedDate}</div>;
       },
     },
+    // {
+    //   accessorKey: "qty",
+    //   header: "Role",
+    //   cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
+    // },
     {
-      accessorKey: "qty",
-      header: "Role",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
-    },
-    {
-      accessorKey: "supplier",
+      accessorKey: "note",
       header: "Submission Date",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.getValue("note")}</div>,
     },
     {
-      accessorKey: "category",
+      accessorKey: "dueto",
       header: "End Date",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
-    },
+      cell: ({ row }) => {
+        const raw = row.getValue("dueto"); // data raw 
+        let dates = [];
     
+        try {
+          dates = JSON.parse(raw); // convert array
+        } catch (err) {
+          console.error("Gagal parse JSON:", raw);
+        }
+    
+        const lastDate = dates[dates.length - 1]; // tanggal terakhir
+        return <div className="capitalize">{lastDate || "-"}</div>;
+      },
+    },
     {
-      accessorKey: "name",
+      accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
+      cell: ({ row }) => <div className="capitalize bg-orange-400 p-2 rounded-md text-white text-center font-semibold">{row.getValue("status")}</div>,
     },
-    
     {
       id: "actions",
       enableHiding: false,
@@ -215,7 +225,7 @@ export function DataTableTimeRequest({data, userRole}) {
           />
         </div>
         <div className="flex space-x-2">
-            <ButtonModalCreateTimeRequest userRole={userRole} />
+            <ButtonModalCreateTimeRequest userRole={userRole} employee={employee} />
             <Button className="bg-validateTimeRequest">
                 Validate leave
             </Button>

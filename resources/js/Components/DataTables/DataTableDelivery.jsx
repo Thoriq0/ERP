@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -32,32 +32,94 @@ import {
   TableRow,
 } from "../ui/table";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import { ButtonModalDelivery } from "../ButtonModalDelivery";
+import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
+import toast from "react-hot-toast";
+import { router } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
+// import { ButtonModalDelivery } from "../ButtonModalDelivery";
 
-export function DataTableDelivery({data}) {
+export function DataTableDelivery({data, userRole}) {
+  const { flash } = usePage().props;
   const [open, setOpen] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
 
-  const handleDelete = () => {
-    console.log(`Deleting item with ID: ${selectedId}`);
-    // Tambahkan logic API untuk delete di sini
-    setOpen(false); // Tutup modal setelah delete
-  };
+  useEffect(() => {
+    if (flash?.success) {
+      toast.success(flash.success, { duration: 5000 });
+      // onClose();
+    }
+    if (flash?.error) {
+      toast.error(flash.error, { duration: 5000 });
+    }
+  }, [flash]);
 
+  const handleValidateStock = () => {
+      if (selectedProducts.length === 0) {
+        toast.error("No products selected!");
+        return;
+      }
+
+      const deliveredProducts = selectedProducts.filter((id) => {
+        const product = data.find((item) => item.id === id);
+        return product?.status_shipment === "Delivered";
+      });
+    
+      if (deliveredProducts.length > 0) {
+        toast.error("Produk sudah dikirim!");
+        return;
+      }
+
+    // Mapping role endpoint
+    const rolePaths = {
+      admin: "/admin/delivery",
+      wrhs: "/wrhs/delivery",
+    };
+
+    const userPath = rolePaths[userRole];
+
+    if (!userPath) {
+      toast.error("You don't have permission to validate stock!");
+      return;
+    }
+
+    router.post(
+      userPath, // ✅ Gunakan path sesuai role
+      { selected_products: selectedProducts }, // ✅ Kirim hanya array ID
+      {
+        onError: (err) => {
+          console.error(err);
+          toast.error("Validation failed!");
+        },
+      }
+    );
+  }
+
+  
     const columns = [
      {
        id: "select",
        header: ({ table }) => (
          <Checkbox
            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+           onCheckedChange={(value) => {
+            table.toggleAllPageRowsSelected(!!value);
+            setSelectedProducts(value ? data.map((row) => row.id) : []);
+          }}
            aria-label="Select all"
          />
        ),
        cell: ({ row }) => (
          <Checkbox
            checked={row.getIsSelected()}
-           onCheckedChange={(value) => row.toggleSelected(!!value)}
+           onCheckedChange={(value) => {
+            row.toggleSelected(!!value);
+            setSelectedProducts((prev) =>
+              value
+                ? [...prev, row.original.id]
+                : prev.filter((id) => id !== row.original.id)
+            );
+          }}
            aria-label="Select row"
          />
        ),
@@ -65,113 +127,117 @@ export function DataTableDelivery({data}) {
        enableHiding: false,
      },
      {
-       accessorKey: "product_id",
-       header: "Product",
-       cell: ({ row }) => {
-         const product = productData.find(prod => prod.id === row.getValue("product_id"));
-         return <div className="capitalize">{product ? product.name : "Unknown"}</div>;
-       },
-     },
-     {
-       accessorKey: "created_at",
-       header: ({ column }) => (
-         <Button
-           variant="ghost"
-           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-         >
-           Date Out
-           <ArrowUpDown />
-         </Button>
-       ),
-       cell: ({ row }) => {
-         const rawDate = row.getValue("created_at");
-         const date = new Date(rawDate);
- 
-         // Format ke "HH:mm dd-MM-yyyy"
-         const formattedDate = new Intl.DateTimeFormat("id-ID", {
-           hour: "2-digit",
-           minute: "2-digit",
-           day: "2-digit",
-           month: "2-digit",
-           year: "numeric",
-         }).format(date);
- 
-         return <div className="lowercase">{formattedDate}</div>;
-       },
-     },
-     {
-       accessorKey: "qty",
-       header: "QTY",
-       cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
-     },
-     {
-       accessorKey: "category_id",
-       header: "Category",
-       cell: ({ row }) => {
-         const product = productData.find(prod => prod.id === row.getValue("product_id"));
-         return <div className="capitalize">{product ? product.category?.name : "Unknown"}</div>;
-       },
-     },
-     {
-       accessorKey: "pic",
-       header: "PIC",
-       cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
-     },
-     {
-       accessorKey: "pic",
-       header: "Delivery Estimate",
-       cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
-     },
-     {
-       accessorKey: "payment_status",
-       header: "Status",
-       cell: ({ row }) => {
-         const status = row.getValue("payment_status");
-         return (
-           <div
-             className={`capitalize text-center rounded-xl text-white p-2 ${
-               status === "unpaid" ? "bg-orange-400" : status === "schedule" ? "bg-yellow-400" : "bg-lime-400"
-             }`}
-           >
-             {status ?? "N/A"}
-           </div>
-         );
-       },
-     },
-     {
-       id: "actions",
-       header: "Actions",
-       enableHiding: false,
-       cell: ({ row }) => {
-         const item = row.original;
-         return (
-           <DropdownMenu>
-             <DropdownMenuTrigger asChild>
-               <Button variant="ghost" className="h-8 w-8 p-0">
-                 <span className="sr-only">Open menu</span>
-                 <MoreHorizontal />
-               </Button>
-             </DropdownMenuTrigger>
-             <DropdownMenuContent align="end">
-               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-               <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
-                 <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
-               </DropdownMenuItem>
-               <DropdownMenuSeparator />
-               <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
-                 <FaEdit size={16} className="text-yellow-500 "/>Update
-               </DropdownMenuItem>
-               <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
-                 <FaEye size={16} className="text-green-500 "/>View details
-               </DropdownMenuItem>
-               <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
-                 <FaTrash size={16} className="text-red-500"/>Delete
-               </DropdownMenuItem>
-             </DropdownMenuContent>
-           </DropdownMenu>
-         );
-       },
-     },
+           accessorKey: "outbound.product.name",
+           header: "Product",
+           cell: ({ row }) => (
+             <div className="capitalize">
+               {row.original.outbound?.product?.name ?? "Unknown"}
+             </div>
+           ),
+         },
+          {
+            accessorKey: "created_at",
+            header: ({ column }) => (
+              <Button
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              >
+                Date Out
+                <ArrowUpDown />
+              </Button>
+            ),
+            cell: ({ row }) => {
+              const rawDate = row.original.outbound?.created_at ?? "Unknown";
+              const date = new Date(rawDate);
+      
+              // Format ke "HH:mm dd-MM-yyyy"
+              const formattedDate = new Intl.DateTimeFormat("id-ID", {
+                hour: "2-digit",
+                minute: "2-digit",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              }).format(date);
+      
+              return <div className="lowercase">{formattedDate}</div>;
+            },
+          },
+           {
+           accessorKey: "outbound.qty",
+           header: "QTY",
+           cell: ({ row }) => <div className="capitalize">{row.original.outbound?.qty ?? "0"}</div>,
+           },
+           {
+             accessorKey: "outbound.product.category.name",
+             header: "Category",
+             cell: ({ row }) => (
+               <div className="capitalize">
+                 {row.original.outbound?.product?.category?.name ?? "Unknown"}
+               </div>
+             ),
+           },
+          {
+           accessorKey: "outbound.receiver",
+           header: "Receiver",
+           cell: ({ row }) => (
+             <div className="capitalize">
+               {row.original.outbound?.receiver ?? "Unknown"}
+             </div>
+           ),
+         },
+         {
+           accessorKey: "delivery_estimate",
+           header: "Delivery Estimate",
+           cell: ({ row }) => {
+             const rawDate = row.original.delivery_estimate;
+             return rawDate ? new Date(rawDate).toLocaleDateString("id-ID") : "N/A";
+           },
+         },
+          {
+           accessorKey: "status_shipment",
+           header: "Shipment Status",
+           cell: ({ row }) => (
+             <div className={`capitalize text-center rounded-xl text-white p-2 ${
+               row.original.status_shipment === "Delivered" ? "bg-green-400" : "bg-lime-400"
+             }`}>
+               {row.original.status_shipment ?? "Tidak Tersedia"}
+             </div>
+           ),
+         },
+    //  {
+    //    id: "actions",
+    //    header: "Actions",
+    //    enableHiding: false,
+    //    cell: ({ row }) => {
+    //      const item = row.original;
+    //      return (
+    //        <DropdownMenu>
+    //          <DropdownMenuTrigger asChild>
+    //            <Button variant="ghost" className="h-8 w-8 p-0">
+    //              <span className="sr-only">Open menu</span>
+    //              <MoreHorizontal />
+    //            </Button>
+    //          </DropdownMenuTrigger>
+    //          <DropdownMenuContent align="end">
+    //            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+    //            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
+    //              <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
+    //            </DropdownMenuItem>
+    //            <DropdownMenuSeparator />
+    //            <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
+    //              <FaEdit size={16} className="text-yellow-500 "/>Update
+    //            </DropdownMenuItem>
+    //            <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
+    //              <FaEye size={16} className="text-green-500 "/>View details
+    //            </DropdownMenuItem>
+    //            <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
+    //              <FaTrash size={16} className="text-red-500"/>Delete
+    //            </DropdownMenuItem>
+    //          </DropdownMenuContent>
+    //        </DropdownMenu>
+    //      );
+    //    },
+    //  },
    ];
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
@@ -232,7 +298,15 @@ export function DataTableDelivery({data}) {
                     className="max-w-xs"
                 />
             </div>
-            <ButtonModalDelivery />
+            <div className="flex space-x-2">
+              {/* <Button className="bg-indigo-700 hover:bg-indigo-500" >
+                Transfer Stock
+              </Button> */}
+              <Button className="bg-green-600 hover:bg-green-400" onClick={handleValidateStock}>
+                Delivered
+              </Button>
+            </div>
+            {/* <ButtonModalDelivery /> */}
         </div>
         
         <div className="rounded-md border">
@@ -245,6 +319,7 @@ export function DataTableDelivery({data}) {
                     ))}
                 </TableRow>
                 ))}
+                
             </TableHeader>
             <TableBody>
                 {table.getRowModel().rows.length ? (
@@ -256,6 +331,7 @@ export function DataTableDelivery({data}) {
                     <TableCell colSpan={columns.length} className="h-24 text-center">No results.</TableCell>
                 </TableRow>
                 )}
+                
             </TableBody>
             </Table>
         </div>

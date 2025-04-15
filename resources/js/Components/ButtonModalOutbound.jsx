@@ -14,6 +14,7 @@ import React, { useState } from "react";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import Select from "react-select";
+import { Textarea } from "flowbite-react";
 
 export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
   // State untuk form
@@ -21,6 +22,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
     product: null,
     qty: "",
     receiver: "",
+    address: "",
     pic: null,
     image: null,
     document: null
@@ -33,12 +35,15 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
   // State untuk error
   const [errors, setErrors] = useState({});
 
+  // Stock Error
+  const [stockError, setStockError] = useState("");
+
   // SET DROPDOWN SEARCH  
   const productOptions = dataStocks.map(stock => ({
     value: stock.product.id, 
-    label: stock.product.name 
+    label: `${stock.product.name} - ${stock.qty} QTY`
   }));
-
+  
   const picOptions = usr.map(user => ({
     value: user.id, 
     label: user.name 
@@ -47,6 +52,19 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
   // Handle perubahan input
   function handleChange(e) {
     const { name, value, type, files } = e.target;
+
+    // Cek khusus jika sedang input jumlah qty
+    if (name === "qty" && values.product) {
+      const selectedStock = dataStocks.find(stock => stock.product.id === values.product.value);
+      const inputQty = parseInt(value || 0, 10);
+
+      if (inputQty > selectedStock.qty) {
+        setStockError("QTY Melebihi Stock, data tidak bisa dibuat");
+      } else {
+        setStockError("");
+      }
+    }
+
     setValues((prevValues) => ({
       ...prevValues,
       [name]: type === "file" ? Array.from(files) : value,
@@ -70,6 +88,11 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
 
   // Handle submit
   function handleSubmit(e) {
+    if (stockError) {
+      toast.error("Tidak bisa submit: QTY melebihi stock!");
+      return;
+    }
+    
     e.preventDefault();
     setErrors({}); // Reset error sebelum submit
 
@@ -167,6 +190,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
 
           <div className="mt-4">
             <InputLabel htmlFor="qty" value="Jumlah Produk" />
+            {stockError && <p className="text-red-500 text-sm mb-1">{stockError}</p>}
             <TextInput
               id="qty"
               type="number"
@@ -191,6 +215,20 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
               onChange={handleChange}
             />
             {errors.receiver && <p className="text-red-500 text-sm">{errors.receiver}</p>}
+          </div>
+
+          <div className="mt-4">
+            <InputLabel htmlFor="address" value="Address" />
+            <Textarea
+              id="address"
+              type="text"
+              name="address"
+              className="mt-1 block w-full"
+              placeholder="Alamat Penerima"
+              value={values.address}
+              onChange={handleChange}
+            />
+            {errors.address && <p className="text-red-500 text-sm">{errors.alamat}</p>}
           </div>
 
           <div className="mt-4">

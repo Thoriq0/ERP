@@ -11,7 +11,7 @@ import {
   } from "./ui/alert-dialog";
 
   
-export function ButtonDialogDelete({ open, onOpenChange, onDelete }) {
+export function ButtonDialogDelete({ open, onOpenChange, onDelete, selected }) {
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
         <AlertDialogContent className="max-w-[350px] md:max-w-[600px] rounded-md">
@@ -24,7 +24,7 @@ export function ButtonDialogDelete({ open, onOpenChange, onDelete }) {
           <AlertDialogFooter className="mt-5 md:mt-0">
             <AlertDialogCancel onClick={() => onOpenChange(false)}>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={() => { 
-              onDelete(); // Jalankan aksi delete
+              onDelete(selected); 
               onOpenChange(false); // Tutup dialog setelah delete
             }}>
               Delete

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->text('address')->nullable();
             $table->string('status');
+            $table->integer('uniqueNumber')->nullable()->unique();
             $table->timestamps();
         });
 

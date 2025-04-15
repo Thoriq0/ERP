@@ -17,6 +17,7 @@ return new class extends Migration
             $table->timestamps();
             $table->integer('qty');
             $table->string('receiver');
+            $table->text('address')->nullable();
             $table->string('pic');
             $table->string('out_status')->default('preparing');
             $table->json('image')->nullable();

@@ -2,26 +2,29 @@
 
 namespace App\Http\Controllers\admin;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Stock;
 use App\Models\Expense;
 use App\Models\Inbound;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Employee;
 use App\Models\Outbound;
 use App\Models\Shipment;
 use App\Models\Supplier;
+use App\Models\LeaveQuota;
 use App\Models\BilledParty;
-use App\Models\Employee;
-use Illuminate\Http\Request;
-use App\Exports\InboundExport;
 // use Illuminate\Support\Facades\DB;
 // use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use App\Exports\InboundExport;
 use App\Imports\InboundImport;
 use App\Models\AccountPayable;
 use App\Models\StagingInbound;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
 class InventoryController extends Controller
@@ -341,11 +344,11 @@ class InventoryController extends Controller
         // GET EKSTENSI
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
 
-        $inboundFind = Inbound::find($inboundId);
+        $outboundFind = Inbound::find($inboundId);
 
         if($extension === 'pdf'){
             // GET PDF JSON
-            $getPdf = json_decode($inboundFind->pdf, true);
+            $getPdf = json_decode($outboundFind->pdf, true);
             // DELETE GET DATA
             $updatedPdf = array_filter($getPdf, function ($pdf) use ($fileName) {
                 return $pdf !== $fileName; 
@@ -353,7 +356,7 @@ class InventoryController extends Controller
             // TRANFORM JSON
             $updatedPdfJson = json_encode(array_values($updatedPdf));
             // UPDATE INBOUND
-            $inboundFind->update(['pdf' => $updatedPdfJson]);
+            $outboundFind->update(['pdf' => $updatedPdfJson]);
             
             // PATH FILE
             $filePath = public_path("pdfs/inbounds/{$fileName}");
@@ -366,14 +369,65 @@ class InventoryController extends Controller
             }
             return redirect()->back()->with('success', 'Document Berhasil Terhapus');
         }else{
-            $getImg = json_decode($inboundFind->image, true);
+            $getImg = json_decode($outboundFind->image, true);
             $updatedImg = array_filter($getImg, function ($img) use ($fileName) {
                 return $img !== $fileName; 
             });
             $updatedImgJson = json_encode(array_values($updatedImg));
-            $inboundFind->update(['image' => $updatedImgJson]);
+            $outboundFind->update(['image' => $updatedImgJson]);
 
             $filePath = public_path("images/inbounds/{$fileName}");
+            if (file_exists($filePath)) {
+                File::delete($filePath);
+            } else {
+                // dd("File tidak ditemukan!", $filePath);
+            }
+            return redirect()->back()->with('success', 'Image Berhasil Terhapus');
+        }
+    }
+
+    public function deleteOutbound(Request $request){
+        // dd($request->all());
+
+        $fileName = $request->data['fileName'];
+        $outboundId = $request->data['outboundId'];
+        
+        // GET EKSTENSI
+        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+        $outboundFind = Outbound::find($outboundId);
+
+        if($extension === 'pdf'){
+            // GET PDF JSON
+            $getPdf = json_decode($outboundFind->document, true);
+            // DELETE GET DATA
+            $updatedPdf = array_filter($getPdf, function ($pdf) use ($fileName) {
+                return $pdf !== $fileName; 
+            });
+            // TRANFORM JSON
+            $updatedPdfJson = json_encode(array_values($updatedPdf));
+            // UPDATE OUTBOUND
+            $outboundFind->update(['document' => $updatedPdfJson]);
+            
+            // PATH FILE
+            $filePath = public_path("pdfs/outbounds/{$fileName}");
+
+            // CHECK AND DELETE
+            if (file_exists($filePath)) {
+                File::delete($filePath);
+            } else {
+                // dd("File tidak ditemukan!", $filePath);
+            }
+            return redirect()->back()->with('success', 'Document Berhasil Terhapus');
+        }else{
+            $getImg = json_decode($outboundFind->image, true);
+            $updatedImg = array_filter($getImg, function ($img) use ($fileName) {
+                return $img !== $fileName; 
+            });
+            $updatedImgJson = json_encode(array_values($updatedImg));
+            $outboundFind->update(['image' => $updatedImgJson]);
+
+            $filePath = public_path("images/outbounds/{$fileName}");
             if (file_exists($filePath)) {
                 File::delete($filePath);
             } else {
@@ -453,6 +507,7 @@ class InventoryController extends Controller
             'product' => 'required|exists:products,id',
             'qty' => 'required|integer|min:1',
             'receiver' => 'required|string',
+            'address' => 'required|string',
             'pic' => 'required|string',
             'image.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'document.*' => 'nullable|mimes:pdf|max:5120'
@@ -506,6 +561,7 @@ class InventoryController extends Controller
             'product_id' => $product->id,
             'qty' => $request->qty,
             'receiver' => $request->receiver,
+            'address' => $request->address,
             'pic' => $request->pic,
             'image' => json_encode($imageNames),
             'document' => json_encode($pdfNames)
@@ -524,17 +580,95 @@ class InventoryController extends Controller
     
         return redirect()->back()->with(['message' => 'Barang berhasil dikeluarkan.']);
     }
+
+    public function outboundUpdate(Request $request, Outbound $outbound){
+
+        $request->validate([
+            "qty" => "required|integer|min:1",
+            'receiver' => 'required|string',
+            'address' => 'required|string',
+        ]);
+
+        $oldQty = $outbound->qty; // qty lama
+        $newQty = $request->qty;  // qty baru dari input
+        $selisih = 0;
+
+        $stockQuery = Stock::where('product_id', $outbound->product_id);
+        $stock = $stockQuery->first();
+        
+        if ($newQty > $oldQty) {
+            $selisih = $newQty - $oldQty;
+
+            if ($stock->qty < $selisih) {
+                return redirect()->back()->with('error', 'Stok tidak mencukupi untuk menambah jumlah outbound.');
+            }
+
+            // Kurangi stok
+            $stockQuery->update([
+                "qty" =>  $stock->qty -= $selisih
+            ]) ;
+
+        } elseif ($newQty < $oldQty) {
+            $selisih = $oldQty - $newQty;
+            
+            // Tambah stok
+            $stockQuery->update([
+                "qty" =>  $stock->qty += $selisih
+            ]) ;
+        }
+
+
+        $outbound->update([
+            'qty' => $newQty,
+            'receiver' => $request->receiver,
+            'address' => $request->address,
+        ]);
+
+        return redirect()->back()->with('success', 'Outbound berhasil diubah! 🎉');
+    }
     
 
     public function outboundDestroy(Outbound $Outbound){
-        
-        if ($Outbound->image) { 
-            $imagePath = public_path('images/outbounds/' . $Outbound->image); 
-            if (File::exists($imagePath)) {
-                File::delete($imagePath);
-            }
+
+        // TRANSFER BACK QTY
+        $getQty = $Outbound->qty;
+
+        $stockQuery = Stock::where('product_id', $Outbound->product_id);
+
+        if($stockQuery){
+            $stock = $stockQuery->first();
+            $stockQuery->update([
+                'qty' => $stock->qty + $getQty,
+            ]);
         }
 
+        // DELETING FILE
+        $documents = $Outbound->document;
+        $images = $Outbound->image;
+
+        if ($documents || $images) { 
+            $dcmntjs = json_decode($documents);
+            $imgjs = json_decode($images);
+            
+            // Document Path
+            foreach($dcmntjs as $dcmnts){
+                $documentPath = public_path("pdfs/outbounds/{$dcmnts}");
+                if(File::exists($documentPath)){
+                    File::delete($documentPath);
+                }
+            }
+
+            foreach($imgjs as $imgs){
+                $imgePath = public_path("images/outbounds/{$imgs}");
+
+                if(File::exists($imgePath)){
+                    File::delete($imgePath);
+                }
+            }
+
+        }
+        
+        // DELETING DB
         $Outbound->delete();
         return redirect()->back();
     }
@@ -810,6 +944,7 @@ class InventoryController extends Controller
 
     // ---- EMPLOYEE ----
     public function employeeStore(Request $request){
+        
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|string',
@@ -819,6 +954,13 @@ class InventoryController extends Controller
             'phone' => 'string',
             'address' => 'required|string',
         ]);
+
+         // Tanggal hari ini
+        $today = Carbon::now()->format('Y-m-d');
+        // Hitung jumlah data yang dibuat hari ini
+        $recordToday = Employee::whereDate('created_at', $today)->count() + 1;
+        // Buat unique number: DDMMYYYY + 3-digit urutan
+        $uniqueNumber = Carbon::now()->format('dmY') . str_pad($recordToday, 3, '0', STR_PAD_LEFT);
         
         Employee::create([
             'name' => $request->name,
@@ -828,7 +970,25 @@ class InventoryController extends Controller
             'gender' => $request->gender,
             'phone' => $request->phone,
             'address' => $request->address,
-        ]);   
+            'uniqueNumber' => $uniqueNumber,
+            'leave_quota' => 12
+        ]);
+
+        $birthDate = Carbon::parse($request->dateOfBirth);
+        $passwordDefault = $birthDate->format('dm y'); // contoh: 160775
+        $passwordDefault = str_replace(' ', '', $passwordDefault); // hilangkan spasi kalau ada
+        // dd($uniqueNumber);
+        // Simpan data user berdasarkan employee
+        User::create([
+            'name' => $request->name,
+            'role' => 'staff',
+            'email' => $request->email,
+            'password' => Hash::make($passwordDefault),
+            'address' => $request->address,
+            'status' => 'validating',
+            'uniqueNumber' => $uniqueNumber
+        ]);
+        
     }
     public function employeeDestroy(Employee $employee){
         $employee->delete();
@@ -854,8 +1014,59 @@ class InventoryController extends Controller
             'phone' => $request->phone,
             'address' => $request->address,
         ]);
+
+        User::where('uniqueNumber', $request->uniqueNumber)->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'address' => $request->address,
+        ]);
     
         session()->flash('success', 'Data Karyawan berhasil diperbarui! 🎉');
         return redirect()->back();
+    }
+    public function deliveryVal(Request $request){
+        // dd($request->all());
+
+        $selectedIds = $request->input('selected_products');
+
+        foreach($selectedIds as $selected){
+            $outboundId = Shipment::where('id', $selected)->value('outbound_id');
+    
+            // Update shipment
+            Shipment::where('id', $selected)->update([
+                'status_shipment' => 'Delivered'
+            ]);
+    
+            // Update outbound
+            Outbound::where('id', $outboundId)->update([
+                'out_status' => 'Delivered'
+            ]);
+        }
+
+        session()->flash('success', 'Data Pengiriman berhasil diperbarui! 🎉');
+        return redirect()->back();
+    }
+
+    public function timeStore(Request $request){
+        // dd($request->all());
+
+        $request->validate([
+            "name" => "required",
+            "note" => "required",
+            "leave_dates" => "required"
+        ]);
+
+        $dates = $request->leave_dates;
+        $jsonDates = json_encode($dates);
+        $employeeid = (int) $request->employee_id;
+
+        LeaveQuota::create([
+            "employee_id" => $employeeid,
+            "createdBy" => $request->name,
+            "note" => $request->note,
+            "dueto" => $jsonDates,
+            "status" => "validating"
+        ]);
+
     }
 }

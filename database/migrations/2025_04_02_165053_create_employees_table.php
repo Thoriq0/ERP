@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('gender')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
+            $table->integer('uniqueNumber')->nullable()->unique();
+            $table->integer('leave_quota')->nullable();
             $table->timestamps();
         });
     }

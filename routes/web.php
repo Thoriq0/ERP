@@ -51,6 +51,8 @@ Route::middleware('auth', 'verified')->group(function () {
         // route outbound action
         Route::post('/admin/outbound', [InventoryController::class, 'outboundStore'])->name('inventory.outbound.store');
         Route::delete('/admin/outbound/{outbound}', [InventoryController::class, 'outboundDestroy'])->name('inventory.outbound.destroy');
+        Route::post('/admin/outbounddelete', [InventoryController::class, 'deleteOutbound']);
+        Route::put('/admin/outbound/{outbound}', [InventoryController::class, 'outboundUpdate'])->name('inventory.outbound.update');
 
         // route supplier action
         Route::post('/admin/supplier', [InventoryController::class, 'supplierStore'])->name('inventory.supplier.store');
@@ -80,6 +82,9 @@ Route::middleware('auth', 'verified')->group(function () {
         // route shipmentaction action
         Route::post('/admin/shipmentorder', [InventoryController::class, 'shipmentOrder'])->name('inventory.shipmentorder');
 
+        // route delivery action
+        Route::post('/admin/delivery', [InventoryController::class, 'deliveryVal'])->name('inventory.delivery.store');
+
         // route payment action
         Route::post('/admin/payment', [InventoryController::class, 'paymentGet'])->name('inventory.payment.get');
 
@@ -105,6 +110,9 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::delete('/admin/employee/{employee}', [InventoryController::class, 'employeeDestroy'])->name('inventory.employee.destroy');
         Route::put('/admin/employee/{employee}', [InventoryController::class, 'employeeUpdate'])->name('inventory.employee.update');
         // ======= end route action employee =======
+
+        // Route action timeoff
+        Route::post('/admin/timeoff', [InventoryController::class, 'timeStore'])->name('inventory.time.store');
 
 
         // route view reports

@@ -9,43 +9,57 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import InputLabel from "../InputLabel";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import { router } from "@inertiajs/react"; 
+import Select from "react-select";
 
-export function UpdateOutboundModal({ userRole, open, onClose, outbound, productData }) {
-  // debug
-  // console.log("Outbound data:", outbound);
-  // console.log("Product data:", productData);
-
+export function UpdateOutboundModal({ userRole, open, onClose, outbound, productData, dataStocks }) {
+  const { flash } = usePage().props;
   const { data, setData, errors, setErrors, put, reset } = useForm({
     product_id: outbound?.product_id || "",
     supplier_name: "",
     qty: outbound?.qty || "",
-    pic: outbound?.pic || "",
     receiver: outbound?.receiver || "",
+    address: outbound?.address || ""
   });
+
+  const productOptions = dataStocks.map(stock => ({
+    value: stock.product.id, 
+    label: `${stock.product.name} - ${stock.qty} QTY`
+  }));
+
+  // Menampilkan toast untuk success atau error
+  useEffect(() => {
+    if (flash?.success) {
+      toast.success(flash.success, { duration: 5000 });
+      onClose();
+    }
+    if (flash?.error) {
+      toast.error(flash.error, { duration: 5000 });
+    }
+  }, [flash]);
 
   useEffect(() => {
     if (outbound) {
       const selectedProduct = productData.find(prod => prod.id === outbound.product_id);
+      
       setData({
         product_id: outbound.product_id,
         supplier_name: selectedProduct?.supplier?.name || "Tidak Diketahui",
         qty: outbound.qty,
         receiver: outbound.receiver,
-        pic: outbound.pic,
+        address: outbound.address
       });
     }
   }, [outbound, productData]);
 
   function handleSubmit(e) {
     e.preventDefault();
-    setErrors({});
 
     const rolePaths = {
-      admin: "/admin/outbound",
-      wrhs: "/wrhs/outbound",
+      admin: `/admin/outbound/`,
+      wrhs: `/wrhs/outbound`,
     };
 
     const userPath = rolePaths[userRole];
@@ -81,25 +95,24 @@ export function UpdateOutboundModal({ userRole, open, onClose, outbound, product
         </DialogHeader>
         <form onSubmit={handleSubmit}>
             <div className="mt-4">
-                <InputLabel htmlFor="product_id" value="Product" />
-                <select
-                    id="product_id"
-                    name="product_id"
-                    className="mt-1 block w-full border p-2 rounded-md"
-                    value={data.product_id}
-                    onChange={(e) => {
-                      const selectedProduct = productData.find(prod => prod.id === e.target.value);
-                      setData("product_id", e.target.value);
-                      setData("supplier_name", selectedProduct?.supplier?.name || "Tidak Diketahui");
-                    }}
-                    >
-                    {productData.map((product) => (
-                        <option key={product.id} value={product.id}>
-                                {product.name}
-                        </option>
-                    ))}
-                </select>
-                {errors.product_id && <p className="text-red-500 text-sm">{errors.product_id}</p>}
+              <InputLabel htmlFor="product_id" value="Product" />
+              <Select
+                id="product_id"
+                name="product_id"
+                options={productOptions}
+                isSearchable={true}
+                placeholder="Pilih Product"
+                value={productOptions.find(opt => opt.value === data.product_id)}
+                onChange={(selected) => {
+                  const selectedStock = dataStocks.find(
+                    (stock) => stock.product.id === selected.value
+                  );
+                  setData("product_id", selected.value);
+                  setData("supplier_name", selectedStock?.product?.supplier?.name || "Tidak Diketahui");
+                }}
+                className="mt-1 block w-full border p-2 rounded-md"
+              />
+              {errors.product_id && <p className="text-red-500 text-sm">{errors.product_id}</p>}
             </div>
             <div className="mt-4">
                 <InputLabel htmlFor="supplier_name" value="Nama Supplier" />
@@ -141,6 +154,18 @@ export function UpdateOutboundModal({ userRole, open, onClose, outbound, product
                 {errors.receiver && <p className="text-red-500 text-sm">{errors.receiver}</p>}
             </div>
             <div className="mt-4">
+                <InputLabel htmlFor="address" value="Alamat" />
+                <textarea
+                id="address"
+                name="address"
+                className="mt-1 block w-full border p-2 rounded-md"
+                placeholder="Alamat"
+                value={data.address}
+                onChange={(e) => setData("address", e.target.value)}
+                />
+                {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
+            </div>
+            {/* <div className="mt-4">
                 <InputLabel htmlFor="pic" value="Penerima Produk" />
                 <input
                 id="pic"
@@ -152,7 +177,7 @@ export function UpdateOutboundModal({ userRole, open, onClose, outbound, product
                 onChange={(e) => setData("pic", e.target.value)}
                 />
                 {errors.pic && <p className="text-red-500 text-sm">{errors.pic}</p>}
-            </div>
+            </div> */}
 
           <DialogFooter>
             <Button

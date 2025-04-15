@@ -40,7 +40,7 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
-export function DataTableOutbound({ data, userRole, supplierData, productData, dataStocks, usr }) {
+export function DataTableOutbound({ data, userRole, supplierData, productData, dataStocks, usr, roleName }) {
 
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -162,11 +162,6 @@ export function DataTableOutbound({ data, userRole, supplierData, productData, d
       },
     },    
     {
-      accessorKey: "pic",
-      header: "PIC",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("pic")}</div>,
-    },
-    {
       accessorKey: "out_status",
       header: "Status",
       cell: ({ row }) => {
@@ -256,12 +251,15 @@ export function DataTableOutbound({ data, userRole, supplierData, productData, d
         outbound={selectedProduct}
         productData={productData}
         userRole={userRole}
+        dataStocks={dataStocks}
       />
       <ViewOutboundDetailModal
         open={detailModalOpen}
         onClose={() => setDetailModalOpen(false)}
         outbound={selectedOutbound}
         productData={productData}
+        userRole={userRole}
+        user={usr}
       />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">

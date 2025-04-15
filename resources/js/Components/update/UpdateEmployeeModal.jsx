@@ -43,6 +43,7 @@ export function UpdateEmployeeModal({ userRole, open, onClose, employee }) {
         gender: employee.gender || "",
         phone: employee.phone || "",
         address: employee.address || "",
+        uniqueNumber: employee?.uniqueNumber || ""
       });
     }
   }, [employee]);
