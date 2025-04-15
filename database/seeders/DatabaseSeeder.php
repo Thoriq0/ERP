@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'fnc', 'email' => 'fnc@fnc.com', 'role' => 'fnc'],
             ['name' => 'logistik', 'email' => 'logistik@logistik.com', 'role' => 'logistik'],
             ['name' => 'hr', 'email' => 'hr@hr.com', 'role' => 'hr'],
+            ['name' => 'staff', 'email' => 'staff@staff.com', 'role' => 'staff'],
         ];
 
         foreach ($users as $user) {

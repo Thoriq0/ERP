@@ -979,6 +979,7 @@ class InventoryController extends Controller
         $passwordDefault = str_replace(' ', '', $passwordDefault); // hilangkan spasi kalau ada
         // dd($uniqueNumber);
         // Simpan data user berdasarkan employee
+        // dd($passwordDefault);
         User::create([
             'name' => $request->name,
             'role' => 'staff',

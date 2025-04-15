@@ -41,6 +41,8 @@ class AuthenticatedSessionController extends Controller
             return redirect('/hr/dashboard');
         }else if(Auth::user()->role == 'wrhs'){
             return redirect('/wrhs/dashboard');
+        }else if(Auth::user()->role == 'staff'){
+            return redirect('/staff/dashboard');
         }else{
             return abort(404, 'Not Found');
         }

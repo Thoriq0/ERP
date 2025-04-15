@@ -1,14 +1,15 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\InventoryController;
-use App\Http\Controllers\admin\WarehouseUserController;
 use App\Http\Controllers\finance\FinanceController;
 use App\Http\Controllers\hr\HumanResourceController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\admin\WarehouseUserController;
 use App\Http\Controllers\warehouse\WarehouseController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -206,6 +207,9 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::post('/wrhs/shipmentorder', [InventoryController::class, 'shipmentOrder'])->name('inventory.shipmentorder');
 
     });
+
+    // ==== ROLE STAFF (STAFF) ====
+    Route::get('/staff/dashboard', [StaffController::class, 'view'])->name('staff.dashboard');
 
     // Profile User
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
