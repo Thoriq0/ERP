@@ -158,6 +158,9 @@ Route::middleware('auth', 'verified')->group(function () {
         
         // Route employee action
         Route::post('/hr/employee', [InventoryController::class, 'employeeStore'])->name('hr.employee.store');
+        
+        // Route action timeoff
+        Route::post('/hr/timeoff', [InventoryController::class, 'timeStore'])->name('hr.time.store');
     });
 
     // ==== ROLE Warehouse/Inventory (wrhs) ====
@@ -204,15 +207,26 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::delete('/wrhs/category/{category}', [InventoryController::class, 'categoryDestroy'])->name('wrhs.category.destroy');
 
         // route shipmentaction action
-        Route::post('/wrhs/shipmentorder', [InventoryController::class, 'shipmentOrder'])->name('inventory.shipmentorder');
+        Route::post('/wrhs/shipmentorder', [InventoryController::class, 'shipmentOrder'])->name('wrhs.shipmentorder');
+
+        // route delivery action
+        Route::post('/wrhs/delivery', [InventoryController::class, 'deliveryVal'])->name('wrhs.delivery.store');
 
     });
 
     // ==== ROLE STAFF (STAFF) ====
     Route::get('/staff/dashboard', [StaffController::class, 'view'])->name('staff.dashboard');
+    Route::get('/staff/attandance', [StaffController::class, 'attandanceView'])->name('staff.attandance');
 
+    // ==== END ROLE STAFF (STAFF) ====
+    
     // Profile User
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/staff/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('admin.profile.edit');
+    Route::get('/wrhs/profile', [ProfileController::class, 'edit'])->name('wrhs.profile.edit');
+    Route::get('/fnc/profile', [ProfileController::class, 'edit'])->name('fnc.profile.edit');
+    Route::get('/hr/profile', [ProfileController::class, 'edit'])->name('hr.profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
