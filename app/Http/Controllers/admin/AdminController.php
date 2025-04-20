@@ -74,7 +74,7 @@ class AdminController extends Controller
 
     public function prestockView(){
         return inertia::render('features/PreStockValidation', [
-            'title' => 'Validating Stock',
+            'title' => 'Admin Validating Stock',
             'inbound' => Inbound::all(),
             'products' => Product::with(['category:id,name', 'supplier:id,name'])
                             ->select('id', 'name', 'category_id', 'supplier_id')
@@ -184,7 +184,7 @@ class AdminController extends Controller
     public function bpView(){
         // dd()
         return inertia::render('features/BilledParty', [
-            'title' => 'Billed Party',
+            'title' => 'Admin Billed Party',
             'bp' => BilledParty::all()
         ]);
     }
@@ -254,8 +254,8 @@ class AdminController extends Controller
 
     public function attendanceView(){
         // dd();
-        return inertia::render('features/Attendance', [
-            'title' => 'Admin HR attendance Employee',
+        return inertia::render('features/Attandance', [
+            'title' => 'Admin HR Attendance',
         ]);
         // dd(Inbound::all());
     }

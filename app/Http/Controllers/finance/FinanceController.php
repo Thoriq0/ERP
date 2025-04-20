@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\AccountPayable;
 use App\Models\BilledParty;
 use App\Models\Payment;
+use App\Models\Expense;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
 
@@ -22,7 +23,7 @@ class FinanceController extends Controller
     public function apView(){
         // dd();
         return inertia::render('features/AccountPayable', [
-            'title' => 'Admin Finance Account Payable',
+            'title' => 'Finance Account Payable',
             'inbound' => Inbound::all(),
             'products' => Product::with(['category:id,name', 'supplier:id,name'])
                             ->select('id', 'name', 'category_id', 'supplier_id')
@@ -69,14 +70,14 @@ class FinanceController extends Controller
         // dd();
         return inertia::render('features/Outcome', [
             'title' => 'Finance Outcome',
-    
+            'expense' => Expense::all()
         ]);
     }
 
     public function bpView(){
         // dd()
         return inertia::render('features/BilledParty', [
-            'title' => 'Billed Party',
+            'title' => 'Finance Billed Party',
             'bp' => BilledParty::all()
         ]);
     }

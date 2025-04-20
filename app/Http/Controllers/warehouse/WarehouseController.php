@@ -66,7 +66,7 @@ class WarehouseController extends Controller
     public function shipmentView(){
         // dd();
         return inertia::render('features/Shipment', [
-            'title' => 'Inventory Shipment',
+            'title' => 'Logistic Shipment',
             'shipmentO' => Shipment::with([
                 'outbound:id,qty,out_status,product_id,receiver,created_at', 
                 'outbound.product:id,name,category_id,supplier_id',
@@ -88,15 +88,6 @@ class WarehouseController extends Controller
             ->get(),
 
             'smallShip' => Shipment::with(['outbound.product:id,name'])->select('id', 'outbound_id')->get(),
-        ]);
-        // dd(Inbound::all());
-    }
-
-    public function deliveryView(){
-        // dd();
-        return inertia::render('features/Delivery', [
-            'title' => 'Inventory Delivery',
-            'inbound' => Inbound::all()
         ]);
         // dd(Inbound::all());
     }
@@ -165,7 +156,7 @@ class WarehouseController extends Controller
 
     public function prestockView(){
         return inertia::render('features/PreStockValidation', [
-            'title' => 'Validating Stock',
+            'title' => 'Inventory Validating Stock',
             'inbound' => Inbound::all(),
             'products' => Product::with(['category:id,name', 'supplier:id,name'])
                             ->select('id', 'name', 'category_id', 'supplier_id')
@@ -177,6 +168,22 @@ class WarehouseController extends Controller
             // ->where('status', 'validating')->get()
         ]);
         
+    }
+
+    public function deliveryView(){
+        // dd();
+        return inertia::render('features/Delivery', [
+            'title' => 'Logistic Delivery',
+            'shipmentE' => Shipment::with([
+                'outbound:id,qty,out_status,product_id,receiver,created_at', 
+                'outbound.product:id,name,category_id,supplier_id',
+                'outbound.product.category:id,name',
+                'outbound.product.supplier:id,name'
+            ])
+            ->whereIn('status_shipment', ['shipping process', 'Delivered'])
+            ->select('id', 'outbound_id', 'delivery_estimate', 'status_shipment')
+            ->get(),
+        ]);
     }
 
 }

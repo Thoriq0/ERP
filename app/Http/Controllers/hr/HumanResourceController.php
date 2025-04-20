@@ -4,6 +4,7 @@ namespace App\Http\Controllers\hr;
 
 use Inertia\Inertia;
 use App\Models\Employee;
+use App\Models\LeaveQuota;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
 
@@ -11,13 +12,13 @@ class HumanResourceController extends Controller
 {
     public function view(){
         return Inertia::render('hr/Dashboard', [
-            'title' => 'Dashboard HumanResource'
+            'title' => 'Dashboard Human Resource'
         ]);
     }
 
     public function employeeView(){
         return Inertia::render('features/Employee', [
-            'title' => 'HR Employee',
+            'title' => 'Human Resource Employee',
             'employee' => Employee::all(),
         ]);
     }
@@ -25,15 +26,17 @@ class HumanResourceController extends Controller
     public function timeView(){
         // dd();
         return inertia::render('features/TimeRequest', [
-            'title' => 'Admin HR Time Off Request',
+            'title' => 'Human Resource Time Off Request',
+            'emplys' => Employee::all(),
+            'lq' => LeaveQuota::all()
         ]);
-        // dd(Inbound::all());
+        // dd(Employee::all());
     }
 
     public function attendanceView(){
         // dd();
-        return inertia::render('features/Attendance', [
-            'title' => 'Admin HR attendance Employee',
+        return inertia::render('features/Attandance', [
+            'title' => 'Human Resource Attendance ',
         ]);
         // dd(Inbound::all());
     }
