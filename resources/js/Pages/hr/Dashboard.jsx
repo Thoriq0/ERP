@@ -8,9 +8,9 @@ export default function DashboardInventory({auth, title}) {
         <DashboardHumanResource auth={auth}>
             <Head title="Dashboard" />
             <div className="fixed bg-[#f5f5f5] w-full h-18 md:h-14 px-6 py-4 border-b z-10">
-                <h1 className="text-xl font-bold">{title}</h1>
+                <h1 className="text-xl font-bold ml-5">{title}</h1>
             </div>
-            <div className="p-6">
+            <div className="p-6 md:p-4 lg:p-6">
                 <div className="flex flex-col lg:flex-row gap-8 mt-16 mb-10">
                     {/* employee */}
                     <div className='w-full border border-borderCard shadow-2xl rounded-2xl py-10'>

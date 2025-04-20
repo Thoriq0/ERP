@@ -1,11 +1,11 @@
-import DashboardInventoryLayout from '@/Layouts/DashboardInventoryLayout';
+import DashboardStaff from '@/Layouts/DashboardStaff';
 import BarChart from '@/Components/BarChartAdmin';
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
-export default function DashboardInventory({auth, title}) {
+export default function Dashboard({auth, title}) {
     return (
-        <DashboardInventoryLayout auth={auth}>
+        <DashboardStaff auth={auth}>
             <Head title="Dashboard" />
 
             <div className="fixed bg-[#f5f5f5] w-full h-18 md:h-14 px-6 py-4 border-b z-10">
@@ -62,8 +62,6 @@ export default function DashboardInventory({auth, title}) {
                 </div>
             </div>
 
-
-
-        </DashboardInventoryLayout>
+        </DashboardStaff>
     );
 }

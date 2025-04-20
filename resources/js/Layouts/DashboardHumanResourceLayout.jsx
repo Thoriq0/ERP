@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import MainSidebar from '@/Components/MainSidebar';
 import { HiChartPie} from "react-icons/hi";
 import { FaClipboardList, FaUserTie, FaFileAlt } from "react-icons/fa";
 import { MdAccessTime } from "react-icons/md";
 
-export default function DashboardAdminLayout({ children, auth }) {
+export default function DashboardHumanResourceLayout({ children, auth, ...props }) {
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
     const menuItems = [
         { name: "Dashboard", path: "/hr/dashboard", icon: <HiChartPie /> },
         { name: "Employee", path: "/hr/employee", icon: <FaUserTie /> },
@@ -27,13 +29,18 @@ export default function DashboardAdminLayout({ children, auth }) {
     return (
         <div className="flex">
             <MainSidebar
+                {...props}
+                isSidebarCollapsed={isSidebarCollapsed}
+                setIsSidebarCollapsed={setIsSidebarCollapsed}
                 logo = "/images/Logo.svg"
                 title="GETS"
                 user={auth.user}
                 menuItems={menuItems}
                 dropdownMenus={dropdownMenus}
             />
-            <div className="ml-0 lg:ml-64 w-full">
+            <div className={`transition-all duration-300 w-full mt-0 ${
+                    isSidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
+                }`}>
                 {children}
             </div>
         </div>

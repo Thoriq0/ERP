@@ -9,12 +9,12 @@ export default function DashboardFinance({auth, title}) {
         <DashboardFinanceLayout auth={auth}>
             <Head title="Dashboard" />
             <div className="fixed bg-[#f5f5f5] w-full h-18 md:h-14 px-6 py-4 border-b z-10">
-                <h1 className="text-xl font-bold">{title}</h1> 
+                <h1 className="text-xl font-bold ml-5">{title}</h1> 
             </div>
-            <div className="p-6">
-                <div className='mt-16'>
+            <div className="p-6 ">
+                <div className='mt-16 ml-5'>
                     {/* Bar Char Expense */}
-                    <div className='md:h-[600px] border border-borderCard rounded-xl shadow-2xl p-5 md:w-[1040px] mb-14'>
+                    <div className='md:h-[600px]  border border-borderCard rounded-xl shadow-2xl p-5 md:w-[1040px] mb-14'>
                         <h1 className='font-bold text-lg'>Profit & Loss</h1>
                         <div className='h-px bg-[#C8C6C6] mt-2 mb-5'></div>
                         <BarChart/>

@@ -1,18 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import { FaUser, FaSignOutAlt, FaChevronRight, FaBell, FaCreditCard } from "react-icons/fa";
-import { HiChevronUpDown } from "react-icons/hi2";
+import { HiChevronUpDown, HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi2";
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar"
 
-export default function MainSidebar({ title, menuItems, logo, dropdownMenus, user }) {
-    const { url, component } = usePage();
+export default function MainSidebar({ title, menuItems, logo, dropdownMenus, user, isSidebarCollapsed, setIsSidebarCollapsed }) {
+
+    const { url } = usePage();
     const [openDropdowns, setOpenDropdowns] = useState({});
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); //mobile toggle 
+
+    // Media query untuk mendeteksi ukuran layar tablet
+    // keep dulu
+    // useEffect(() => {
+    //     const mediaQuery = window.matchMedia("(max-width: 1024px)"); 
+    //     const handleMediaQueryChange = (e) => {
+    //         setIsSidebarCollapsed(e.matches); 
+    //     };
+        
+    //     handleMediaQueryChange(mediaQuery);
+    //     mediaQuery.addEventListener("change", handleMediaQueryChange);
+        
+    //     return () => mediaQuery.removeEventListener("change", handleMediaQueryChange);
+    // }, [setIsSidebarCollapsed]);
 
     const toggleDropdown = (menuName) => {
         setOpenDropdowns((prev) => ({
@@ -41,67 +56,130 @@ export default function MainSidebar({ title, menuItems, logo, dropdownMenus, use
 
             {/* Sidebar */}
             <div
-                className={`fixed top-0 left-0 h-full w-64 bg-primaryPurple text-white transform transition-transform duration-300 z-40 ${
-                    isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-                }`}
+                className={`fixed top-0 left-0 h-full w-64 bg-gradient-to-br from-[#42307D] to-[#6A4FCF] text-white transform transition-all duration-300 ease-in-out z-40
+                    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
+                    ${isSidebarCollapsed ? "md:w-20" : "md:w-64"} 
+                    lg:translate-x-0`}
             >
+                {/* Collapse button (Desktop only) */}
+                <button
+                    onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                    className="hidden lg:block absolute top-3 right-[-35px] text-white p-2 rounded-md z-50"
+                >
+                    {isSidebarCollapsed ? <HiChevronDoubleRight className="text-black text-xl" /> : <HiChevronDoubleLeft className="text-black text-xl" /> }
+                </button>
+
+                {/* logo and title */}
                 <div className="flex flex-row mt-5 mb-2 ml-5">
                     {logo && (
                         <div className="flex items-center justify-center">
                             <img src={logo} alt="Logo" className="w-[50px] h-auto" />
                         </div>
                     )}
-                    <h2 className="text-2xl font-bold mt-2 ml-3">{title}</h2>
+                    {!isSidebarCollapsed && (
+                        <>
+                            <h2 className="text-xl font-bold mt-2 ml-3 text-center">{title}</h2>
+                        </>
+                    )}
                 </div>
                 <div className='h-px w-[90%] mx-auto bg-[#C8C6C6] mt-3'></div>
 
-                <nav className="flex flex-col p-4 space-y-2 overflow-y-auto h-[calc(100%-150px)] custom-scrollbar">
-                    {menuItems.map((item) => (
-                        <Link
-                            key={item.path}
-                            href={item.path}
-                            className={`flex items-center p-2 rounded hover:bg-[#D9D9D940] ${
-                                url.startsWith(item.path) ? "bg-activeMenuSidebar font-semibold" : ""
-                            }`}
-                        >
-                            <span className="mr-2">{item.icon}</span>
-                            {item.name}
-                        </Link>
-                    ))}
-                    
+                <nav className="flex flex-col p-4 space-y-2 overflow-y-auto h-[calc(100%-150px)] custom-scrollbar min-h-0">
+                    {/* menu items */}
+                    <div className="flex flex-col space-y-1">
+                        {menuItems.map((item) => (
+                            <Link
+                                key={item.path}
+                                href={item.path}
+                                title={isSidebarCollapsed ? item.name : ""}
+                                className={`group flex items-center gap-3 p-2 rounded transition relative overflow-hidden ${
+                                    url.startsWith(item.path)
+                                        ? "bg-activeMenuSidebar font-semibold text-white"
+                                        : "text-white hover:bg-[#D9D9D940]"
+                                }`}
+                            >
+                                {/* Left Border Highlight */}
+                                {url.startsWith(item.path) && (
+                                    <span className="absolute left-0 top-0 h-full w-1 bg-white rounded-r-md"></span>
+                                )}
+                                {/* Icon */}
+                                <span
+                                className={`text-md transition-transform duration-300 group-hover:scale-110 ${
+                                    isSidebarCollapsed ? "mx-auto" : "ml-0"
+                                } ${url.startsWith(item.path) ? "text-white" : "text-white/80"}`}
+                                >
+                                    {item.icon}
+                                </span>
 
+
+                                {!isSidebarCollapsed && <span>{item.name}</span>}
+
+                                {isSidebarCollapsed && (
+                                    <span
+                                        className="absolute left-full ml-2 px-2 py-1 text-xs bg-black text-white rounded opacity-0 group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50"
+                                        style={{ visibility: isSidebarCollapsed ? 'hidden' : 'visible' }}
+                                    >
+                                        {item.name}
+                                    </span>
+                                )}
+                            </Link>
+                        ))}
+                    </div>
+                    {/* Dropdown Menus */}
                     {dropdownMenus.map((dropdown) => {
                         const isActive = isDropdownActive(dropdown);
+                        const isOpen = openDropdowns[dropdown.title] || isActive;
+
                         return (
                             <div key={dropdown.title} className="flex flex-col">
                                 <button
                                     onClick={() => toggleDropdown(dropdown.title)}
-                                    className="flex items-center justify-between p-2 rounded hover:bg-[#D9D9D940]"
+                                    className={`flex items-center gap-2 p-2 rounded transition relative overflow-hidden justify-between
+                                        ${isActive ? "bg-activeMenuSidebar font-semibold text-white border-l-4 border-white" : "text-white hover:bg-[#D9D9D940] border-l-4 border-transparent"}`}                                    
                                 >
                                     <span className="flex items-center">
-                                        {dropdown.icon}
-                                        <span className="ml-2">{dropdown.title}</span>
+                                        {/* Icon */}
+                                        <span
+                                            className={`text-md transition-transform duration-300 group-hover:scale-110 ${
+                                                isSidebarCollapsed ? "ml-1" : ""
+                                            } ${isActive ? "text-white" : "text-white/80"}`}
+                                        >
+                                            {dropdown.icon}
+                                        </span>
+
+                                        {!isSidebarCollapsed && <span className="ml-3">{dropdown.title}</span>}
                                     </span>
-                                    <FaChevronRight
-                                        className={`w-2 h-3 transform transition-transform duration-300 ${
-                                            openDropdowns[dropdown.title] || isActive ? "rotate-90" : ""
-                                        }`}
-                                    />
+
+                                    {!isSidebarCollapsed && (
+                                        <FaChevronRight
+                                            className={`w-2 h-3 transform transition-transform duration-300 ${
+                                                isOpen ? "rotate-90" : ""
+                                            }`}
+                                        />
+                                    )}
+
+                                    {/* Tooltip untuk collapsed mode */}
+                                    {isSidebarCollapsed && (
+                                        <span className="absolute left-full ml-2 px-2 py-1 text-xs bg-black text-white rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-50">
+                                            {dropdown.title}
+                                        </span>
+                                    )}
                                 </button>
-                                {(openDropdowns[dropdown.title] || isActive) && (
-                                    <div className="ml-4 border-l border-gray-400 pl-4 ">
+
+                                {/* Hide dropdown content ketika sidebar collapsed */}
+                                {!isSidebarCollapsed && isOpen && (
+                                    <div className="ml-4 pl-2 border-l border-gray-400 space-y-1 mt-1">
                                         {dropdown.items.map((subItem) => (
                                             <Link
                                                 key={subItem.path}
                                                 href={subItem.path}
-                                                className={`flex text-sm items-center p-2 rounded hover:bg-[#D9D9D940] ${
+                                                className={`flex text-sm items-center ml-2 p-2 transition rounded hover:bg-[#D9D9D940] ${
                                                     url.startsWith(subItem.path) ? "bg-activeMenuSidebar font-semibold" : ""
                                                 }`}
                                             >
                                                 {subItem.name}
                                             </Link>
                                         ))}
-                                        
                                     </div>
                                 )}
                             </div>
@@ -111,7 +189,6 @@ export default function MainSidebar({ title, menuItems, logo, dropdownMenus, use
                 </nav>
 
                 {/* Account Menu */}
-                 
                 <div className="absolute bottom-4 left-4 right-4">
                     <button
                         onClick={() => toggleDropdown("Account")}
@@ -121,11 +198,12 @@ export default function MainSidebar({ title, menuItems, logo, dropdownMenus, use
                             <AvatarImage src="https://github.com/shadcn.png" />
                             <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                         </Avatar>
-                        <span className="flex flex-col items-start">
-                            <span className="truncate font-semibold">{user.name}</span>
-                            <span className="truncate text-xs">{user.email}</span>
-                        </span>
-
+                        {!isSidebarCollapsed && (
+                            <span className="flex flex-col items-start ">
+                                <span className="truncate font-semibold">{user.name}</span>
+                                <span className="truncate text-xs">{user.email}</span>
+                            </span>
+                        )}
                         <HiChevronUpDown size={20} />
                     </button>
 
@@ -137,7 +215,7 @@ export default function MainSidebar({ title, menuItems, logo, dropdownMenus, use
                             </div>
                             <div className="py-2">
                                 <Link href={route("profile.edit")} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100">
-                                    <FaUser className="text-primaryPurple"/> Profile
+                                    <FaUser className="text-primaryPurple" /> Profile
                                 </Link>
                             </div>
                             <div className="border-t">
@@ -147,7 +225,7 @@ export default function MainSidebar({ title, menuItems, logo, dropdownMenus, use
                                     as="button"
                                     className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                                 >
-                                    <FaSignOutAlt className="text-red-800"/> Log Out
+                                    <FaSignOutAlt className="text-red-800" /> Log Out
                                 </Link>
                             </div>
                         </div>

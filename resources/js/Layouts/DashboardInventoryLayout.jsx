@@ -1,11 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
 import MainSidebar from '@/Components/MainSidebar';
 import { HiChartPie } from "react-icons/hi";
 import { FaFileAlt, FaTruck } from "react-icons/fa";
 import { HiInbox } from "react-icons/hi";
 
 
-export default function DashboardInventoryLayout({ children, auth }) {
+export default function DashboardInventoryLayout({ children, auth, ...props }) {
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
     const menuItems = [
         { name: "Dashboard", path: "/wrhs/dashboard", icon: <HiChartPie /> },
     ];
@@ -32,7 +34,6 @@ export default function DashboardInventoryLayout({ children, auth }) {
                 { name: "Add Item", path: "/wrhs/add" },
                 { name: "Shipment ", path: "/wrhs/shipment" },
                 { name: "Delivery", path: "/wrhs/delivery" },
-                { name: "Reports", path: "/wrhs/reports" },
             ],
         },
         {
@@ -50,13 +51,18 @@ export default function DashboardInventoryLayout({ children, auth }) {
     return (
         <div className="flex">
             <MainSidebar
+                {...props}
+                isSidebarCollapsed={isSidebarCollapsed}
+                setIsSidebarCollapsed={setIsSidebarCollapsed}
                 logo = "/images/Logo.svg"
                 title="GETS"
                 user={auth.user}
                 menuItems={menuItems}
                 dropdownMenus={dropdownMenus}
             />
-            <div className="ml-0 lg:ml-64 w-full">
+            <div className={`transition-all duration-300 w-full mt-0 ${
+                    isSidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
+                }`}>
                 {children}
             </div>
         </div>
