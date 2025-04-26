@@ -10,16 +10,17 @@ use App\Models\Inbound;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Employee;
 use App\Models\Outbound;
 use App\Models\Shipment;
 use App\Models\Supplier;
+use App\Models\Attendance;
+use App\Models\LeaveQuota;
 use App\Models\BilledParty;
-use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\AccountPayable;
 use App\Models\StagingInbound;
 use App\Http\Controllers\Controller;
-use App\Models\LeaveQuota;
 
 class AdminController extends Controller
 {
@@ -247,7 +248,8 @@ class AdminController extends Controller
         return inertia::render('features/TimeRequest', [
             'title' => 'Admin HR Time Off Request',
             'emplys' => Employee::all(),
-            'lq' => LeaveQuota::all()
+            'lq' => LeaveQuota::all(),
+            'lqa' => LeaveQuota::where('status', 'validating')->get()
         ]);
         // dd(Employee::all());
     }
@@ -256,6 +258,7 @@ class AdminController extends Controller
         // dd();
         return inertia::render('features/Attandance', [
             'title' => 'Admin HR Attendance',
+            'atdnc' => Attendance::all()
         ]);
         // dd(Inbound::all());
     }

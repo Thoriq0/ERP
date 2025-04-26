@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
-import axios from 'axios';
+import { router } from '@inertiajs/react';
 
 const AttendanceCamera = () => {
   const webcamRef = useRef(null);
@@ -19,19 +19,20 @@ const AttendanceCamera = () => {
     setCaptured(false);
   };
 
-  const submitAttendance = async () => {
-    try {
-      setLoading(true);
-      await axios.post('/attendance', {
-        image: image, // base64 image
-      });
-      alert('Absensi berhasil!');
-    } catch (error) {
-      console.error(error);
-      alert('Gagal mengirim absensi.');
-    } finally {
-      setLoading(false);
-    }
+  const submitAttendance = () => {
+    setLoading(true);
+
+    router.post('/admin/attendance/take', { image }, {
+      onSuccess: () => {
+        alert('Absensi berhasil!');
+      },
+      onError: () => {
+        alert('Gagal mengirim absensi.');
+      },
+      onFinish: () => {
+        setLoading(false);
+      },
+    });
   };
 
   return (
@@ -47,6 +48,9 @@ const AttendanceCamera = () => {
               width: 480,
               height: 360,
               facingMode: "user",
+            }}
+            onUserMediaError={() => {
+              alert("Gagal akses kamera. Pastikan kamu buka lewat https.");
             }}
           />
           <div className="mt-4">

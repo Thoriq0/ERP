@@ -13,10 +13,12 @@ use App\Models\Employee;
 use App\Models\Outbound;
 use App\Models\Shipment;
 use App\Models\Supplier;
+use App\Models\Attendance;
 use App\Models\LeaveQuota;
-use App\Models\BilledParty;
 // use Illuminate\Support\Facades\DB;
 // use Illuminate\Support\Facades\Log;
+use App\Models\BilledParty;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Exports\InboundExport;
 use App\Imports\InboundImport;
@@ -1061,6 +1063,10 @@ class InventoryController extends Controller
         $jsonDates = json_encode($dates);
         $employeeid = (int) $request->employee_id;
 
+        $countDates = count($dates);
+        $query = Employee::where('id', $employeeid);
+        $getData = $query->first();
+        
         LeaveQuota::create([
             "employee_id" => $employeeid,
             "createdBy" => $request->name,
@@ -1069,5 +1075,98 @@ class InventoryController extends Controller
             "status" => "validating"
         ]);
 
+        // UPDATE EMPLOYEE
+        // $currentLeave = $getData->leave_quota;
+        // $query->update([
+        //     'leave_quota' => $currentLeave - $countDates
+        // ]);
+
+        
+    }
+    public function timeDestroy(LeaveQuota $leavequota){
+        $leavequota->delete();
+        return redirect()->back();
+    }
+    public function timeUpdate(Request $request, LeaveQuota $leavequota){
+        
+        $validated = $request->validate([
+            'note' => 'nullable|string',
+            'dueto' => 'required|array',
+            'dueto.*' => 'date', 
+        ]);
+
+        $leavequota->note = $validated['note'];
+        $leavequota->dueto = json_encode($validated['dueto']); 
+        $leavequota->save();
+
+        
+        return back()->with('success', 'Data cuti berhasil diupdate.');
+    }
+
+    public function timeValidate(Request $request){
+        // dd($request->selected);
+
+        $id = $request->selected;
+
+        foreach($id as $selected){
+            $query = LeaveQuota::where('id', $selected);
+            $getData = $query->first();
+
+            $dates = $getData->dueto;
+            $jsonDates = json_decode($dates);
+            $countDates = count($jsonDates);
+
+            $employee = $getData->employee_id;
+            $employeeQuery = Employee::where('id', $employee);
+            $employeeGet = $employeeQuery->first();
+
+            $leaveQuota = $employeeGet->leave_quota;
+
+            $employeeQuery->update([
+                'leave_quota' => $leaveQuota - $countDates
+            ]);
+            $query->update([
+                'status' => 'validated'
+            ]);
+        }
+        return back()->with('success', 'Data cuti berhasil validasi.');
+    }
+    public function attandanceTake(Request $request){
+
+        $request->validate([
+            'image' => 'required|string',
+            'user_id' => 'required|exists:users,id',
+            'name' => 'required|string',
+            'status' => 'required|in:in,out',
+        ]);
+    
+        $imageData = $request->image;
+        $userId = $request->user_id;
+        $userName = Str::slug($request->name); // biar aman buat nama file
+        $status = $request->status;
+        $timestamp = Carbon::now()->format('dmY-H-i');
+    
+        $fileName = "{$status}-{$userName}-{$userId}-{$timestamp}.jpg";
+    
+        $image = str_replace('data:image/jpeg;base64,', '', $imageData);
+        $image = str_replace(' ', '+', $image);
+        $imagePath = public_path("images/attandance");
+    
+        // pastiin folder-nya ada
+        if (!File::exists($imagePath)) {
+            File::makeDirectory($imagePath, 0755, true);
+        }
+    
+        File::put("{$imagePath}/{$fileName}", base64_decode($image));
+    
+        // Simpan ke database
+        Attendance::create([
+            'user_id' => $userId,
+            'status' => $status,
+            'image' => "{$fileName}",
+        ]);
+    
+        // return response()->json(['message' => 'Absensi berhasil disimpan.']);
+        return back()->with('success', 'Absensi berhasil disimpan.');
     }
 }

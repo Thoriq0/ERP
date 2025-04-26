@@ -1,6 +1,5 @@
 "use client"
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -33,38 +32,62 @@ import {
 } from "../ui/table";
 import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { ButtonModalCreateTimeRequest } from "../ButtonModalCreateTimeRequest";
+import { UpdateTimeModal } from "../update/UpdateTimeModal";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
+import { router } from "@inertiajs/react";
 
-export function DataTableTimeRequest({data, userRole, employee}) {
+export function DataTableTimeRequest({data, userRole, employee, selectedIds}) {
   const [open, setOpen] = useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-
+  const [selectedItem, setSelectedItem] = useState(null);
   const handleDelete = () => {
-    console.log(`Deleting item with ID: ${selectedId}`);
-    // Tambahkan logic API untuk delete di sini
-    setOpen(false); // Tutup modal setelah delete
-  };
+      if (!selectedId) return;
+  
+      // Mapping role endpoint
+      const rolePaths = {
+        admin: "/admin/time",
+        wrhs: "/hr/time",
+      };
+  
+      const userPath = rolePaths[userRole];
+  
+      router.delete(`${userPath}/${selectedId}`, {
+        onSuccess: () => {
+          toast.success("Inbound berhasil dihapus! 🗑️", { duration: 5000 });
+        },
+        onError: (err) => {
+          // console.error(err);
+          toast.error("Gagal menghapus Inbound! ❌", { duration: 5000 });
+        },
+      });
+      setOpen(false);
+    };
+    const handleUpdate = (time) => {
+      setSelectedItem(time);
+      setUpdateModalOpen(true);
+    };
+    
+    const oks = () => {
+      const rolePaths = {
+        admin: "/admin/time/validate",
+        wrhs: "/hr/time/validate",
+      };
+    
+      const userPath = rolePaths[userRole];
+    
+      router.post(userPath, { selected: selectedIds }, {
+        onSuccess: () => {
+          toast.success("Validasi berhasil dikirim! ✅", { duration: 5000 });
+        },
+        onError: () => {
+          toast.error("Gagal mengirim validasi! ❌", { duration: 5000 });
+        },
+      });
+    }
 
   const columns = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
     {
       accessorKey: "createdBy",
       header: "Name",
@@ -97,11 +120,6 @@ export function DataTableTimeRequest({data, userRole, employee}) {
         return <div className="lowercase">{formattedDate}</div>;
       },
     },
-    // {
-    //   accessorKey: "qty",
-    //   header: "Role",
-    //   cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
-    // },
     {
       accessorKey: "note",
       header: "Submission Date",
@@ -131,6 +149,7 @@ export function DataTableTimeRequest({data, userRole, employee}) {
     },
     {
       id: "actions",
+      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
@@ -144,22 +163,30 @@ export function DataTableTimeRequest({data, userRole, employee}) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-                Copy payment ID
-              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
+    
+              {/* Tampilkan tombol Update kalau status belum validated */}
+              {item.status !== 'validated' && (
+                <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
+                  <FaEdit size={16} className="text-yellow-500" />Update
+                </DropdownMenuItem>
+              )}
+    
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedId(item.id);
+                  setOpen(true);
+                }}
+                className="cursor-pointer"
+              >
+                <FaTrash size={16} className="text-red-500" />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
-            
           </DropdownMenu>
-          
         );
       },
-    },
+    }    
   ];
 
   const [sorting, setSorting] = useState([]);
@@ -185,6 +212,14 @@ export function DataTableTimeRequest({data, userRole, employee}) {
   return (
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
+      <UpdateTimeModal
+                open={updateModalOpen}
+                onClose={() => setUpdateModalOpen(false)}
+                data={data}
+                time={selectedItem}
+                employee={employee}
+                userRole={userRole}
+            />
       <h1 className="font-extrabold text-xl">(Title)</h1>
       <div className="flex justify-between items-center py-4">
         
@@ -226,7 +261,7 @@ export function DataTableTimeRequest({data, userRole, employee}) {
         </div>
         <div className="flex space-x-2">
             <ButtonModalCreateTimeRequest userRole={userRole} employee={employee} />
-            <Button className="bg-validateTimeRequest">
+            <Button className="bg-validateTimeRequest" onClick={oks}>
                 Validate leave
             </Button>
             
@@ -283,5 +318,4 @@ export function DataTableTimeRequest({data, userRole, employee}) {
     </div>
   );
 }
-
 export default DataTableTimeRequest;

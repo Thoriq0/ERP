@@ -1,6 +1,5 @@
 "use client"
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -32,41 +31,74 @@ import {
   TableRow,
 } from "../ui/table";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { router } from "@inertiajs/react";
 
-export function DataTableValidasiTimeRequest({data}) {
+export function DataTableValidasiTimeRequest({data, employee, selectedIds, setSelectedIds}) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  const handleDelete = () => {
-    console.log(`Deleting item with ID: ${selectedId}`);
-    // Tambahkan logic API untuk delete di sini
-    setOpen(false); // Tutup modal setelah delete
-  };
+  // console.log(data, employee)
 
   const columns = [
     {
       id: "select",
       header: ({ table }) => (
         <Checkbox
-          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => {
+            table.toggleAllPageRowsSelected(!!value);
+    
+            const newSelectedIds = value
+              ? table
+                  .getFilteredRowModel()
+                  .rows.map((row) => row.original.id)
+              : [];
+            setSelectedIds(newSelectedIds);
+          }}
           aria-label="Select all"
         />
       ),
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={(value) => {
+            row.toggleSelected(!!value);
+    
+            setSelectedIds((prev) => {
+              const id = row.original.id;
+              if (value) {
+                return [...prev, id];
+              } else {
+                return prev.filter((i) => i !== id);
+              }
+            });
+          }}
           aria-label="Select row"
         />
       ),
       enableSorting: false,
       enableHiding: false,
+    },    
+    {
+      id: "name",
+      header: "Name",
+      cell: ({ row }) => {
+        const item = row.original;
+        const emp = employee.find((e) => e.id === item.employee_id);
+        return <div className="capitalize">{emp?.name || "-"}</div>;
+      },
     },
     {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+      id: "departemen",
+      header: "Departemen",
+      cell: ({ row }) => {
+        const item = row.original;
+        const emp = employee.find((e) => e.id === item.employee_id);
+        return <div className="capitalize">{emp?.departemen || "-"}</div>;
+      },
     },
     {
       accessorKey: "created_at",
@@ -75,7 +107,7 @@ export function DataTableValidasiTimeRequest({data}) {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date In
+          Created At
           <ArrowUpDown />
         </Button>
       ),
@@ -96,30 +128,32 @@ export function DataTableValidasiTimeRequest({data}) {
       },
     },
     {
-      accessorKey: "qty",
-      header: "Role",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
-    },
-    {
-      accessorKey: "supplier",
+      accessorKey: "note",
       header: "Submission Date",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("supplier")}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.getValue("note")}</div>,
     },
     {
-      accessorKey: "category",
+      accessorKey: "dueto",
       header: "End Date",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("category")}</div>,
-    },
+      cell: ({ row }) => {
+        const raw = row.getValue("dueto"); // data raw 
+        let dates = [];
     
-    {
-      accessorKey: "name",
-      header: "Status",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("name")}</div>,
+        try {
+          dates = JSON.parse(raw); // convert array
+        } catch (err) {
+          console.error("Gagal parse JSON:", raw);
+        }
+    
+        const lastDate = dates[dates.length - 1]; // tanggal terakhir
+        return <div className="capitalize">{lastDate || "-"}</div>;
+      },
     },
     
     {
       id: "actions",
       enableHiding: false,
+      header: "Action",
       cell: ({ row }) => {
         const item = row.original;
         return (
@@ -132,11 +166,6 @@ export function DataTableValidasiTimeRequest({data}) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-                Copy payment ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
               <DropdownMenuItem>View payment details</DropdownMenuItem>
               <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
                 Delete

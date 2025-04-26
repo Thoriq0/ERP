@@ -5,10 +5,10 @@ import DataTableValidasiTimeRequest from "@/Components/DataTables/DataTableValid
 import ToasterComponent from "@/Components/ToasterComponent";
 
 import { Head } from '@inertiajs/react';
-import React from 'react';
+import React, { useState } from 'react';
 
 
-export default function TimeRequest({auth, mustVerifyEmail, status, title, emplys, lq}) {
+export default function TimeRequest({auth, mustVerifyEmail, status, title, emplys, lq, lqa}) {
     const getLayout = (role) => {
         switch (role) {
             case 'hr':
@@ -21,7 +21,8 @@ export default function TimeRequest({auth, mustVerifyEmail, status, title, emply
     const Layout = getLayout(auth.user.role);
     const role = auth.user.role;
     const data = lq;
-    const datas = [];
+    const datas = lqa;
+    const [selectedIds, setSelectedIds] = React.useState([]);
     
     return (
         <Layout auth={auth}>
@@ -31,9 +32,9 @@ export default function TimeRequest({auth, mustVerifyEmail, status, title, emply
                 <h1 className="text-xl font-bold md:ml-5">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} employee={emplys} />
+                <DataTableTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} employee={emplys} selectedIds={selectedIds} />
                 <hr className="my-5"/>
-                <DataTableValidasiTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={datas} userRole={role}/>
+                <DataTableValidasiTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={datas} userRole={role} employee={emplys} selectedIds={selectedIds} setSelectedIds={setSelectedIds}/>
             </div>
         </Layout>
     );

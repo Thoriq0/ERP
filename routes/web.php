@@ -114,12 +114,17 @@ Route::middleware('auth', 'verified')->group(function () {
 
         // Route action timeoff
         Route::post('/admin/timeoff', [InventoryController::class, 'timeStore'])->name('inventory.time.store');
-
+        Route::delete('/admin/time/{leavequota}', [InventoryController::class, 'timeDestroy'])->name('inventory.time.destroy');
+        Route::put('/admin/time/{leavequota}', [InventoryController::class, 'timeUpdate'])->name('inventory.time.update');
+        Route::post('/admin/time/validate', [InventoryController::class, 'timeValidate'])->name('inventory.validte.store');
 
         // route view reports
         Route::get('/admin/reportinbound', [AdminController::class, 'reportInboundView'])->name('admin.reportinbound');
         Route::get('/admin/reportoutbound', [AdminController::class, 'reportOutboundView'])->name('admin.reportoutbound');
         Route::get('/admin/reportstock', [AdminController::class, 'reportStockView'])->name('admin.reportstock');
+
+        // Route Attandance
+        Route::post('/admin/attendance/take', [InventoryController::class, 'attandanceTake'])->name('admin.attandance');
     });
 
     // ==== ROLE FINANCE (fnc) ====

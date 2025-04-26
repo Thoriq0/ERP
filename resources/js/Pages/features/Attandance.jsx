@@ -8,7 +8,7 @@ import  { ButtonModalAttandance } from '@/Components/ButtonModalAttandance';
 import  { ButtonModalAttandanceOut } from '@/Components/ButtonModalAttandanceOut';
 
 
-export default function Attandance({auth, title}) {
+export default function Attandance({auth, title, atdnc}) {
     const getLayout = (role) => {
           switch (role) {
               case 'hr':
@@ -19,11 +19,69 @@ export default function Attandance({auth, title}) {
                   return DashboardAdminLayout;
           }
     };
-  
+    
     const Layout = getLayout(auth.user.role);
     const role = auth.user.role;
+    const id = auth.user.id;
+    
+    const today = new Date();
+    const formattedDate = `${today.getDate().toString().padStart(2, '0')}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getFullYear()}`;
+
+    const getAttendanceImageToday = (atdnc, userId, todayFormatted) => {
+      const attendanceToday = atdnc.find(item => {
+        const createdAt = new Date(item.created_at);
+        const fileTanggal = `${createdAt.getDate().toString().padStart(2, '0')}${(createdAt.getMonth() + 1).toString().padStart(2, '0')}${createdAt.getFullYear()}`;
+    
+        return item.user_id == userId && fileTanggal == todayFormatted;
+      });
+    
+      return attendanceToday ? attendanceToday.image : null;
+    };
+    const attendanceImage = getAttendanceImageToday(atdnc, id, formattedDate);
+
+    useEffect(() => {
+      // console.log(formattedDate); 
+      // console.log(atdnc);
+      // console.log(attendanceImage); 
+    }, []);
+
+    function formatAttendanceTime(imageName) {
+      // Nama file contoh: in-admin-13-26042025-08-15.jpg
+      const parts = imageName.split('-'); // ['in', 'admin', '13', '26042025', '08', '15.jpg']
+      
+      if (parts.length < 6) return "Invalid Attendance Data";
+    
+      const dateStr = parts[3]; // '26042025'
+      const hour = parts[4];    // '08'
+      const minute = parts[5].replace('.jpg', ''); // '15'
+    
+      // Format tanggal
+      const day = dateStr.substring(0, 2);
+      const month = dateStr.substring(2, 4);
+      const year = dateStr.substring(4, 8);
+    
+      const formattedDate = `${day}/${month}/${year}`;
+      const formattedTime = `${hour}:${minute}`;
+    
+      // Cek apakah lebih awal atau telat
+      const jamMasuk = parseInt(hour);
+      const menitMasuk = parseInt(minute);
+      let status = '';
+    
+      if (jamMasuk < 8 || (jamMasuk === 8 && menitMasuk < 30)) {
+        status = 'Early  🟢';
+      } else if (jamMasuk === 8 && menitMasuk === 30) {
+        status = 'On Time   🟡';
+      } else {
+        status = 'Late 🔴';
+      }
+    
+      return `You have clocked in on ${formattedDate} at ${formattedTime} - ${status}`;
+    }
+    
 
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
+    
 
     useEffect(() => {
       const interval = setInterval(() => setCurrentDateTime(new Date()), 1000);
@@ -82,10 +140,23 @@ export default function Attandance({auth, title}) {
             <div className="flex flex-col lg:flex-row gap-10 p-6 md:py-2 md:mb-10 lg:mb-0 justify-center items-center">
                 {/* attandance in */}
                 <div className="flex flex-col items-center gap-3 p-5 shadow-lg rounded-2xl w-full md:w-1/2 lg:w-1/3 mr-3">
+                {attendanceImage ? (
+                  <>
+                  <img src={`/images/attandance/${attendanceImage}`} alt="Attendance Today" className='rounded-2xl w-[240px] h-[240px]' />
+                  <h1 className='text-xl font-bold'>Attendance In</h1>
+                  {/* Format tanggal & jam di sini */}
+                  <p className='capitalize text-center'>
+                    {formatAttendanceTime(attendanceImage)}
+                  </p>
+                  </>
+                ) : (
+                  <>
                   <img src="/images/attandance.svg" alt="image attandance in" className='w-[240px] h-[240px]' />
                   <h1 className='text-xl font-bold'>Attandance In</h1>
                   <p className='capitalize'>no attendance has come In yet</p>
                   <ButtonModalAttandance />
+                  </>
+                )}
                 </div>
                 
                 {/* attandance out */}
