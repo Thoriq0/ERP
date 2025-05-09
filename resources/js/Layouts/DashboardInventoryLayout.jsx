@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import MainSidebar from '@/Components/MainSidebar';
 import { HiChartPie } from "react-icons/hi";
-import { FaFileAlt, FaTruck } from "react-icons/fa";
+import { FaFileAlt, FaTruck, FaClipboardList } from "react-icons/fa";
 import { HiInbox } from "react-icons/hi";
+import { MdAccessTime } from "react-icons/md";
 
 
 export default function DashboardInventoryLayout({ children, auth, ...props }) {
@@ -10,6 +11,8 @@ export default function DashboardInventoryLayout({ children, auth, ...props }) {
 
     const menuItems = [
         { name: "Dashboard", path: "/wrhs/dashboard", icon: <HiChartPie /> },
+        { name: "Attendance", path: "/wrhs/attendance", icon: <FaClipboardList /> },
+        { name: "Time of Request", path: "/wrhs/time", icon: <MdAccessTime /> },
     ];
 
     const dropdownMenus = [

@@ -51,6 +51,8 @@ export function ButtonModalCreateTimeRequest({ userRole, employee }) {
       admin: "/admin/timeoff",
       wrhs: "/wrhs/timeoff",
       fnc: "/fnc/timeoff",
+      hr: "/hr/timeoff",
+      staff: "/staff/timeoff",
     };
 
     const userPath = rolePaths[userRole];
@@ -96,16 +98,16 @@ export function ButtonModalCreateTimeRequest({ userRole, employee }) {
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Data Karyawan</DialogTitle>
+          <DialogTitle>Data Cuti Karyawan</DialogTitle>
           <DialogDescription>
-            Masukkan data karyawan, lalu klik Simpan.
+            Masukkan data cuti karyawan, lalu klik Simpan.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           
           <div className="mt-4">
-            <InputLabel htmlFor="name" value="name" />
+            <InputLabel htmlFor="name" value="Nama Karyawan" />
             <Select
               id="name"
               options={employeeOptions}
@@ -131,7 +133,7 @@ export function ButtonModalCreateTimeRequest({ userRole, employee }) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="leave_dates" value="Tanggal Cuti" />
+            <InputLabel htmlFor="leave_dates" value="Tanggal Cuti" className=""/>
             <DatePicker
               multiple
               value={values.leave_dates}

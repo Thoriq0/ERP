@@ -70,11 +70,11 @@ export default function Dashboard({auth, title}) {
                 </div>
 
                 {/* Bar Char Expense */}
-                {/* <div className="border border-borderCard rounded-xl shadow-2xl p-8 w-full">
+                <div className="border border-borderCard rounded-xl shadow-2xl p-8 w-full">
                     <h1 className='font-bold text-lg'>Expense</h1>
                     <div className='h-px bg-[#C8C6C6] mt-2 mb-5'></div>
                     <BarChart />
-                </div> */}
+                </div>
             </div>
 
         </DashboardAdminLayout>

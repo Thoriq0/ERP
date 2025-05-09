@@ -31,13 +31,13 @@ import {
   TableRow,
 } from "../ui/table";
 import { ButtonDialogDelete } from "../ButtonDialogDelete";
-import { ButtonModalCreateTimeRequest } from "../ButtonModalCreateTimeRequest";
+import { ButtonModalTimeRequest } from "../ButtonModalTimeRequest";
 import { UpdateTimeModal } from "../update/UpdateTimeModal";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 
-export function DataTableTimeRequest({data, userRole, employee, selectedIds}) {
+export function DataTableTimeRequestUser({data, userRole, employee, selectedIds}) {
   const [open, setOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -49,6 +49,8 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds}) {
       const rolePaths = {
         admin: "/admin/time",
         wrhs: "/hr/time",
+        fnc: "/fnc/time",
+        staff: "/staff/time",
       };
   
       const userPath = rolePaths[userRole];
@@ -213,14 +215,14 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds}) {
     <div className="w-full">
       <ButtonDialogDelete open={open} onOpenChange={setOpen} onDelete={handleDelete} />
       <UpdateTimeModal
-                open={updateModalOpen}
-                onClose={() => setUpdateModalOpen(false)}
-                data={data}
-                time={selectedItem}
-                employee={employee}
-                userRole={userRole}
+            open={updateModalOpen}
+            onClose={() => setUpdateModalOpen(false)}
+            data={data}
+            time={selectedItem}
+            employee={employee}
+            userRole={userRole}
       />
-      <h1 className="font-extrabold text-xl">(Title)</h1>
+      <h1 className="font-extrabold text-xl">Data Time Off Request</h1>
       <div className="flex justify-between items-center py-4">
         
         <div className="flex items-center space-x-4 w-[50%]">
@@ -260,11 +262,7 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds}) {
           />
         </div>
         <div className="flex space-x-2">
-            <ButtonModalCreateTimeRequest userRole={userRole} employee={employee} />
-            <Button className="bg-validateTimeRequest" onClick={oks}>
-                Validate leave
-            </Button>
-            
+            <ButtonModalTimeRequest userRole={userRole} employee={employee} />
         </div>
       </div>
       <div className="rounded-md border">
@@ -318,4 +316,4 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds}) {
     </div>
   );
 }
-export default DataTableTimeRequest;
+export default DataTableTimeRequestUser;

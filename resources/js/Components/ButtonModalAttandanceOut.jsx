@@ -63,12 +63,12 @@ export function ButtonModalAttandanceOut() {
     <Dialog>
       <DialogTrigger asChild>
         <Button className="w-1/2 mx-auto bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-          Attandance In
+          Attandance Out
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[600px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-5 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Attandace In</DialogTitle>
+          <DialogTitle>Attandace Out</DialogTitle>
         </DialogHeader>
         <div className="text-center p-4 ml-5">
           {!captured ? (

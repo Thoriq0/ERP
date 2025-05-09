@@ -13,6 +13,8 @@ import TextInput from "./TextInput";
 import React, { useState } from "react";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast"; 
+import { Textarea } from "flowbite-react";
+import DatePicker from "react-multi-date-picker";
 
 export function ButtonModalTimeRequest({userRole}) {
   // State untuk form
@@ -39,8 +41,8 @@ export function ButtonModalTimeRequest({userRole}) {
 
     // Mapping role endpoint
     const rolePaths = {
-      admin: "/admin/category",
-      wrhs: "/wrhs/category",
+      admin: "/admin/",
+      wrhs: "/wrhs/",
     };
   
     const userPath = rolePaths[userRole];
@@ -77,9 +79,9 @@ export function ButtonModalTimeRequest({userRole}) {
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Data Karyawan</DialogTitle>
+          <DialogTitle>Data Cuti Karyawan</DialogTitle>
           <DialogDescription>
-            Masukkan data karyawan, lalu klik Simpan.
+            Masukkan data Cut karyawan, lalu klik Simpan.
           </DialogDescription>
         </DialogHeader>
 
@@ -91,11 +93,35 @@ export function ButtonModalTimeRequest({userRole}) {
               type="text"
               name="name"
               className="mt-1 block w-full"
-              placeholder="Nama Category"
+              placeholder="Nama Karyawan"
               value={values.name}
               onChange={handleChange}
             />
             {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+          </div>
+          <div className="mt-4">
+            <InputLabel htmlFor="note" value="Alasan Cuti" />
+            <Textarea
+              id="note"
+              name="note"
+              className="mt-1 block w-full"
+              placeholder="Contoh: Sakit, Keperluan keluarga, dll"
+              value={values.note}
+              onChange={handleChange}
+            />
+            {errors.note && <p className="text-red-500 text-sm">{errors.note}</p>}
+          </div>
+          <div className="mt-4">
+            <InputLabel htmlFor="leave_dates" value="Tanggal Cuti" className=""/>
+            <DatePicker
+              multiple
+              value={values.leave_dates}
+              onChange={(dates) => setValues({ ...values, leave_dates: dates })}
+              className="w-full mt-1"
+            />
+            {errors.leave_dates && (
+              <p className="text-red-500 text-sm">{errors.leave_dates}</p>
+            )}
           </div>
 
           <DialogFooter>

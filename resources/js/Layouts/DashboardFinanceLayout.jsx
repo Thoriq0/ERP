@@ -1,7 +1,8 @@
 import React, { useState }  from 'react';
 import MainSidebar from '@/Components/MainSidebar';
 import { HiChartPie } from "react-icons/hi";
-import { FaFileAlt, FaArrowCircleUp, FaArrowCircleDown, FaBalanceScale, FaHandHoldingUsd, FaMoneyBillWave  } from "react-icons/fa";
+import { FaFileAlt, FaArrowCircleUp, FaArrowCircleDown, FaClipboardList, FaHandHoldingUsd, FaMoneyBillWave  } from "react-icons/fa";
+import { MdAccessTime } from "react-icons/md";
 
 
 export default function DashboardFinanceLayout({ children, auth, ...props}) {
@@ -14,6 +15,8 @@ export default function DashboardFinanceLayout({ children, auth, ...props}) {
         { name: "Income", path: "/finance/income", icon: <FaArrowCircleUp  /> },
         { name: "Outcome", path: "/finance/outcome", icon: <FaArrowCircleDown  /> },
         { name: "Billed Party", path: "/finance/bp", icon: <FaArrowCircleDown  /> },
+        { name: "Attendance", path: "/finance/attendance", icon: <FaClipboardList /> },
+        { name: "Time of Request", path: "/finance/time", icon: <MdAccessTime /> },
         // { name: "Budget Control", path: "/finance/budget", icon: <FaBalanceScale   /> },
     ];
 

@@ -92,15 +92,6 @@ export function DataTableValidasiTimeRequest({data, employee, selectedIds, setSe
       },
     },
     {
-      id: "departemen",
-      header: "Departemen",
-      cell: ({ row }) => {
-        const item = row.original;
-        const emp = employee.find((e) => e.id === item.employee_id);
-        return <div className="capitalize">{emp?.departemen || "-"}</div>;
-      },
-    },
-    {
       accessorKey: "created_at",
       header: ({ column }) => (
         <Button
@@ -128,8 +119,18 @@ export function DataTableValidasiTimeRequest({data, employee, selectedIds, setSe
       },
     },
     {
+      id: "departemen",
+      header: "Departemen",
+      cell: ({ row }) => {
+        const item = row.original;
+        const emp = employee.find((e) => e.id === item.employee_id);
+        return <div className="capitalize">{emp?.departemen || "-"}</div>;
+      },
+    },
+
+    {
       accessorKey: "note",
-      header: "Submission Date",
+      header: "Note",
       cell: ({ row }) => <div className="capitalize">{row.getValue("note")}</div>,
     },
     {

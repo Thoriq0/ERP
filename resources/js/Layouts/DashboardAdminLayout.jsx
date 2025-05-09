@@ -57,7 +57,7 @@ export default function DashboardAdminLayout({ children, auth, ...props}) {
             items: [
                 { name: "Employee", path: "/admin/employee" },
                 { name: "Time Off Request", path: "/admin/time" },
-                { name: "Attendence", path: "/admin/attendance" },
+                { name: "Attendance", path: "/admin/attendance" },
                 // { name: "Reports", path: "/admin/hrReports" },
             ],
         },

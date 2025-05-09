@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import DashboardStaff from '@/Layouts/DashboardStaff';
 import DashbordHumanResouceLayout from '@/Layouts/DashboardHumanResourceLayout';
+import DashboardInventoryLayout from '@/Layouts/DashboardInventoryLayout';
+import DashboardFinanceLayout from '@/Layouts/DashboardFinanceLayout';
 import DashboardAdminLayout from '@/Layouts/DashboardAdminLayout';
 import { Head } from '@inertiajs/react';
 import { FiCalendar, FiClock } from "react-icons/fi";
@@ -8,11 +10,15 @@ import  { ButtonModalAttandance } from '@/Components/ButtonModalAttandance';
 import  { ButtonModalAttandanceOut } from '@/Components/ButtonModalAttandanceOut';
 
 
-export default function Attandance({auth, title, atdnc}) {
+export default function Attendance({auth, title, atdnc}) {
     const getLayout = (role) => {
           switch (role) {
               case 'hr':
                   return DashbordHumanResouceLayout;
+              case 'fnc':
+                  return DashboardFinanceLayout; 
+              case 'wrhs':
+                  return DashboardInventoryLayout; 
               case 'staff':
                   return DashboardStaff; 
               default:
@@ -103,7 +109,7 @@ export default function Attandance({auth, title, atdnc}) {
     return (
         <Layout auth={auth}>
             <Head title="Attandance" />
-
+            
             <div className="fixed bg-[#f5f5f5] w-full h-18 md:h-14 px-6 py-4 border-b z-10">
                 <h1 className="text-xl font-bold md:ml-5">{title}</h1> 
             </div>
@@ -142,7 +148,7 @@ export default function Attandance({auth, title, atdnc}) {
                 <div className="flex flex-col items-center gap-3 p-5 shadow-lg rounded-2xl w-full md:w-1/2 lg:w-1/3 mr-3">
                 {attendanceImage ? (
                   <>
-                  <img src={`/images/attandance/${attendanceImage}`} alt="Attendance Today" className='rounded-2xl w-[240px] h-[240px]' />
+                  <img src={`/images/attandance/${attendanceImage}`} alt="Attendance Today" className='rounded-2xl w-[240px] h-[200px]' />
                   <h1 className='text-xl font-bold'>Attendance In</h1>
                   {/* Format tanggal & jam di sini */}
                   <p className='capitalize text-center'>
@@ -151,7 +157,7 @@ export default function Attandance({auth, title, atdnc}) {
                   </>
                 ) : (
                   <>
-                  <img src="/images/attandance.svg" alt="image attandance in" className='w-[240px] h-[240px]' />
+                  <img src="/images/attandance.svg" alt="image attandance in" className='w-[240px] h-[200px]' />
                   <h1 className='text-xl font-bold'>Attandance In</h1>
                   <p className='capitalize'>no attendance has come In yet</p>
                   <ButtonModalAttandance />
@@ -161,7 +167,7 @@ export default function Attandance({auth, title, atdnc}) {
                 
                 {/* attandance out */}
                 <div className="flex flex-col items-center gap-3 p-5 shadow-lg rounded-2xl w-full md:w-1/2 lg:w-1/3 mr-3">
-                  <img src="/images/attandance.svg" alt="image attandance in" className='w-[240px] h-[240px]' />
+                  <img src="/images/attandance.svg" alt="image attandance in" className='w-[240px] h-[200px]' />
                   <h1 className='text-xl font-bold'>Attandance Out</h1>
                   <p className='capitalize'>no attendance has come Out yet</p>
                   <ButtonModalAttandanceOut />
