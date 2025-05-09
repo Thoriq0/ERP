@@ -138,6 +138,8 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/finance/ap', [FinanceController::class, 'apView'])->name('finance.ap');     
         Route::get('/finance/payment', [FinanceController::class, 'paymentView'])->name('finance.payment');     
         Route::get('/finance/bp', [FinanceController::class, 'bpView'])->name('finance.bp');
+        Route::get('/finance/attendance', [FinanceController::class, 'attendanceView'])->name('finance.attendance');
+        Route::get('/finance/time', [FinanceController::class, 'timeView'])->name('finance.time');
 
         // route account payable action
         Route::post('/finance/ap', [InventoryController::class, 'apStore'])->name('inventory.ap.store');
@@ -151,6 +153,9 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::post('/finance/bp', [InventoryController::class, 'bpStore'])->name('inventory.bp.store');
         Route::put('/finance/bp/{billedParty}', [InventoryController::class, 'bpUpdate'])->name('inventory.bp.update');
         Route::delete('/finance/bp/{billedParty}', [InventoryController::class, 'bpDestroy'])->name('inventory.bp.destroy');
+
+        // Route Attandance
+        Route::post('/finance/attendance/take', [InventoryController::class, 'attendanceTake'])->name('inventory.attendance');
     });
 
     // ==== ROLE HUMAN RESOURCE (hr) ====
@@ -163,9 +168,17 @@ Route::middleware('auth', 'verified')->group(function () {
         
         // Route employee action
         Route::post('/hr/employee', [InventoryController::class, 'employeeStore'])->name('hr.employee.store');
+        Route::delete('/hr/employee/{employee}', [InventoryController::class, 'employeeDestroy'])->name('inventory.employee.destroy');
+        Route::put('/hr/employee/{employee}', [InventoryController::class, 'employeeUpdate'])->name('inventory.employee.update');
         
         // Route action timeoff
-        Route::post('/hr/timeoff', [InventoryController::class, 'timeStore'])->name('hr.time.store');
+        Route::post('/hr/timeoff', [InventoryController::class, 'timeStore'])->name('inventory.time.store');
+        Route::delete('/hr/time/{leavequota}', [InventoryController::class, 'timeDestroy'])->name('inventory.time.destroy');
+        Route::put('/hr/time/{leavequota}', [InventoryController::class, 'timeUpdate'])->name('inventory.time.update');
+        Route::post('/hr/time/validate', [InventoryController::class, 'timeValidate'])->name('inventory.validte.store');
+
+        // Route Attandance
+        Route::post('/hr/attendance/take', [InventoryController::class, 'attandanceTake'])->name('admin.attandance');
     });
 
     // ==== ROLE Warehouse/Inventory (wrhs) ====
@@ -185,6 +198,8 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/wrhs/stockreports', [WarehouseController::class, 'stockreportsView'])->name('wrhs.stockreports');
         Route::get('/wrhs/shipmentreports', [WarehouseController::class, 'shipmentreportsView'])->name('wrhs.shipmentreports');
         Route::get('/wrhs/prestock', [WarehouseController::class, 'prestockView'])->name('wrhs.prestock');
+        Route::get('/wrhs/attendance', [WarehouseController::class, 'attendanceView'])->name('wrhs.attendance');
+        Route::get('/wrhs/time', [WarehouseController::class, 'timeView'])->name('wrhs.time');
 
         // Route inbound action 
         Route::post('/wrhs/inbound', [InventoryController::class, 'inboundStore'])->name('wrhs.inbound.store');
@@ -216,12 +231,19 @@ Route::middleware('auth', 'verified')->group(function () {
 
         // route delivery action
         Route::post('/wrhs/delivery', [InventoryController::class, 'deliveryVal'])->name('wrhs.delivery.store');
+        
+        // Route Attandance
+        Route::post('/wrhs/attendance/take', [InventoryController::class, 'attendanceTake'])->name('wrhs.attendance');
 
     });
 
     // ==== ROLE STAFF (STAFF) ====
     Route::get('/staff/dashboard', [StaffController::class, 'view'])->name('staff.dashboard');
-    Route::get('/staff/attandance', [StaffController::class, 'attandanceView'])->name('staff.attandance');
+    Route::get('/staff/attandance', [StaffController::class, 'attendanceView'])->name('staff.attandance');
+    Route::get('/staff/time', [StaffController::class, 'timeView'])->name('staff.time');
+
+    // Route Attandance
+    Route::post('/admin/attendance/take', [InventoryController::class, 'attendanceTake'])->name('admin.attendance');
 
     // ==== END ROLE STAFF (STAFF) ====
     
