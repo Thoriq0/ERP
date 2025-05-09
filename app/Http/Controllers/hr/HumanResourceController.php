@@ -5,6 +5,7 @@ namespace App\Http\Controllers\hr;
 use Inertia\Inertia;
 use App\Models\Employee;
 use App\Models\LeaveQuota;
+use App\Models\Attendance;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
 
@@ -28,15 +29,17 @@ class HumanResourceController extends Controller
         return inertia::render('features/TimeRequest', [
             'title' => 'Human Resource Time Off Request',
             'emplys' => Employee::all(),
-            'lq' => LeaveQuota::all()
+            'lq' => LeaveQuota::all(),
+            'lqa' => LeaveQuota::where('status', 'validating')->get()
         ]);
         // dd(Employee::all());
     }
 
     public function attendanceView(){
         // dd();
-        return inertia::render('features/Attandance', [
-            'title' => 'Human Resource Attendance ',
+        return inertia::render('features/Attendance', [
+            'title' => 'Human Resource Attendance',
+            'atdnc' => Attendance::all()
         ]);
         // dd(Inbound::all());
     }

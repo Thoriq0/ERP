@@ -9,6 +9,9 @@ use App\Models\AccountPayable;
 use App\Models\BilledParty;
 use App\Models\Payment;
 use App\Models\Expense;
+use App\Models\Employee;
+use App\Models\LeaveQuota;
+use App\Models\Attendance;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
 
@@ -80,6 +83,26 @@ class FinanceController extends Controller
             'title' => 'Finance Billed Party',
             'bp' => BilledParty::all()
         ]);
+    }
+
+    public function timeView(){
+        // dd();
+        return inertia::render('features/TimeRequestUser', [
+            'title' => 'Finance Time Off Request',
+            'emplys' => Employee::all(),
+            'lq' => LeaveQuota::all(),
+            'lqa' => LeaveQuota::where('status', 'validating')->get()
+        ]);
+        // dd(Employee::all());
+    }
+
+    public function attendanceView(){
+        // dd();
+        return inertia::render('features/Attendance', [
+            'title' => 'Finance Attendance',
+            'atdnc' => Attendance::all()
+        ]);
+        // dd(Inbound::all());
     }
 
 

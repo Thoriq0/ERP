@@ -1131,7 +1131,8 @@ class InventoryController extends Controller
         }
         return back()->with('success', 'Data cuti berhasil validasi.');
     }
-    public function attandanceTake(Request $request){
+    
+    public function attendanceTake(Request $request){
 
         $request->validate([
             'image' => 'required|string',

@@ -256,7 +256,7 @@ class AdminController extends Controller
 
     public function attendanceView(){
         // dd();
-        return inertia::render('features/Attandance', [
+        return inertia::render('features/Attendance', [
             'title' => 'Admin HR Attendance',
             'atdnc' => Attendance::all()
         ]);

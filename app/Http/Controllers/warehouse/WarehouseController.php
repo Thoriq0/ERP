@@ -11,6 +11,9 @@ use App\Models\Category;
 use App\Models\Outbound;
 use App\Models\Shipment;
 use App\Models\Supplier;
+use App\Models\Employee;
+use App\Models\Attendance;
+use App\Models\LeaveQuota;
 use App\Models\StagingInbound;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
@@ -148,7 +151,7 @@ class WarehouseController extends Controller
     public function shipmentreportsView(){
         // dd();
         return inertia::render('warehouse/ShipmentReports', [
-            'title' => 'Inventory Shipment Reports',
+            'title' => 'Logistic Shipment Reports',
             
         ]);
         // dd(Inbound::all());
@@ -184,6 +187,26 @@ class WarehouseController extends Controller
             ->select('id', 'outbound_id', 'delivery_estimate', 'status_shipment')
             ->get(),
         ]);
+    }
+
+    public function timeView(){
+        // dd();
+        return inertia::render('features/TimeRequestUser', [
+            'title' => 'Warehouse Time Off Request',
+            'emplys' => Employee::all(),
+            'lq' => LeaveQuota::all(),
+            'lqa' => LeaveQuota::where('status', 'validating')->get()
+        ]);
+        // dd(Employee::all());
+    }
+
+    public function attendanceView(){
+        // dd();
+        return inertia::render('features/Attendance', [
+            'title' => 'Warehouse Attendance',
+            'atdnc' => Attendance::all()
+        ]);
+        // dd(Inbound::all());
     }
 
 }
