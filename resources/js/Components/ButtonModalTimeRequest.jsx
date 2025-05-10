@@ -10,21 +10,24 @@ import {
 } from "./ui/dialog";
 import InputLabel from "./InputLabel";
 import TextInput from "./TextInput";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast"; 
 import { Textarea } from "flowbite-react";
 import DatePicker from "react-multi-date-picker";
 
-export function ButtonModalTimeRequest({userRole}) {
+export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
   // State untuk form
   const [values, setValues] = useState({
     name: "",
+    note: "",
+    leave_dates: [],
+    employee_id: null, 
   });
 
   // State untuk error
   const [errors, setErrors] = useState({});
-
+  
   // Handle perubahan input
   function handleChange(e) {
     const { name, value, type, files } = e.target;
@@ -34,43 +37,64 @@ export function ButtonModalTimeRequest({userRole}) {
     }));
   }
 
+  useEffect(() => {
+    if (employeeData) {
+      setValues((prev) => ({
+        ...prev,
+        name: employeeData.name,
+        employee_id: employeeData.id,
+      }));
+    }
+  }, [employeeData]);
+  
+
   // Handle submit
   function handleSubmit(e) {
     e.preventDefault();
-    setErrors({}); // Reset error sebelum submit
-
-    // Mapping role endpoint
+    setErrors({});
+  
     const rolePaths = {
-      admin: "/admin/",
-      wrhs: "/wrhs/",
+      admin: "/admin/timeoff",
+      wrhs: "/wrhs/timeoff",
+      fnc: "/fnc/timeoff",
+      hr: "/hr/timeoff",
+      staff: "/staff/timeoff"
     };
   
     const userPath = rolePaths[userRole];
-
-
-    // Kirim data ke backend
-    router.post(
-      userPath,
-      values,
-      {
-        forceFormData: true,
-        onSuccess: () => {
-          toast.success("Produk berhasil disimpan! 🎉", {
-            duration: 5000,
-          });
-          setValues({
-            name: "",
-          });
-        },
-        onError: (err) => {
-          setErrors(err); // Simpan error ke state
-          toast.error("Gagal menyimpan produk! ❌", {
-              duration: 5000,
-          });
-        },
-      }
+  
+    // Konversi tanggal ke string
+    const formattedDates = values.leave_dates?.map(date =>
+      date.format?.("YYYY-MM-DD") || date // fallback kalau udah string
     );
+  
+    const payload = {
+      ...values,
+      leave_dates: formattedDates,
+    };
+  
+    router.post(userPath, payload, {
+      forceFormData: true,
+      onSuccess: () => {
+        toast.success("Produk berhasil disimpan! 🎉", {
+          duration: 5000,
+        });
+        setValues({
+          name: employeeData.name,
+          note: "",
+          leave_dates: [],
+          employee_id: employeeData.id,
+        });
+      },
+      onError: (err) => {
+        setErrors(err);
+        toast.error("Gagal menyimpan produk! ❌", {
+          duration: 5000,
+        });
+      },
+    });
   }
+  
 
   return (
     <Dialog>
@@ -92,9 +116,10 @@ export function ButtonModalTimeRequest({userRole}) {
               id="name"
               type="text"
               name="name"
-              className="mt-1 block w-full"
-              placeholder="Nama Karyawan"
+              className="mt-1 block w-full bg-slate-200"
+              placeholder={userName}
               value={values.name}
+              readOnly
               onChange={handleChange}
             />
             {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}

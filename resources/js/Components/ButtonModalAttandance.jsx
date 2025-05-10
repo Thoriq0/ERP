@@ -6,12 +6,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import { router } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
+import toast from "react-hot-toast"; 
 
-export function ButtonModalAttandance() {
+export function ButtonModalAttandance({role}) {
+  const { flash } = usePage().props;
   const webcamRef = useRef(null);
   const [image, setImage] = useState(null);
   const [captured, setCaptured] = useState(false);
@@ -30,18 +32,20 @@ export function ButtonModalAttandance() {
   const { auth } = usePage().props;
   const userId = auth.user.id;
   const userName = auth.user.name;
-
+  // console.log(role)
   const submitAttendance = () => {
     setLoading(true);
-
-    router.post('/admin/attendance/take', {
+    const baseUrl = `/${role}/attendance/take`;
+    router.post(baseUrl, {
       image,
       user_id: userId,
       name: userName,
-      status: 'in'
+      status: 'in',
     }, {
-      onSuccess: () => alert('Absensi berhasil!'),
-      onError: () => alert('Gagal mengirim absensi.'),
+      onError: () => 
+        toast.error("Gagal melakukan absensi ❌", {
+          duration: 5000,
+        }),
       onFinish: () => setLoading(false),
     });
   };

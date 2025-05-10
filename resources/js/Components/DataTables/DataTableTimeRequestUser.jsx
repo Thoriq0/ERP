@@ -37,7 +37,7 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 
-export function DataTableTimeRequestUser({data, userRole, employee, selectedIds}) {
+export function DataTableTimeRequestUser({data, userRole, employee, selectedIds, userName, employeeData}) {
   const [open, setOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -262,7 +262,7 @@ export function DataTableTimeRequestUser({data, userRole, employee, selectedIds}
           />
         </div>
         <div className="flex space-x-2">
-            <ButtonModalTimeRequest userRole={userRole} employee={employee} />
+            <ButtonModalTimeRequest userRole={userRole} employee={employee} userName={userName} employeeData={employeeData} />
         </div>
       </div>
       <div className="rounded-md border">

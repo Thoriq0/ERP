@@ -37,7 +37,7 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 
-export function DataTableTimeRequest({data, userRole, employee, selectedIds}) {
+export function DataTableTimeRequest({data, userRole, employee, selectedIds, userName}) {
   const [open, setOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);

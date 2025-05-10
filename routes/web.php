@@ -124,7 +124,7 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/reportstock', [AdminController::class, 'reportStockView'])->name('admin.reportstock');
 
         // Route Attandance
-        Route::post('/admin/attendance/take', [InventoryController::class, 'attandanceTake'])->name('admin.attandance');
+        Route::post('/admin/attendance/take', [InventoryController::class, 'attendanceTake'])->name('admin.attandance');
     });
 
     // ==== ROLE FINANCE (fnc) ====
@@ -155,7 +155,12 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::delete('/finance/bp/{billedParty}', [InventoryController::class, 'bpDestroy'])->name('inventory.bp.destroy');
 
         // Route Attandance
-        Route::post('/finance/attendance/take', [InventoryController::class, 'attendanceTake'])->name('inventory.attendance');
+        Route::post('/fnc/attendance/take', [InventoryController::class, 'attendanceTake'])->name('fnc.attendance');
+
+        // route action cuti
+        Route::post('/fnc/timeoff', [InventoryController::class, 'timeStore'])->name('fnc.time.store');
+        Route::delete('/fnc/time/{leavequota}', [InventoryController::class, 'timeDestroy'])->name('fnc.time.destroy');
+        Route::put('/fnc/time/{leavequota}', [InventoryController::class, 'timeUpdate'])->name('fnc.time.update');
     });
 
     // ==== ROLE HUMAN RESOURCE (hr) ====
@@ -173,12 +178,12 @@ Route::middleware('auth', 'verified')->group(function () {
         
         // Route action timeoff
         Route::post('/hr/timeoff', [InventoryController::class, 'timeStore'])->name('inventory.time.store');
-        Route::delete('/hr/time/{leavequota}', [InventoryController::class, 'timeDestroy'])->name('inventory.time.destroy');
-        Route::put('/hr/time/{leavequota}', [InventoryController::class, 'timeUpdate'])->name('inventory.time.update');
-        Route::post('/hr/time/validate', [InventoryController::class, 'timeValidate'])->name('inventory.validte.store');
+        Route::delete('/hr/time/{leavequota}', [InventoryController::class, 'timeDestroy'])->name('hr.time.destroy');
+        Route::put('/hr/time/{leavequota}', [InventoryController::class, 'timeUpdate'])->name('hr.time.update');
+        Route::post('/hr/time/validate', [InventoryController::class, 'timeValidate'])->name('hr.validte.store');
 
         // Route Attandance
-        Route::post('/hr/attendance/take', [InventoryController::class, 'attandanceTake'])->name('admin.attandance');
+        Route::post('/hr/attendance/take', [InventoryController::class, 'attendanceTake'])->name('hr.attandance');
     });
 
     // ==== ROLE Warehouse/Inventory (wrhs) ====
@@ -235,6 +240,11 @@ Route::middleware('auth', 'verified')->group(function () {
         // Route Attandance
         Route::post('/wrhs/attendance/take', [InventoryController::class, 'attendanceTake'])->name('wrhs.attendance');
 
+        // route action cuti
+        Route::post('/wrhs/timeoff', [InventoryController::class, 'timeStore'])->name('wrhs.time.store');
+        Route::delete('/wrhs/time/{leavequota}', [InventoryController::class, 'timeDestroy'])->name('wrhs.time.destroy');
+        Route::put('/wrhs/time/{leavequota}', [InventoryController::class, 'timeUpdate'])->name('wrhs.time.update');
+
     });
 
     // ==== ROLE STAFF (STAFF) ====
@@ -242,8 +252,13 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/staff/attandance', [StaffController::class, 'attendanceView'])->name('staff.attandance');
     Route::get('/staff/time', [StaffController::class, 'timeView'])->name('staff.time');
 
-    // Route Attandance
-    Route::post('/admin/attendance/take', [InventoryController::class, 'attendanceTake'])->name('admin.attendance');
+        // route action cuti
+        Route::post('/staff/timeoff', [InventoryController::class, 'timeStore'])->name('staff.time.store');
+        Route::delete('/staff/time/{leavequota}', [InventoryController::class, 'timeDestroy'])->name('staff.time.destroy');
+        Route::put('/staff/time/{leavequota}', [InventoryController::class, 'timeUpdate'])->name('staff.time.update');
+
+        // Route Attandance
+        Route::post('/staff/attendance/take', [InventoryController::class, 'attendanceTake'])->name('staff.attendance');
 
     // ==== END ROLE STAFF (STAFF) ====
     

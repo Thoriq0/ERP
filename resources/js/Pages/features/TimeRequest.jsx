@@ -20,6 +20,7 @@ export default function TimeRequest({auth, mustVerifyEmail, status, title, emply
 
     const Layout = getLayout(auth.user.role);
     const role = auth.user.role;
+    const userName = auth.user.name;
     const data = lq;
     const datas = lqa;
     const [selectedIds, setSelectedIds] = React.useState([]);
@@ -32,7 +33,7 @@ export default function TimeRequest({auth, mustVerifyEmail, status, title, emply
                 <h1 className="text-xl font-bold md:ml-5">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} employee={emplys} selectedIds={selectedIds} />
+                <DataTableTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={role} employee={emplys} selectedIds={selectedIds} userName={userName} />
                 <hr className="my-5"/>
                 <DataTableValidasiTimeRequest mustVerifyEmail={mustVerifyEmail} status={status} data={datas} userRole={role} employee={emplys} selectedIds={selectedIds} setSelectedIds={setSelectedIds}/>
             </div>

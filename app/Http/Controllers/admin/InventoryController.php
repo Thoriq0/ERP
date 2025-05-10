@@ -1168,6 +1168,6 @@ class InventoryController extends Controller
         ]);
     
         // return response()->json(['message' => 'Absensi berhasil disimpan.']);
-        return back()->with('success', 'Absensi berhasil disimpan.');
+        return redirect()->back()->with('success', 'Absensi berhasil disimpan 🎉');
     }
 }

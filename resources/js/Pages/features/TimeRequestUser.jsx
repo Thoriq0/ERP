@@ -9,7 +9,7 @@ import { Head } from '@inertiajs/react';
 import React, { useState } from 'react';
 
 
-export default function TimeRequestUser({auth, mustVerifyEmail, title}) {
+export default function TimeRequestUser({auth, mustVerifyEmail, title, emplys, lq}) {
     const getLayout = (role) => {
         switch (role) {
             case 'staff':
@@ -25,7 +25,12 @@ export default function TimeRequestUser({auth, mustVerifyEmail, title}) {
 
     const Layout = getLayout(auth.user.role);
     const role = auth.user.role;
-    const data = []
+    const userName = auth.user.name;
+    const userNumber = auth.user.uniqueNumber;
+    const employeeData = emplys.find(emp => emp.uniqueNumber === userNumber);
+    
+    const showingData = lq.filter(lqf => lqf.createdBy === userName);
+    const data = showingData
     
     return (
         <Layout auth={auth}>
@@ -35,7 +40,7 @@ export default function TimeRequestUser({auth, mustVerifyEmail, title}) {
                 <h1 className="text-xl font-bold md:ml-5">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTableTimeRequestUser mustVerifyEmail={mustVerifyEmail} data={data} userRole={role} />
+                <DataTableTimeRequestUser mustVerifyEmail={mustVerifyEmail} data={data} userRole={role} userName={userName} employeeData={employeeData}/>
             </div>
         </Layout>
     );

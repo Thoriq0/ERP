@@ -10,8 +10,9 @@ import React, { useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { router } from "@inertiajs/react";
 import { usePage } from '@inertiajs/react';
+import toast from "react-hot-toast"; 
 
-export function ButtonModalAttandanceOut() {
+export function ButtonModalAttandanceOut({role}) {
   const webcamRef = useRef(null);
   const [image, setImage] = useState(null);
   const [captured, setCaptured] = useState(false);
@@ -31,12 +32,12 @@ export function ButtonModalAttandanceOut() {
   const { auth } = usePage().props;
   const userId = auth.user.id;
   const userName = auth.user.name;
-
+  // console.log(role)
   const submitAttendance = () => {
     setLoading(true);
-
+    const baseUrl = `/${role}/attendance/take`;
     router.post(
-      "/admin/attendance/take",
+      baseUrl,
       {
         image,
         user_id: userId,
@@ -44,12 +45,9 @@ export function ButtonModalAttandanceOut() {
         status: 'out'
       },
       {
-        onSuccess: () => {
-          alert("Absensi berhasil!");
-        },
-        onError: () => {
-          alert("Gagal mengirim absensi.");
-        },
+        onError: () => toast.error("Gagal melakukan absensi ❌", {
+          duration: 5000,
+        }),
         onFinish: () => {
           setLoading(false);
           setCaptured(false);
