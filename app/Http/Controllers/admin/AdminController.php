@@ -25,9 +25,16 @@ use App\Http\Controllers\Controller;
 class AdminController extends Controller
 {
     public function view(){
-        // dd();
+        $totalUser = User::count();
+        $totalSchedule = Shipment::where('status_shipment', 'preparing')->count();
+        $totalShipped = Shipment::where('status_shipment', 'shipping process')->count();
+        $totalDelivered = Shipment::where('status_shipment', 'Delivered')->count();
         return Inertia::render('admin/Dashboard', [
-            'title' => 'Dashboard Admin'
+            'title' => 'Dashboard Admin',
+            'total_user' => $totalUser,
+            'total_schedule' => $totalSchedule,
+            'total_shipped' => $totalShipped,
+            'total_delivered' => $totalDelivered,
         ]);
     }
 

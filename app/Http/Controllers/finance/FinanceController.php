@@ -14,12 +14,38 @@ use App\Models\LeaveQuota;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
+use Illuminate\Support\Facades\DB; 
 
 class FinanceController extends Controller
 {
     public function view(){
+        $totalBP = BilledParty::count();
+        $total_unpaid = AccountPayable::where('status_payment', 'unpaid')->count();
+        $py_schedule = AccountPayable::where('status_payment', 'scheduled')->count();
+
+        // pie chart
+        $months = collect(range(1, 12))->map(function ($month) {
+            return str_pad($month, 2, '0', STR_PAD_LEFT);
+        });
+
+        $payments = DB::table('account_payables')
+            ->selectRaw("strftime('%m', created_at) as month, SUM(total_amount) as total")
+            ->groupByRaw("strftime('%m', created_at)")
+            ->pluck('total', 'month');
+
+        $pieData = $months->map(function ($month) use ($payments) {
+            return [
+                'month' => $month,
+                'total' => (float) ($payments[$month] ?? 0),
+            ];
+        });
+
         return Inertia::render('finance/Dashboard', [
-            'title' => 'Dashboard Finance'
+            'title' => 'Dashboard Finance',
+            'total_bp' => $totalBP,
+            'total_unpaid' => $total_unpaid,
+            'py_schedule' => $py_schedule,
+            'paymentData' => $pieData,
         ]);
     }
 

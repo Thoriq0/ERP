@@ -12,8 +12,14 @@ use App\Http\Controllers\Controller;
 class HumanResourceController extends Controller
 {
     public function view(){
+        $totalEmployee = Employee::count();
+        $totalPendigApproval = LeaveQuota::where('status', 'validating')->count();
+        $totalApprovalRequest = LeaveQuota::where('status', 'validated')->count();
         return Inertia::render('hr/Dashboard', [
-            'title' => 'Dashboard Human Resource'
+            'title' => 'Dashboard Human Resource',
+            'total_employee' => $totalEmployee,
+            'total_pending_approval' => $totalPendigApproval,
+            'total_approval_request' => $totalApprovalRequest,
         ]);
     }
 

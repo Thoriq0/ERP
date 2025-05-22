@@ -16,14 +16,57 @@ use App\Models\Attendance;
 use App\Models\LeaveQuota;
 use App\Models\StagingInbound;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; 
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB; 
 
 class WarehouseController extends Controller
 {
     // view
-    public function view(){
+    public function view(Request $request){
+        $inHold = StagingInbound::where('stock_status', 'On Hold')->count();
+        $inStock = StagingInbound::where('stock_status', 'In Stock')->count();
+        $totalShipment = Shipment::count();
+        $totalSchedule = Shipment::where('status_shipment', 'preparing')->count();
+        $totalShipped = Shipment::where('status_shipment', 'shipping process')->count();
+        $totalDelivered = Shipment::where('status_shipment', 'Delivered')->count();
+
+        // query untuk chart
+        $selectedMonth = $request->get('month');
+
+        $months = collect(range(1, 12))->map(function ($month) {
+            return str_pad($month, 2, '0', STR_PAD_LEFT);
+        });
+
+        $inbound = DB::table('inbounds')
+            ->selectRaw("strftime('%m', created_at) as month, COUNT(*) as total")
+            ->groupByRaw("strftime('%m', created_at)")
+            ->pluck('total', 'month');
+        
+        $outbound = DB::table('outbounds')
+            ->selectRaw("strftime('%m', created_at) as month, COUNT(*) as total")
+            ->groupByRaw("strftime('%m', created_at)")
+            ->pluck('total', 'month');
+            // Gabungkan data ke dalam 1 array dengan default 0 jika tidak ada data
+
+        $chartData = $months->map(function ($month) use ($inbound, $outbound) {
+            return [
+                'month' => $month,
+                'inbound' => $inbound[$month] ?? 0,
+                'outbound' => $outbound[$month] ?? 0,
+            ];
+        });
+        
         return Inertia::render('warehouse/Dashboard', [
-            'title' => 'Dashboard WareHouse'
+            'title' => 'Dashboard WareHouse',
+            'in_hold' => $inHold,
+            'in_stock' => $inStock,
+            'total_shipment' => $totalShipment,
+            'total_schedule' => $totalSchedule,
+            'total_shipped' => $totalShipped,
+            'total_delivered' => $totalDelivered,
+            // 'inboundData' => $inboundData,
+            // 'selectedMonth' => $selectedMonth,
+            'chartData' => $chartData,
         ]);
     }
 
@@ -208,5 +251,7 @@ class WarehouseController extends Controller
         ]);
         // dd(Inbound::all());
     }
+
+
 
 }
