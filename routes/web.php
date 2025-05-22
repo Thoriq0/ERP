@@ -252,13 +252,13 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/staff/attandance', [StaffController::class, 'attendanceView'])->name('staff.attandance');
     Route::get('/staff/time', [StaffController::class, 'timeView'])->name('staff.time');
 
-        // route action cuti
-        Route::post('/staff/timeoff', [InventoryController::class, 'timeStore'])->name('staff.time.store');
-        Route::delete('/staff/time/{leavequota}', [InventoryController::class, 'timeDestroy'])->name('staff.time.destroy');
-        Route::put('/staff/time/{leavequota}', [InventoryController::class, 'timeUpdate'])->name('staff.time.update');
+    // route action cuti
+    Route::post('/staff/timeoff', [InventoryController::class, 'timeStore'])->name('staff.time.store');
+    Route::delete('/staff/time/{leavequota}', [InventoryController::class, 'timeDestroy'])->name('staff.time.destroy');
+    Route::put('/staff/time/{leavequota}', [InventoryController::class, 'timeUpdate'])->name('staff.time.update');
 
-        // Route Attandance
-        Route::post('/staff/attendance/take', [InventoryController::class, 'attendanceTake'])->name('staff.attendance');
+    // Route Attandance
+    Route::post('/staff/attendance/take', [InventoryController::class, 'attendanceTake'])->name('staff.attendance');
 
     // ==== END ROLE STAFF (STAFF) ====
     
