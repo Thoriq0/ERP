@@ -31,8 +31,8 @@ export default function DashboardAdminLayout({ children, auth, ...props}) {
             title: "Logistic",
             icon: <FaTruck />,
             items: [
-                { name: "Stock List", path: "/admin/stockList" },
-                { name: "Add Item", path: "/admin/add" },
+                // { name: "Stock List", path: "/admin/stockList" },
+                // { name: "Add Item", path: "/admin/add" },
                 { name: "Shipment ", path: "/admin/shipment" },
                 { name: "Delivery", path: "/admin/delivery" },
                 // { name: "Reports", path: "/admin/logisticReports" },
@@ -44,7 +44,7 @@ export default function DashboardAdminLayout({ children, auth, ...props}) {
             items: [
                 { name: "Account Payable", path: "/admin/ap" },
                 { name: "Payment", path: "/admin/payment" },
-                { name: "Income", path: "/admin/income" },
+                // { name: "Income", path: "/admin/income" },
                 { name: "Outcome", path: "/admin/outcome" },
                 // { name: "Budget Control", path: "/admin/budget" },
                 { name: "Billed Party", path: "/admin/bp" },

@@ -12,7 +12,7 @@ export default function DashboardFinanceLayout({ children, auth, ...props}) {
         { name: "Dashboard", path: "/finance/dashboard", icon: <HiChartPie /> },
         { name: "Account Payable", path: "/finance/ap", icon: <FaHandHoldingUsd />},
         { name: "Payment", path: "/finance/payment", icon: <FaMoneyBillWave />},
-        { name: "Income", path: "/finance/income", icon: <FaArrowCircleUp  /> },
+        // { name: "Income", path: "/finance/income", icon: <FaArrowCircleUp  /> },
         { name: "Outcome", path: "/finance/outcome", icon: <FaArrowCircleDown  /> },
         { name: "Billed Party", path: "/finance/bp", icon: <FaArrowCircleDown  /> },
         { name: "Attendance", path: "/finance/attendance", icon: <FaClipboardList /> },

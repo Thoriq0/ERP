@@ -33,8 +33,6 @@ export default function DashboardInventoryLayout({ children, auth, ...props }) {
             title: "Logistic",
             icon: <FaTruck />,
             items: [
-                { name: "Stock List", path: "/wrhs/stockList" },
-                { name: "Add Item", path: "/wrhs/add" },
                 { name: "Shipment ", path: "/wrhs/shipment" },
                 { name: "Delivery", path: "/wrhs/delivery" },
             ],

@@ -2,8 +2,9 @@ import DashboardAdminLayout from '@/Layouts/DashboardAdminLayout';
 import BarChart from '@/Components/BarChartAdmin';
 import { Head } from '@inertiajs/react';
 import React from 'react';
+import CountUp from 'react-countup';
 
-export default function Dashboard({auth, title}) {
+export default function Dashboard({auth, title, total_user, total_schedule, total_shipped, total_delivered}) {
     return (
         <DashboardAdminLayout auth={auth}>
             <Head title="Dashboard" />
@@ -17,15 +18,21 @@ export default function Dashboard({auth, title}) {
                         <div className='flex flex-col h-[140px] md:w-[250px] border border-borderCard shadow-2xl rounded-2xl p-4'>
                             <div className='flex flex-row gap-5 justify-start'>
                                 <img src="/images/warehouse.svg" alt="warehouse logo" />
-                                <h2 className='font-bold text-lg'>Warehouses</h2>
+                                <h2 className='font-bold text-lg'>User Warehouse</h2>
                             </div>
-                            <h1 className='text-3xl font-bold text-center my-5'>15</h1>
+                            <h1 className='text-3xl font-bold text-center my-5'>
+                                <CountUp 
+                                    start={0}
+                                    end={total_user}
+                                    duration={3}
+                                />
+                            </h1>
                         </div>
                         {/* card income */}
                         <div className='flex flex-col h-[140px] md:w-[250px] border border-borderCard shadow-2xl rounded-2xl p-4'>
                             <div className='flex flex-row gap-5 justify-start'>
                                 <img src="/images/income.svg" alt="income logo" />
-                                <h2 className='font-bold text-lg'>Income</h2>
+                                <h2 className='font-bold text-lg'>Outcome</h2>
                             </div>
                             <h1 className='text-lg font-bold text-center my-5'>Rp. 1.0000.0000.0000</h1>
                         </div>
@@ -43,7 +50,14 @@ export default function Dashboard({auth, title}) {
                                     <h1 className='text-center text-sm font-semibold'>Scheduled</h1>
                                 </div>
                                 <div className='mx-auto bg-skyBlueSchedule rounded-lg w-[125px] py-7 mt-2'>
-                                    <h1 className='text-center text-xl font-semibold'>15</h1>
+                                    <h1 className='text-center text-xl font-semibold'>
+                                        <CountUp 
+                                            start={0}  
+                                            end={total_schedule}
+                                            duration={3}  
+                                            separator=','
+                                        />
+                                    </h1>
                                 </div>  
                             </div>
                             {/* Shipped */}
@@ -52,7 +66,14 @@ export default function Dashboard({auth, title}) {
                                     <h1 className='text-center text-sm font-semibold'>Shipped</h1>
                                 </div>
                                 <div className='mx-auto bg-orangeShipped rounded-lg w-[125px] py-7 mt-2'>
-                                    <h1 className='text-center text-xl font-semibold'>15</h1>
+                                    <h1 className='text-center text-xl font-semibold'>
+                                        <CountUp 
+                                            start={0}
+                                            end={total_shipped}
+                                            duration={3}
+                                            separator=','
+                                        />
+                                    </h1>
                                 </div>  
                             </div>
                             {/* Delivered */}
@@ -61,7 +82,14 @@ export default function Dashboard({auth, title}) {
                                     <h1 className='text-center text-sm font-semibold'>Delivered</h1>
                                 </div>
                                 <div className='mx-auto bg-mintGreenDelivered rounded-lg w-[125px] py-7 mt-2'>
-                                    <h1 className='text-center text-xl font-semibold'>15</h1>
+                                    <h1 className='text-center text-xl font-semibold'>
+                                        <CountUp 
+                                            start={0}
+                                            end={total_delivered}
+                                            duration={3}
+                                            separator=','
+                                        />
+                                    </h1>
                                 </div>  
                             </div>
 

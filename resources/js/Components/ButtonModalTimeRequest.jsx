@@ -19,7 +19,7 @@ import DatePicker from "react-multi-date-picker";
 export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
   // State untuk form
   const [values, setValues] = useState({
-    name: "",
+    name: userName,
     note: "",
     leave_dates: [],
     employee_id: null, 
@@ -76,7 +76,7 @@ export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
     router.post(userPath, payload, {
       forceFormData: true,
       onSuccess: () => {
-        toast.success("Produk berhasil disimpan! 🎉", {
+        toast.success("Cuti berhasil disimpan! 🎉", {
           duration: 5000,
         });
         setValues({
@@ -88,7 +88,7 @@ export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
       },
       onError: (err) => {
         setErrors(err);
-        toast.error("Gagal menyimpan produk! ❌", {
+        toast.error("Gagal menyimpan data cuti! ❌", {
           duration: 5000,
         });
       },

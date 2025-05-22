@@ -2,8 +2,9 @@ import DashboardHumanResource from '@/Layouts/DashboardHumanResourceLayout';
 import BarChart from '@/Components/BarChartAdmin';
 import { Head } from '@inertiajs/react';
 import React from 'react';
+import CountUp from 'react-countup';
 
-export default function DashboardInventory({auth, title}) {
+export default function DashboardInventory({auth, title, total_employee, total_pending_approval, total_approval_request}) {
     return (
         <DashboardHumanResource auth={auth}>
             <Head title="Dashboard" />
@@ -20,7 +21,14 @@ export default function DashboardInventory({auth, title}) {
                                 <div className=''>
                                     <img src="/images/people.svg" alt="Total Employee" className='w-[20px]'/>
                                     <h1 className='mt-3 text-md font-extrabold'>Total Employee</h1>
-                                    <h1 className='text-center text-xl font-semibold mt-10'>15</h1>
+                                    <h1 className='text-center text-xl font-semibold mt-10'>
+                                        <CountUp 
+                                            start={0}  
+                                            end={total_employee}
+                                            duration={3}  
+                                            separator=','
+                                        />
+                                    </h1>
                                 </div> 
                             </div>
                             {/* Attendance */}
@@ -36,7 +44,14 @@ export default function DashboardInventory({auth, title}) {
                                 <div className=''>
                                     <img src="/images/progress.svg" alt="Pending Approval" className='w-[20px]'/>
                                     <h1 className='mt-3 text-md font-extrabold'>Pending Approval</h1>
-                                    <h1 className='text-center text-xl font-semibold mt-10'>15</h1>
+                                    <h1 className='text-center text-xl font-semibold mt-10'>
+                                        <CountUp 
+                                            start={0}  
+                                            end={total_pending_approval}
+                                            duration={3}  
+                                            separator=','
+                                        />
+                                    </h1>
                                 </div> 
                             </div>
                             {/* approval request */}
@@ -44,7 +59,14 @@ export default function DashboardInventory({auth, title}) {
                                 <div className=''>
                                     <img src="/images/complete.svg" alt="Approval Request" className='w-[20px]'/>
                                     <h1 className='mt-3 text-md font-extrabold'>Approval Request</h1>
-                                    <h1 className='text-center text-xl font-semibold mt-10'>15</h1>
+                                    <h1 className='text-center text-xl font-semibold mt-10'>
+                                        <CountUp 
+                                            start={0}  
+                                            end={total_approval_request}
+                                            duration={3}  
+                                            separator=','
+                                        />
+                                    </h1>
                                 </div> 
                             </div>
 
