@@ -13,7 +13,7 @@ class InboundExport implements WithMultipleSheets
             new InboundSheet(),
             // new SupplierSheet(),
             // new CategorySheet(),
-            new ProductSheet(),
+            // new ProductSheet(),
         ];
     }
 }

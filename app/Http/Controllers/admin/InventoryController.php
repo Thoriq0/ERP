@@ -20,6 +20,7 @@ use App\Models\LeaveQuota;
 use App\Models\AdjustStock;
 use App\Models\BilledParty;
 use Illuminate\Support\Str;
+use App\Exports\StockExport;
 use Illuminate\Http\Request;
 use App\Exports\InboundExport;
 use App\Exports\ProductExport;
@@ -31,6 +32,7 @@ use App\Exports\CategoryExport;
 use App\Exports\SupplierExport;
 use App\Exports\InboundFailExport;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
@@ -1116,7 +1118,9 @@ class InventoryController extends Controller
             'file' => 'required|mimes:xlsx,xls',
         ]);
 
-        Excel::import(new InboundImport, $request->file('file'));
+        $user = Auth::user();
+
+        Excel::import(new InboundImport($user), $request->file('file'));
 
         return redirect()->back();
     }
@@ -1138,6 +1142,9 @@ class InventoryController extends Controller
     }
     public function exportInboundFail(Request $request){
         return Excel::download(new InboundFailExport, 'data_inboundFail.xlsx');
+    }
+    public function exportStock(Request $request){
+        return Excel::download(new StockExport, 'data_Stock.xlsx');
     }
     
     public function shipmentOrder(Request $request){

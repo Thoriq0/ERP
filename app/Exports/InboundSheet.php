@@ -12,27 +12,28 @@ class InboundSheet implements FromCollection, WithHeadings, WithTitle
 {
     public function collection()
     {
-        return new Collection([]);
+        // return new Collection([]);
         // return Inbound::latest()->take(7)->get();
         // return Inbound::all();
+        return collect([
+            [
+                'inbound_code' => '',
+                'product_id'   => '',
+                'qty'          => '',
+                'pic'          => '',
+            ]
+        ]);
     }
     public function headings(): array {
         return [
-            'id',
             'inbound_code',
             'product_id',
-            'created_at',
-            'updated_at',
             'qty',
             'pic',
-            'created_by',
-            'qc_status',
-            'image',
-            'pdf',
         ];
     }
     public function title(): string
     {
-        return 'Inbound Data';
+        return 'Inbound Template';
     }
 }

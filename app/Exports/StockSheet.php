@@ -12,13 +12,29 @@ class StockSheet implements FromCollection, WithHeadings, WithTitle
 {
     public function collection()
     {
-        return Stock::all();
+        return Stock::with(['product'])
+        ->get()
+        ->map(function ($stock) {
+            return [
+                'id'             => $stock->id,
+                'product_id'     => $stock->product_id,
+                'product_name'   => $stock->product->name ?? '-',
+                'Product_SKU'    => $stock->product->sku ?? '-',
+                'qty'            => $stock->qty,
+            ];
+        });
     }
 
     public function headings(): array
     {
-        return Stock::first() ? array_keys(Stock::first()->toArray()) : [];
-        // return ['id', 'name', 'contact', 'address', 'account_number', 'account_name', 'account_bank_name', 'created_at', 'updated_at'];
+        // return Stock::first() ? array_keys(Stock::first()->toArray()) : [];
+        return [
+            'id',
+            'product_id',
+            'product_name',
+            'Product_SKU',
+            'qty',
+        ];
     }
     public function title(): string
     {

@@ -11,16 +11,38 @@ class ProductSheet implements FromCollection, WithHeadings, WithTitle
 {
     public function collection()
     {
-        return Product::all();
-        // return Product::select('id', 'name', 'sku')->get();
+        return Product::with(['category', 'supplier'])
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'id'             => $product->id,
+                    'name'           => $product->name,
+                    'sku'            => $product->sku,
+                    'category_id'    => $product->category_id,
+                    'category_name'  => $product->category->name ?? '-',
+                    'supplier_id'    => $product->supplier_id,
+                    'supplier_name'  => $product->supplier->name ?? '-',
+                    'created_at'     => $product->created_at,
+                    'updated_at'     => $product->updated_at,
+                ];
+            });
     }
 
     public function headings(): array
     {
-        // return Product::first() ? array_keys(Product::first()->toArray()) : [];
-        return ['id', 'name', 'sku', 'category_id', 'supplier_id', 'created_at', 'updated_at'];
+        return [
+            'id',
+            'name',
+            'sku',
+            'category_id',
+            'category_name',
+            'supplier_id',
+            'supplier_name',
+            'created_at',
+            'updated_at'
+        ];
     }
-    
+
     public function title(): string
     {
         return 'Product Data';

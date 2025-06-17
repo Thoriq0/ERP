@@ -30,10 +30,10 @@ export function ButtonModalImportInbound({userRole}) {
     e.preventDefault();
     setErrors({});
     
-    if (!file) {
-      toast.error("Harap pilih file sebelum mengimpor!");
-      return;
-    }
+    // if (!file) {
+    //   toast.error("Harap pilih file sebelum mengimpor!");
+    //   return;
+    // }
 
     const rolePaths = {
       admin: "/admin/ibnd/",
@@ -99,11 +99,22 @@ export function ButtonModalImportInbound({userRole}) {
             <div className="mt-4">
                 <InputLabel htmlFor="download" value="Download Template File Data Inbound" className="mb-2" />
                 <div className="flex items-center">
-                    <button onClick={handleExport} className="bg-[#0E9F6E] hover:bg-[#0C8B60] p-2 rounded-md text-white w-[300px]"> Download <FaFileExport size={16} className="inline-block"/></button>
+                    <button onClick={handleExport} className="bg-[#0E9F6E] hover:bg-[#0C8B60] p-2 rounded-md text-white w-[300px]"> Template <FaFileExport size={16} className="inline-block"/></button>
                     <p className="text-[12px] ml-2">Template for importing inbound data : Please ensure the id_product column is filled with the corresponding ID from the Product sheet. The Product sheet will not be included in the import process.</p>
                 </div>   
             </div>
             <hr className="mt-5 bg-[#D5D7DA]"></hr>
+            {/* <InputLabel htmlFor="download" value="Download supporting data" className="mb-5 mt-5" />
+            <div className="mt-4 flex">
+                <div className="flex items-center mr-5">
+                    <button onClick={handleExport} className="bg-[#0E9F6E] hover:bg-[#0C8B60] p-2 rounded-md text-white w-fit text-sm"> PIC DATA <FaFileExport size={16} className="inline-block"/></button>
+                </div>
+                <br />
+                <div className="items-center">
+                    <button onClick={handleExport} className="bg-[#0E9F6E] hover:bg-[#0C8B60] p-2 rounded-md text-white w-fit text-sm"> PRODUCT DATA <FaFileExport size={16} className="inline-block"/></button>
+                </div>   
+            </div>
+            <hr className="mt-5 bg-[#D5D7DA]"></hr> */}
             <div className="mt-4">
               <InputLabel htmlFor="file" value="Upload File Data Inbound" className="mb-2" />
               <input

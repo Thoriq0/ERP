@@ -60,6 +60,7 @@ Route::middleware('auth', 'verified')->group(function () {
 
         // route stock
         Route::post('/admin/adjust-stock', [InventoryController::class, 'adjustStock'])->name('wrhs.adjustStock');
+        Route::get('/admin/stock/export', [InventoryController::class, 'exportStock']);
 
         // route outbound action
         Route::post('/admin/outbound', [InventoryController::class, 'outboundStore'])->name('inventory.outbound.store');

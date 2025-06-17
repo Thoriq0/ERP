@@ -9,19 +9,26 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class InboundImport implements ToModel, WithHeadingRow
 {
+    protected $user;
+
+    public function __construct($user)
+    {
+        $this->user = $user;
+    }
+
     public function model(array $row)
     {
         $inbound = Inbound::create([
             'inbound_code' => $row['inbound_code'],
             'product_id'   => $row['product_id'],
-            'created_at'   => now(),
-            'updated_at'   => now(),
             'qty'          => $row['qty'],
             'pic'          => $row['pic'],
-            'created_by'   => $row['created_by'],
-            'qc_status'    => 'checking',
+            'created_by'   => $this->user->name ?? 'Unknown',
+            'qc_status'    => 'Checking',
             'image'        => json_encode([]),
             'pdf'          => json_encode([]),
+            'created_at'   => now(),
+            'updated_at'   => now(),
         ]);
 
         StagingInbound::create([
@@ -34,3 +41,4 @@ class InboundImport implements ToModel, WithHeadingRow
         return $inbound; 
     }
 }
+

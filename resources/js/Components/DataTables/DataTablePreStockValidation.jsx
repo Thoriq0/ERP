@@ -90,6 +90,7 @@ export default function DataTablePrestock({ stagingData, userRole }) {
     const unvalidatedProducts = stagingData.filter(
       (product) => selectedProducts.includes(product.id) && product.status !== "validated"
     );
+    // console.log(unvalidatedProducts)
   
     if (unvalidatedProducts.length > 0) {
       toast.error("Some products have not been validated. Please validate them first!");

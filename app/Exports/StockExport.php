@@ -12,7 +12,7 @@ class StockExport implements WithMultipleSheets
     {
         return [
             // new InboundSheet(),
-            new CategorySheet(),
+            new StockSheet(),
         ];
     }
 }
