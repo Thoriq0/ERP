@@ -16,7 +16,8 @@ class CategorySheet implements FromCollection, WithHeadings, WithTitle
 
     public function headings(): array
     {
-        return Category::first() ? array_keys(Category::first()->toArray()) : [];
+        // return Category::first() ? array_keys(Category::first()->toArray()) : [];
+        return ['id', 'name', 'created_at', 'updated_at'];
     }
     public function title(): string
     {

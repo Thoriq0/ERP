@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('account_bill');
             $table->string('account_bill_name');
             $table->string('account_bank_name');
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

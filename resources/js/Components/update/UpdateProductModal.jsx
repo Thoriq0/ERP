@@ -100,27 +100,27 @@ useEffect(() => {
     <Dialog open={open} onOpenChange={onClose}>
         <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
             <DialogHeader>
-                <DialogTitle>Update Produk Masuk</DialogTitle>
-                <DialogDescription>
-                    Update data produk yang masuk, lalu klik Simpan.
-                </DialogDescription>
+                <DialogTitle>Product Data Update</DialogTitle>
+                        <DialogDescription>
+                          Fill in the product details, then click Save.
+                        </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit}>
                 <div className="mt-4">
-                    <InputLabel htmlFor="name" value="Nama Produk" />
+                    <InputLabel htmlFor="name" value="Product Name" />
                     <input
                         id="name"
                         type="text"
                         name="name"
                         className="mt-1 block w-full border p-2 rounded-md"
-                        placeholder="Nama Produk"
+                        placeholder="Product Name"
                         value={data.name}
                         onChange={(e) => setData("name", e.target.value)}
                     />
                     {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
                 </div>
                 <div className="mt-4">
-                    <InputLabel htmlFor="category_id" value="Kategori" />
+                    <InputLabel htmlFor="category_id" value="Category" />
                     <select
                         id="category_id"
                         name="category_id"
@@ -171,7 +171,7 @@ useEffect(() => {
                             checked={customSku}
                             onChange={() => setCustomSku(!customSku)}
                         />
-                        <label htmlFor="customSku" className="ml-2">Gunakan SKU Custom</label>
+                        <label htmlFor="customSku" className="ml-2">Custom SKU</label>
                     </div>
                 </div>
                 <DialogFooter>
@@ -179,7 +179,7 @@ useEffect(() => {
                         Cancel
                     </Button>
                     <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple mt-5">
-                        Simpan
+                        Save
                     </Button>
                 </DialogFooter>
             </form>

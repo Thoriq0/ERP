@@ -26,6 +26,7 @@ export default function DashboardInventoryLayout({ children, auth, ...props }) {
                 { name: "Inbound", path: "/wrhs/inbound" },
                 { name: "Outbound", path: "/wrhs/outbound" },
                 { name: "Pre Stock", path: "/wrhs/prestock" },
+                { name: "Inbound Fail", path:"/wrhs/inboundFail"},
                 { name: "Stock", path: "/wrhs/stock" }
             ],
         },

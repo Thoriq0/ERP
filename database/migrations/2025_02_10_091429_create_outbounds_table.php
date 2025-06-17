@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('out_status')->default('preparing');
             $table->json('image')->nullable();
             $table->json('document')->nullable();
+            $table->string('created_by')->nullable();
         });
     }
 

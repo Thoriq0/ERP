@@ -77,21 +77,21 @@ export function ButtonModalCategory({userRole}) {
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Data Category</DialogTitle>
+          <DialogTitle>Category Data</DialogTitle>
           <DialogDescription>
-            Masukkan data category, lalu klik Simpan.
+            Please fill out the form below with the category information.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="name" value="Nama Category" />
+            <InputLabel htmlFor="name" value="Category Name" />
             <TextInput
               id="name"
               type="text"
               name="name"
               className="mt-1 block w-full"
-              placeholder="Nama Category"
+              placeholder="Category Name"
               value={values.name}
               onChange={handleChange}
             />
@@ -100,7 +100,7 @@ export function ButtonModalCategory({userRole}) {
 
           <DialogFooter>
             <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

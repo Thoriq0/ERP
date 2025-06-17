@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('stock_status');
             $table->string('payment_status');
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

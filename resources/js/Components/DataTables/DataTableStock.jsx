@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -35,17 +35,34 @@ import {
 import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { ViewStokDetailModal } from "../viewsdetails/ViewStokDetailModal";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { ButtonModalAdjustStock } from "../ButtonModalAdjustStock";
+import toast from "react-hot-toast";
 
-export function DataTableStock({ data, userRole }) {
+export function DataTableStock({ data, userRole, adjust }) {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   // State untuk modal detail
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [selectedStock, setSelectedStock] = useState(null);
 
+  function handleExport() {
+      const rolePaths = {
+        admin: "/admin/stock/export",
+        wrhs: "/wrhs/stock/export",
+      };
+    
+      const userExportPath = rolePaths[userRole];
+    
+      if (!userExportPath) {
+        toast.error("Role tidak valid! ❌");
+        return;
+      }
+    
+      window.location.href = userExportPath;
+    }
+
   const handleDelete = () => {
     console.log(`Deleting item with ID: ${selectedId}`);
-    // Tambahkan logic API untuk delete di sini
     setOpen(false); // Tutup modal setelah delete
   };
 
@@ -54,27 +71,27 @@ export function DataTableStock({ data, userRole }) {
     setSelectedStock(stock);
     setDetailModalOpen(true);
   };
-
+  
   const columns = [
-    // {
-    //   id: "select",
-    //   header: ({ table }) => (
-    //     <Checkbox
-    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //       aria-label="Select all"
-    //     />
-    //   ),
-    //   cell: ({ row }) => (
-    //     <Checkbox
-    //       checked={row.getIsSelected()}
-    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-    //       aria-label="Select row"
-    //     />
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: "product.name",
       header: "Product",
@@ -122,17 +139,18 @@ export function DataTableStock({ data, userRole }) {
       header: "Category",
       cell: ({ row }) => <div className="capitalize">{row.original.product?.category?.name || "Unknown"}</div>,
     },
-    {
-      accessorKey: "warehouse",
-      header: "Warehouse",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("warehouse")}</div>,
-    },
+    // {
+    //   accessorKey: "warehouse",
+    //   header: "Warehouse",
+    //   cell: ({ row }) => <div className="capitalize ">{row.getValue("warehouse")}</div>,
+    // },
     {
       id: "actions",
       header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
+        
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -143,13 +161,16 @@ export function DataTableStock({ data, userRole }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500 "/>Copy stock ID
+              <DropdownMenuItem onClick={() => {
+                navigator.clipboard.writeText(item.product.sku)
+                toast.success('SKU Copied')
+                }} className="cursor-pointer">
+                <FaCopy size={16} className="text-blue-500 "/>Copy SKU Stock
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
+              {/* <DropdownMenuItem className="cursor-pointer">
                 <FaEdit size={16} className="text-yellow-500 "/>Update
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
                 <FaEye size={16} className="text-green-500 "/>View details
               </DropdownMenuItem>
@@ -168,8 +189,14 @@ export function DataTableStock({ data, userRole }) {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
+  const filteredData = useMemo(() => {
+    return data.filter(item => item.qty > 0);
+  }, [data]);
+  
+  console.log(filteredData);
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -190,6 +217,7 @@ export function DataTableStock({ data, userRole }) {
         open={detailModalOpen}
         onClose={() => setDetailModalOpen(false)}
         stock={selectedStock}
+        adjust={adjust}
       />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
@@ -228,6 +256,11 @@ export function DataTableStock({ data, userRole }) {
             className="max-w-xs"
           />
         </div>
+        <div className="flex  space-x-2">
+            <Button className="bg-green-400 hover:bg-green-500" onClick={handleExport}>Export</Button>
+            <ButtonModalAdjustStock userRole={userRole} selectedItems={table.getSelectedRowModel().rows.map(row => row.original)} />
+        </div>
+        
       </div>
       <div className="rounded-md border">
         <Table>

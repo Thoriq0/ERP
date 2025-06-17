@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->integer('uniqueNumber')->nullable()->unique();
             $table->integer('leave_quota')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

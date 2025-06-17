@@ -40,10 +40,10 @@ export function ViewProdukDetailModal({ open, onClose, product, supplierData, ca
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] max-w-[375px] md:max-w-[750px] overflow-y-auto border border-gray-300 p-5 md:p-8 rounded-md">
         <DialogHeader>
-          <DialogTitle>Detail Data Produk</DialogTitle>
-          <DialogDescription>
-            Berikut adalah detail data Produk.
-          </DialogDescription>
+        <DialogTitle>Product Details</DialogTitle>
+        <DialogDescription>
+          Below are the details of the product.
+        </DialogDescription>
           <hr />
         </DialogHeader>
         <div className="mt-4 space-y-2 text-sm">
@@ -53,22 +53,22 @@ export function ViewProdukDetailModal({ open, onClose, product, supplierData, ca
             <span>{product?.sku || "Tidak Diketahui"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Nama Product</strong>
+            <strong className="min-w-[150px]">Product Name</strong>
             <span className="mr-2">:</span>
             <span>{product?.name || "Tidak Diketahui"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Kategori Product</strong>
+            <strong className="min-w-[150px]">Category Product</strong>
             <span className="mr-2">:</span>
             <span>{category?.name || "Tidak Diketahui"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Nama Supplier</strong>
+            <strong className="min-w-[150px]">Supplier Name</strong>
             <span className="mr-2">:</span>
             <span>{supplier?.name || "Tidak Diketahui"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Tanggal Dibuat</strong>
+            <strong className="min-w-[150px]">Created At</strong>
             <span className="mr-2">:</span>
             <span>{new Date(product?.created_at).toLocaleString("id-ID")}</span>
           </div>

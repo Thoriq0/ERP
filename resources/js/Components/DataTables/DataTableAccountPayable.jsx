@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -42,7 +42,7 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
   
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-
+  // console.log(apData)
   // select data inbound dan modal
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -53,15 +53,11 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
 
   const handleDelete = () => {
     if (!selectedId) return;
-
-    // Mapping role endpoint
     const rolePaths = {
       admin: "/admin/ap",
       fnc: "/finance/ap",
     };
-
     const userPath = rolePaths[userRole];
-
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
         toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
@@ -78,8 +74,6 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
     setSelectedProduct(inbound);
     setUpdateModalOpen(true);
   };
-
-  // handle views details
   const handleViewDetails = (inbound) => {
     setSelectedInbound(inbound);
     setDetailModalOpen(true);
@@ -87,28 +81,9 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
   
 
   const columns = [
-    // {
-    //   id: "select",
-    //   header: ({ table }) => (
-    //     <Checkbox
-    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //       aria-label="Select all"
-    //     />
-    //   ),
-    //   cell: ({ row }) => (
-    //     <Checkbox
-    //       checked={row.getIsSelected()}
-    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-    //       aria-label="Select row"
-    //     />
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
     {
         accessorKey: "ap_code",
-        header: "Invoice",
+        header: "Invoice Code",
         cell: ({ row }) => (
           <div className="capitalize">{row.getValue("ap_code")}</div>
         ),
@@ -140,17 +115,37 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
         sortingFn: "datetime",
     },
     {
-        accessorKey: "inbound.qty",
-        header: "QTY",
-        cell: ({ row }) => (
-            <div className="capitalize">{row.original.inbound?.qty ?? "Bundle"}</div>
-        ),
+      accessorKey: "inbound.qty",
+      header: "QTY",
+      cell: ({ row }) => {
+        const qty = row.original?.inbound?.qty;
+        const totalQty = row.original?.total_qty;
+    
+        return (
+          <div className="capitalize">
+            {totalQty === 0 || totalQty === undefined
+              ? (qty ?? "General Purchase")
+              : totalQty}
+          </div>
+        );
+      },
     },
     {
         accessorKey: "unit_price",
         header: "Unit Price",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("unit_price") === null ? 'Bundle' : row.getValue("unit_price") === 0 ? 0 : row.getValue("unit_price")}</div>
+            <div className="capitalize">
+            {
+              row.original?.inbound?.inbound_code === null ||row.original?.inbound?.inbound_code === undefined
+              ? row.getValue("unit_price") === null 
+                ? 'General Purchase' 
+                : row.getValue("unit_price") === 0 
+                  ? 0 
+                  : row.getValue("unit_price")
+              : "Bundling Inbound"
+            }
+            
+            </div>
         ),
     },
     {
@@ -164,7 +159,7 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
         accessorKey: "total_amount",
         header: "Total Amount",
         cell: ({ row }) => (
-            <div className="capitalize">Rp.{row.getValue("total_amount").toLocaleString("id-ID")}</div>
+            <div className="capitalize">Rp.{row.original?.grand_total.toLocaleString("id-ID")}</div>
         ),
     },
     {
@@ -174,9 +169,16 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
         const status = row.getValue("status_payment");
         return (
           <div
-            className={`capitalize text-center rounded-xl text-white p-2 ${ status === "paid" ? "bg-[#28A745]" :
-              status === "unpaid" ? "bg-[#dc3545]" : status === "schedule" ? "bg-yellow-400" : "bg-lime-400"
-            }`}
+            className={`capitalize text-center rounded-xl text-white p-2 
+            ${status === "paid" ? "bg-emerald-500" :
+              status === "unpaid" ? "bg-rose-500" :
+              status === "schedule" ? "bg-amber-400" :
+              status === "overdue" ? "bg-red-700" :
+              status === "processing" ? "bg-blue-500" :
+              status === "draft" ? "bg-gray-500" :
+              status === "canceled" ? "bg-gray-700" :
+              "bg-lime-400"}`
+            }
           >
             {status ?? "N/A"}
           </div>
@@ -200,8 +202,14 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
+              <DropdownMenuItem
+                onClick={() => {
+                  navigator.clipboard.writeText(item.ap_code);
+                  toast.success("Invoice code copied!");
+                }}
+                className="cursor-pointer"
+              >
+                <FaCopy size={16} className="text-blue-500" /> Copy Invoice Code
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               {!isPaid && (
@@ -212,9 +220,6 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
               <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
                 <FaEye size={16} className="text-green-500 "/>View details
               </DropdownMenuItem>
-              {/* <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
-                <FaTrash size={16} className="text-red-500"/>Delete
-              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -227,8 +232,36 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
+  // const uniqueAPData = useMemo(() => {
+  //   return Array.from(
+  //     new Map(apData.map(item => [item.ap_code, item])).values()
+  //   );
+  // }, [apData]);
+
+  const uniqueAPData = useMemo(() => {
+    const apMap = new Map();
+  
+    apData.forEach(item => {
+      const key = item.ap_code;
+      const qty = item.inbound?.qty || 0;
+      const total = item?.total_amount || 0;
+  
+      if (apMap.has(key)) {
+        const existing = apMap.get(key);
+        existing.total_qty += qty; 
+        existing.grand_total += total;
+      } else {
+        // Clone item & tambah total_qty baru
+        apMap.set(key, { ...item, total_qty: qty, grand_total: total });
+      }
+    });
+  
+    return Array.from(apMap.values());
+  }, [apData]);
+
+  // console.log(uniqueAPData)
   const table = useReactTable({
-    data: apData,
+    data: uniqueAPData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

@@ -40,6 +40,17 @@ export function ButtonModalAp({ userRole, bp }) {
     if (flash?.success) {
       toast.success(flash.success, { duration: 5000 });
       setOpen(false);
+      setData(prevData => ({
+        items: [{ description: "", qty: "", unit_price: "" }],
+        discount: "",
+        tax:"",
+        note: "",
+        terms_condition: "",
+        total_amount: "",
+        due_date: "",
+        status_payment: "unpaid",
+        bp: ""
+      }));
     }
     if (flash?.error) {
       toast.error(flash.error, { duration: 5000 });
@@ -87,6 +98,36 @@ export function ButtonModalAp({ userRole, bp }) {
     setData("items", updatedItems);
   }
 
+  function cancelClear(){
+    setData(prevData => ({
+      items: [{ description: "", qty: "", unit_price: "" }],
+      discount: "",
+      tax:"",
+      note: "",
+      terms_condition: "",
+      total_amount: "",
+      due_date: "",
+      status_payment: "unpaid",
+      bp: ""
+    }));
+  }
+
+  useEffect(() => {
+    if (!open) {
+      setData({
+        items: [{ description: "", qty: "", unit_price: "" }],
+        discount: "",
+        tax:"",
+        note: "",
+        terms_condition: "",
+        total_amount: "",
+        due_date: "",
+        status_payment: "unpaid",
+        bp: ""
+      });
+    }
+  }, [open]);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -96,8 +137,8 @@ export function ButtonModalAp({ userRole, bp }) {
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Data Produk Masuk</DialogTitle>
-          <DialogDescription>Masukkan data produk yang masuk, lalu klik Simpan.</DialogDescription>
+          <DialogTitle>Create New Invoice</DialogTitle>
+          <DialogDescription>Please enter the invoice information and click Save to confirm.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           {data.items.map((item, index) => (
@@ -147,13 +188,13 @@ export function ButtonModalAp({ userRole, bp }) {
 
               {data.items.length > 1 && (
                 <Button type="button" className="bg-red-500 text-white mt-2" onClick={() => removeItem(index)}>
-                  Hapus Item
+                  Delete Item
                 </Button>
               )}
             </div>
           ))}
-          <Button type="button" className="bg-blue-500 text-white mt-3" onClick={addItem}>
-            + Tambah Item Description
+          <Button type="button" className="bg-purple-600 hover:bg-purple-700 text-white mt-3" onClick={addItem}>
+            + Add Some Item's
           </Button>
           <br /><br />
           <InputLabel htmlFor="discount" value="Discount (%)" />
@@ -230,11 +271,14 @@ export function ButtonModalAp({ userRole, bp }) {
           
 
           <DialogFooter>
-            <Button type="button" className="bg-gray-200 text-black border border-gray-400 mt-5 hover:bg-gray-300" onClick={() => setOpen(false)}>
+            <Button type="button" className="bg-gray-200 text-black border border-gray-400 mt-5 hover:bg-gray-300" onClick={() => {
+              setOpen(false)
+              cancelClear()
+            }}>
               Cancel
             </Button>
             <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

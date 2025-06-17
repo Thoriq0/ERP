@@ -18,26 +18,47 @@ use Illuminate\Support\Facades\DB;
 
 class FinanceController extends Controller
 {
-    public function view(){
+    public function view(Request $request){
         $totalBP = BilledParty::count();
         $total_unpaid = AccountPayable::where('status_payment', 'unpaid')->count();
         $py_schedule = AccountPayable::where('status_payment', 'scheduled')->count();
 
-        // pie chart
-        $months = collect(range(1, 12))->map(function ($month) {
-            return str_pad($month, 2, '0', STR_PAD_LEFT);
-        });
+        $today = now()->startOfDay();
 
-        $payments = DB::table('account_payables')
-            ->selectRaw("strftime('%m', created_at) as month, SUM(total_amount) as total")
+        $total_due = AccountPayable::whereDate('due_date', '<', $today)
+        ->where('status_payment', '!=', 'paid')
+        ->count();
+
+        // Ambil bulan yang dipilih dari request (default: bulan sekarang)
+        $selectedMonth = $request->get('month', now()->format('m'));
+        $year = now()->format('Y');
+
+        // Pie chart data
+        $withInbound = AccountPayable::whereNotNull('inbound_id')
+            ->whereMonth('created_at', $selectedMonth)
+            ->whereYear('created_at', $year)
+            ->sum('total_amount');
+
+        $withoutInbound = AccountPayable::whereNull('inbound_id')
+            ->whereMonth('created_at', $selectedMonth)
+            ->whereYear('created_at', $year)
+            ->sum('total_amount');
+
+        // $pieData = [
+        //     ['name' => 'Inbound Payment', 'value' => (float) $withInbound, 'month' => $selectedMonth],
+        //     ['name' => 'Other Payment', 'value' => (float) $withoutInbound, 'month' => $selectedMonth],
+        // ];
+
+        $monthlyPayments = AccountPayable::selectRaw("strftime('%m', created_at) as month, SUM(total_amount) as total")
+            ->whereYear('created_at', $year)
             ->groupByRaw("strftime('%m', created_at)")
-            ->pluck('total', 'month');
-
-        $pieData = $months->map(function ($month) use ($payments) {
-            return [
-                'month' => $month,
-                'total' => (float) ($payments[$month] ?? 0),
-            ];
+            ->orderByRaw("strftime('%m', created_at)")
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'month' => $item->month,
+                    'total' => (float) $item->total,
+                ];
         });
 
         return Inertia::render('finance/Dashboard', [
@@ -45,9 +66,16 @@ class FinanceController extends Controller
             'total_bp' => $totalBP,
             'total_unpaid' => $total_unpaid,
             'py_schedule' => $py_schedule,
-            'paymentData' => $pieData,
+            'paymentData' => [
+                ['name' => 'Inbound Payment', 'value' => (float) $withInbound, 'month' => $selectedMonth],
+                ['name' => 'Other Payment', 'value' => (float) $withoutInbound, 'month' => $selectedMonth],
+            ],
+            'selectedMonth' => $selectedMonth,
+            'total_due' => $total_due,
+            'monthlyPayments' => $monthlyPayments,
         ]);
     }
+
 
     public function apView(){
         // dd();

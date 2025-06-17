@@ -186,6 +186,7 @@ export function DataTableBilledParty({data, userRole}) {
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
+        // console.log(item)
         return (
           <DropdownMenu >
             <DropdownMenuTrigger asChild>
@@ -196,8 +197,13 @@ export function DataTableBilledParty({data, userRole}) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="cursor-pointer">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
+              <DropdownMenuItem onClick={() => {
+
+                navigator.clipboard.writeText(item.account_bill)
+                toast.success("Back Account code copied!");
+
+                }} className="cursor-pointer">
+                <FaCopy size={16} className="text-blue-500 "/>Copy Bank Account Number
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleUpdate(item, item.contact, item.address)} className="cursor-pointer">

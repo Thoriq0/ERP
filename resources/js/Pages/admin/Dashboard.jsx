@@ -2,9 +2,11 @@ import DashboardAdminLayout from '@/Layouts/DashboardAdminLayout';
 import BarChart from '@/Components/BarChartAdmin';
 import { Head } from '@inertiajs/react';
 import React from 'react';
-import CountUp from 'react-countup';
+import CountUp from 'react-countup'; 
+import BarChartAdmin from '@/Components/BarChartAdmin';
 
-export default function Dashboard({auth, title, total_user, total_schedule, total_shipped, total_delivered}) {
+export default function Dashboard({auth, title, total_user, total_schedule, total_shipped, total_delivered, total_expenses, monthly_expenses, lastMonth, lastYear}) {
+    // console.log(total_expenses, lastMonth, lastYear)
     return (
         <DashboardAdminLayout auth={auth}>
             <Head title="Dashboard" />
@@ -17,7 +19,7 @@ export default function Dashboard({auth, title, total_user, total_schedule, tota
                         {/* card warehouse */}
                         <div className='flex flex-col h-[140px] md:w-[250px] border border-borderCard shadow-2xl rounded-2xl p-4'>
                             <div className='flex flex-row gap-5 justify-start'>
-                                <img src="/images/warehouse.svg" alt="warehouse logo" />
+                                <img src="/images/warehouse.svg" alt="warehouse logo" width="20" height="20" />
                                 <h2 className='font-bold text-lg'>User Warehouse</h2>
                             </div>
                             <h1 className='text-3xl font-bold text-center my-5'>
@@ -31,10 +33,10 @@ export default function Dashboard({auth, title, total_user, total_schedule, tota
                         {/* card income */}
                         <div className='flex flex-col h-[140px] md:w-[250px] border border-borderCard shadow-2xl rounded-2xl p-4'>
                             <div className='flex flex-row gap-5 justify-start'>
-                                <img src="/images/income.svg" alt="income logo" />
-                                <h2 className='font-bold text-lg'>Outcome</h2>
+                                <img src="/images/income.svg" alt="income logo" width="25" height="20" />
+                                <h2 className='font-bold text-lg'>Outcome - {new Date().getFullYear()}</h2>
                             </div>
-                            <h1 className='text-lg font-bold text-center my-5'>Rp. 1.0000.0000.0000</h1>
+                            <h1 className='text-lg font-bold text-center my-5'>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(total_expenses)}</h1>
                         </div>
                     </div>
                     {/* shipment */}
@@ -95,14 +97,18 @@ export default function Dashboard({auth, title, total_user, total_schedule, tota
 
                         </div>
                     </div>
+
                 </div>
+
+                
 
                 {/* Bar Char Expense */}
                 <div className="border border-borderCard rounded-xl shadow-2xl p-8 w-full">
                     <h1 className='font-bold text-lg'>Expense</h1>
                     <div className='h-px bg-[#C8C6C6] mt-2 mb-5'></div>
-                    <BarChart />
+                    <BarChartAdmin dataExpenses={monthly_expenses} lastMonth={lastMonth} lastYear={lastYear} />
                 </div>
+                
             </div>
 
         </DashboardAdminLayout>

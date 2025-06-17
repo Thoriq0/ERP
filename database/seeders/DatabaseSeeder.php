@@ -1,15 +1,19 @@
 <?php
 
+// namespace Database\Seeders\uments\Apps\ERP\database\seeders;
 namespace Database\Seeders;
 
-use App\Models\BilledParty;
+use App\Models\AccountPayable;
 use App\Models\User;
+use App\Models\Expense;
 use App\Models\Inbound;
-use App\Models\Product;
+use App\Models\Payment;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Outbound;
 use App\Models\Supplier;
+use App\Models\BilledParty;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -25,6 +29,10 @@ class DatabaseSeeder extends Seeder
         Supplier::factory(15)->create();
         Product::factory(20)->create();
         BilledParty::factory(12)->create();
+        
+        // AccountPayable::factory(20)->create();
+        // Payment::factory(20)->create();
+        // Expense::factory(300)->create();
         // Inbound::factory(8)->create();
         // Outbound::factory(8)->create();
 

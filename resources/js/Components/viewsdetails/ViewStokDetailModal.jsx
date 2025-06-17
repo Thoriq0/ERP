@@ -9,7 +9,18 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 
-export function ViewStokDetailModal({ open, onClose, stock }) {
+export function ViewStokDetailModal({ open, onClose, stock, adjust }) {
+  
+  const adjustmentLogs = adjust.filter(
+    (item) => item.product_id === stock?.product?.id
+  );
+
+  const groupedAdjustments = adjustmentLogs.reduce((acc, item) => {
+    const status = item.status;
+    acc[status] = (acc[status] || 0) + item.qty;
+    return acc;
+  }, {});
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] max-w-[375px] md:max-w-[750px] overflow-y-auto border border-gray-300 p-8 md:p-10 rounded-md custom-scrollbar">
@@ -49,6 +60,20 @@ export function ViewStokDetailModal({ open, onClose, stock }) {
             <strong className="min-w-[150px]">Last Update</strong>
             <span className="mr-2">:</span>
             <span>{new Date(stock?.created_at).toLocaleString("id-ID")}</span>
+          </div>
+          <div className="mt-6">
+            <h4 className="font-semibold mb-2">Log Penyesuaian Stok:</h4>
+            {Object.keys(groupedAdjustments).length === 0 ? (
+              <p className="text-sm text-gray-500">Belum ada penyesuaian stok.</p>
+            ) : (
+              <ul className="list-disc ml-5 text-sm space-y-1">
+                {Object.entries(groupedAdjustments).map(([status, qty]) => (
+                  <li key={status}>
+                    <strong className="capitalize">{status}</strong>: {qty}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
         <DialogFooter>

@@ -1,10 +1,10 @@
 import DashboardHumanResource from '@/Layouts/DashboardHumanResourceLayout';
-import BarChart from '@/Components/BarChartAdmin';
+import BarChartHr from '@/Components/BarChartHr';
 import { Head } from '@inertiajs/react';
 import React from 'react';
 import CountUp from 'react-countup';
 
-export default function DashboardInventory({auth, title, total_employee, total_pending_approval, total_approval_request}) {
+export default function DashboardInventory({auth, title, total_employee, total_pending_approval, total_approval_request, attendanceAvgChart}) {
     return (
         <DashboardHumanResource auth={auth}>
             <Head title="Dashboard" />
@@ -78,7 +78,7 @@ export default function DashboardInventory({auth, title, total_employee, total_p
                 <div className=' border border-borderCard rounded-xl shadow-2xl p-5 md:w-[1040px]'>
                     <h1 className='font-bold text-lg'>Attendance In & Out</h1>
                     <div className='h-px bg-[#C8C6C6] mt-2 mb-5'></div>
-                    <BarChart/>
+                    <BarChartHr data={attendanceAvgChart}/>
                 </div>
             </div>
         </DashboardHumanResource>

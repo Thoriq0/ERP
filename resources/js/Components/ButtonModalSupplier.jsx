@@ -87,15 +87,15 @@ export function ButtonModalSupplier({userRole}) {
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Data Supplier</DialogTitle>
+          <DialogTitle>Supplier Information</DialogTitle>
           <DialogDescription>
-            Masukkan data Supplier yang masuk, lalu klik Simpan.
+            Please fill in the supplier details and click Save.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="name" value="Nama Supplier" />
+            <InputLabel htmlFor="name" value="Supplier Name" />
             <TextInput
               id="name"
               type="text"
@@ -115,7 +115,7 @@ export function ButtonModalSupplier({userRole}) {
               type="number"
               name="contact"
               className="mt-1 block w-full"
-              placeholder="contact supplier"
+              placeholder="Contact"
               value={values.contact}
               onChange={handleChange}
             />
@@ -123,13 +123,13 @@ export function ButtonModalSupplier({userRole}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="address" value="Alamat Supplier" />
+            <InputLabel htmlFor="address" value="Address" />
             <TextInput
               id="address"
               type="text"
               name="address"
               className="mt-1 block w-full"
-              placeholder="Alamat Supplier"
+              placeholder="Address"
               value={values.address}
               onChange={handleChange}
             />
@@ -137,13 +137,13 @@ export function ButtonModalSupplier({userRole}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="accountNumber" value="Account Number" />
+            <InputLabel htmlFor="accountNumber" value="Bank Account Number" />
             <TextInput
               id="accountNumber"
               type="number"
               name="accountNumber"
               className="mt-1 block w-full"
-              placeholder="Account number supplier"
+              placeholder="Bank account number supplier"
               value={values.accountNumber}
               onChange={handleChange}
             />
@@ -151,13 +151,13 @@ export function ButtonModalSupplier({userRole}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="accountName" value="Account Name" />
+            <InputLabel htmlFor="accountName" value="Account Holder Name" />
             <TextInput
               id="accountName"
               type="text"
               name="accountName"
               className="mt-1 block w-full"
-              placeholder="Account Name supplier"
+              placeholder="Account Holder Name"
               value={values.accountName}
               onChange={handleChange}
             />
@@ -171,7 +171,7 @@ export function ButtonModalSupplier({userRole}) {
               type="text"
               name="accountBankName"
               className="mt-1 block w-full"
-              placeholder="Account Name supplier"
+              placeholder="Account Bank Name"
               value={values.accountBankName}
               onChange={handleChange}
             />
@@ -180,7 +180,7 @@ export function ButtonModalSupplier({userRole}) {
 
           <DialogFooter>
             <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

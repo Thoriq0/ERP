@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('account_number')->nullable();
             $table->integer('account_name')->nullable();
             $table->integer('account_bank_name')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

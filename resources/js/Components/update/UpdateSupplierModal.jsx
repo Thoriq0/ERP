@@ -72,20 +72,20 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Update Supplier Masuk</DialogTitle>
-          <DialogDescription>
-            Update data supplier yang masuk, lalu klik Simpan.
-          </DialogDescription>
+        <DialogTitle>Update Supplier Data</DialogTitle>
+        <DialogDescription>
+          Update the supplier information, then click Save.
+        </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="name" value="Nama Produk" />
+            <InputLabel htmlFor="name" value="Supplier Name" />
             <input
               id="name"
               type="text"
               name="name"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Nama Produk"
+              placeholder="Supplier Name"
               value={data.name || ""}
               onChange={(e) => setData("name", e.target.value)}
             />
@@ -105,39 +105,39 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
             {errors.contact && <p className="text-red-500 text-sm">{errors.contact}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="address" value="Alamat Supplier" />
+            <InputLabel htmlFor="address" value="Address" />
             <input
               id="address"
               type="text"
               name="address"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Alamat Supplier"
+              placeholder="Address"
               value={data.address || ""}
               onChange={(e) => setData("address", e.target.value)}
             />
             {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="accountNumber" value="Account Number" />
+            <InputLabel htmlFor="accountNumber" value="Bank Account Number" />
             <input
               id="accountNumber"
               type="number"
               name="accountNumber"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Account Number"
+              placeholder="Bank Account Number"
               value={data.accountNumber || ""}
               onChange={(e) => setData("accountNumber", e.target.value)}
             />
             {errors.accountNumber && <p className="text-red-500 text-sm">{errors.accountNumber}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="accountName" value="Account Name" />
+            <InputLabel htmlFor="accountName" value="Account Holder Name " />
             <input
               id="accountName"
               type="text"
               name="accountName"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Account Name"
+              placeholder="Account Holder Name"
               value={data.accountName || ""}
               onChange={(e) => setData("accountName", e.target.value)}
             />
@@ -165,7 +165,7 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
               Cancel
             </Button>
             <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white mt-5">
-              Simpan
+              Save
             </Button>
 
           </DialogFooter>

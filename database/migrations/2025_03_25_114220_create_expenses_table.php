@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('payment_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('paid_code')->nullable();
             $table->string('references')->nullable();
-            $table->decimal('total', 15, 2)->nullable(); 
+            $table->decimal('total', 15, 2)->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

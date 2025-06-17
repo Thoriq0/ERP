@@ -11,14 +11,14 @@ class ProductSheet implements FromCollection, WithHeadings, WithTitle
 {
     public function collection()
     {
-        // return Product::all();
-        return Product::select('id', 'name', 'sku')->get();
+        return Product::all();
+        // return Product::select('id', 'name', 'sku')->get();
     }
 
     public function headings(): array
     {
         // return Product::first() ? array_keys(Product::first()->toArray()) : [];
-        return ['id', 'name', 'sku'];
+        return ['id', 'name', 'sku', 'category_id', 'supplier_id', 'created_at', 'updated_at'];
     }
     
     public function title(): string

@@ -57,6 +57,22 @@ export function DataTableSupplier({data, userRole}) {
 
   // console.log(userRole, "role get");
 
+  function handleExport() {
+      const rolePaths = {
+        admin: "/admin/supplier/export",
+        wrhs: "/wrhs/supplier/export",
+      };
+    
+      const userExportPath = rolePaths[userRole];
+    
+      if (!userExportPath) {
+        toast.error("Role tidak valid! ❌");
+        return;
+      }
+    
+      window.location.href = userExportPath;
+    }
+
   const handleDelete = () => {
     if (!selectedId) return;
 
@@ -183,8 +199,11 @@ export function DataTableSupplier({data, userRole}) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="cursor-pointer">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
+              <DropdownMenuItem onClick={() => {
+                navigator.clipboard.writeText(item.contact)
+                toast.success("Contact Copied!");
+                }} className="cursor-pointer">
+                <FaCopy size={16} className="text-blue-500 "/>Copy supplier contact
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleUpdate(item, item.contact, item.address)} className="cursor-pointer">
@@ -278,7 +297,10 @@ export function DataTableSupplier({data, userRole}) {
             className="max-w-xs"
           />
         </div>
-        <ButtonModalSupplier userRole={userRole}/>
+        <div className="flex  space-x-2">
+            <Button className="bg-green-400 hover:bg-green-500" onClick={handleExport}>Export</Button>
+            <ButtonModalSupplier userRole={userRole}/>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>

@@ -75,18 +75,18 @@ export function UpdateBpModal({ userRole, open, onClose, bp }) {
         <DialogHeader>
           <DialogTitle>Update Billed Party</DialogTitle>
           <DialogDescription>
-            Update data Billed Party, lalu klik Simpan.
+            Update the billed party information, then click Save.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
         <div className="mt-4">
-            <InputLabel htmlFor="bill_to" value="Bill To" />
+            <InputLabel htmlFor="bill_to" value="Company Name" />
             <input
               id="bill_to"
               type="text"
               name="bill_to"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Bill To"
+              placeholder="Company Name"
               value={data.bill_to || ""}
               onChange={(e) => setData("bill_to", e.target.value)}
             />
@@ -94,7 +94,7 @@ export function UpdateBpModal({ userRole, open, onClose, bp }) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="contact_bill" value="Contact Bill" />
+            <InputLabel htmlFor="contact_bill" value="Contact" />
             <input
               id="contact_bill"
               type="text"
@@ -108,7 +108,7 @@ export function UpdateBpModal({ userRole, open, onClose, bp }) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="address_bill" value="Address Bill" />
+            <InputLabel htmlFor="address_bill" value="Address" />
             <input
               id="address_bill"
               type="text"
@@ -122,7 +122,7 @@ export function UpdateBpModal({ userRole, open, onClose, bp }) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="email_bill" value="Email Bill" />
+            <InputLabel htmlFor="email_bill" value="Email" />
             <input
               id="email_bill"
               type="email"
@@ -136,13 +136,13 @@ export function UpdateBpModal({ userRole, open, onClose, bp }) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="account_bill" value="Account Bill" />
+            <InputLabel htmlFor="account_bill" value="Bank Account Number" />
             <input
               id="account_bill"
               type="number"
               name="account_bill"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Account Bill"
+              placeholder="Bank Account Number"
               value={data.account_bill || ""}
               onChange={(e) => setData("account_bill", e.target.value)}
             />
@@ -150,13 +150,13 @@ export function UpdateBpModal({ userRole, open, onClose, bp }) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="account_bill_name" value="Account Bill Name" />
+            <InputLabel htmlFor="account_bill_name" value="Account Holder Name" />
             <input
               id="account_bill_name"
               type="text"
               name="account_bill_name"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Account Bill Name"
+              placeholder="Account Holder Name"
               value={data.account_bill_name || ""}
               onChange={(e) => setData("account_bill_name", e.target.value)}
             />
@@ -185,7 +185,7 @@ export function UpdateBpModal({ userRole, open, onClose, bp }) {
               Cancel
             </Button>
             <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white mt-5">
-              Simpan
+              Save
             </Button>
 
           </DialogFooter>

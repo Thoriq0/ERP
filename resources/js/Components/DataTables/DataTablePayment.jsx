@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -45,7 +45,7 @@ export function DataTablePayment({data, userRole}) {
   // Modal View
   const [selectedPaymentViews, setSelectedPaymentViews] = useState(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
-
+  
   // console.log(data);
   const handleDelete = () => {
     // console.log(`Deleting item with ID: ${selectedId}`);
@@ -72,9 +72,14 @@ export function DataTablePayment({data, userRole}) {
       // supplier_ac: row.original.account_payable?.inbound?.product?.supplier?.account_number || "",
       ap_code: row.original.account_payable?.ap_code,
     }));
-  
+
+    const rolePaths = {
+      admin: "/admin/payment",
+      fnc: "/finance/payment",
+    };
+    const userPath = rolePaths[userRole];
     router.post(
-      "/admin/payment",
+      userPath,
       { payments },
       {
         onSuccess: () => {
@@ -127,24 +132,24 @@ export function DataTablePayment({data, userRole}) {
     {
       accessorKey: "account_payable.inbound.product.supplier.name",
       header: "Supplier Name",
-      cell: ({ row }) => <div className="capitalize">{row.original.account_payable?.inbound?.product?.supplier?.name || "Bundling Invoice"}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.original.account_payable?.inbound?.product?.supplier?.name || "General Purchase"}</div>,
     },
     {
       accessorKey: "account_payable.inbound.product.supplier.account_number",
       header: "Supplier AC",
       cell: ({ row }) => (
         <div className="capitalize">
-          {row.original.account_payable?.inbound?.product?.supplier?.account_number || "Bundling Invoice"}
+          {row.original.account_payable?.inbound?.product?.supplier?.account_number || "General Purchase"}
         </div>
       ),
     },
     {
-      accessorKey: "account_payable.total_amount",
+      accessorKey: "grand_total",
       header: "Total Amount",
       cell: ({ row }) => (
         <div >
           {row.original.account_payable?.total_amount
-            ? `Rp ${row.original.account_payable.total_amount.toLocaleString("id-ID")}`
+            ? `Rp ${row.original.grand_total.toLocaleString("id-ID")}`
             : "-"}
         </div>
       ),
@@ -181,6 +186,7 @@ export function DataTablePayment({data, userRole}) {
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
+        // console.log(item);
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -191,8 +197,14 @@ export function DataTablePayment({data, userRole}) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
+              <DropdownMenuItem
+                onClick={() => {
+                  navigator.clipboard.writeText(item.account_payable.ap_code)
+                  toast.success("Invoice code copied!")
+                  }}
+                className="cursor-pointer"
+              >
+                <FaCopy size={16} className="text-blue-500" />Copy payment ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleViewDetails(item)}  className="cursor-pointer">
@@ -212,8 +224,36 @@ export function DataTablePayment({data, userRole}) {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
+  // const uniquePaymentData = useMemo(() => {
+  //   return Array.from(
+  //     new Map(data.map(item => [item?.account_payable?.ap_code, item])).values()
+  //   );
+  // }, [data]);
+
+  const uniquePaymentData = useMemo(() => {
+      const apMap = new Map();
+    
+      data.forEach(item => {
+        const key = item?.account_payable?.ap_code;
+        const qty = item?.account_payable?.inbound?.qty || 0;
+        const total = item?.account_payable?.total_amount;
+    
+        if (apMap.has(key)) {
+          const existing = apMap.get(key);
+          existing.total_qty += qty; // Tambah qty
+          existing.grand_total += total;
+        } else {
+          // Clone item & tambah total_qty baru
+          apMap.set(key, { ...item, total_qty: qty, grand_total: total });
+        }
+      });
+    
+      return Array.from(apMap.values());
+    }, [data]);
+    
+  // console.log(uniquePaymentData)
   const table = useReactTable({
-    data,
+    data: uniquePaymentData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -234,6 +274,7 @@ export function DataTablePayment({data, userRole}) {
               open={detailModalOpen}
               onClose={() => setDetailModalOpen(false)}
               payment={selectedPaymentViews}
+              data={data}
             />
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-4 w-[50%]">
@@ -273,7 +314,7 @@ export function DataTablePayment({data, userRole}) {
           />
         </div>
         <div className="flex space-x-2">
-            <Button className="bg-indigo-700 hover:bg-indigo-500" onClick={handlePayment} >
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={handlePayment} >
                 Payment Product
             </Button>
         </div>

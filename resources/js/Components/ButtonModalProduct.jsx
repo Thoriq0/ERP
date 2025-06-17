@@ -126,21 +126,21 @@ export function ButtonModalProduct({ userRole, categoryData, supplierData }) {
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Data Produk Masuk</DialogTitle>
-          <DialogDescription>
-            Masukkan data produk yang masuk, lalu klik Simpan.
-          </DialogDescription>
+        <DialogTitle>Product Data</DialogTitle>
+        <DialogDescription>
+          Fill in the product details, then click Save.
+        </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="name" value="Nama Produk" />
+            <InputLabel htmlFor="name" value="Product Name" />
             <input
               id="name"
               type="text"
               name="name"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Nama Produk"
+              placeholder="Product Name"
               value={values.name}
               onChange={handleChange}
             />
@@ -149,12 +149,12 @@ export function ButtonModalProduct({ userRole, categoryData, supplierData }) {
 
           {/* Dropdown Kategori */}
           <div className="mt-4">
-            <InputLabel htmlFor="category" value="Kategori" />
+            <InputLabel htmlFor="category" value="Category" />
             <Select
               id="category"
               options={categoryOptions}
               isSearchable={true}
-              placeholder="Pilih Kategori"
+              placeholder="Select Categories"
               value={values.category}
               onChange={(selected) => handleSelectChange("category", selected)}
               className="mt-1"
@@ -164,12 +164,12 @@ export function ButtonModalProduct({ userRole, categoryData, supplierData }) {
 
           {/* Dropdown Supplier */}
           <div className="mt-4">
-            <InputLabel htmlFor="supplier" value="Pemasok" />
+            <InputLabel htmlFor="supplier" value="Supplier" />
             <Select
               id="supplier"
               options={supplierOptions}
               isSearchable={true}
-              placeholder="Pilih Supplier"
+              placeholder="Select Supplier's"
               value={values.supplier}
               onChange={(selected) => handleSelectChange("supplier", selected)}
               className="mt-1"
@@ -192,7 +192,7 @@ export function ButtonModalProduct({ userRole, categoryData, supplierData }) {
 
           <DialogFooter>
             <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

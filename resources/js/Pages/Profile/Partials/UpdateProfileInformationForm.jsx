@@ -16,6 +16,7 @@ export default function UpdateProfileInformation({
         useForm({
             name: user.name,
             email: user.email,
+            uniqueNumber: user.uniqueNumber
         });
 
     const submit = (e) => {
@@ -51,6 +52,21 @@ export default function UpdateProfileInformation({
                     />
 
                     <InputError className="mt-2" message={errors.name} />
+                </div>
+
+                <div className='hidden'>
+                    <InputLabel htmlFor="uniqueNumber" value="uniqueNumber" />
+
+                    <TextInput
+                        id="uniqueNumber"
+                        type="number"
+                        className="mt-1 block w-full"
+                        value={data.uniqueNumber}
+                        onChange={(e) => setData('uniqueNumber', e.target.value)}
+                        required
+                    />
+
+                    <InputError className="mt-2" message={errors.email} />
                 </div>
 
                 <div>

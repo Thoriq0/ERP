@@ -75,6 +75,22 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
     setOpen(false);
   };
 
+  function handleExport() {
+    const rolePaths = {
+      admin: "/admin/product/export",
+      wrhs: "/wrhs/product/export",
+    };
+  
+    const userExportPath = rolePaths[userRole];
+  
+    if (!userExportPath) {
+      toast.error("Role tidak valid! ❌");
+      return;
+    }
+  
+    window.location.href = userExportPath;
+  }
+
   const handleUpdate = (product) => {
     setSelectedProduct(product);
     setUpdateModalOpen(true);
@@ -175,8 +191,11 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="cursor-pointer">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500"/>Copy product ID
+              <DropdownMenuItem onClick={() => {
+                navigator.clipboard.writeText(item.sku) 
+                toast.success('SKU Copied! ')
+                }} className="cursor-pointer">
+                <FaCopy size={16} className="text-blue-500"/>Copy SKU Product
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
@@ -270,7 +289,12 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
             className="max-w-xs"
           />
         </div>
-        <ButtonModalProduct userRole={userRole} categoryData={categoryData} supplierData={supplierData} />
+        <div className="flex  space-x-2">
+                <Button className="bg-green-400 hover:bg-green-500" onClick={handleExport}>Export</Button>
+                <ButtonModalProduct userRole={userRole} categoryData={categoryData} supplierData={supplierData} />
+        </div>
+        
+        
       </div>
       <div className="rounded-md border">
         <Table>

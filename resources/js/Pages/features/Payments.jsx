@@ -17,8 +17,9 @@ export default function Payments({auth, mustVerifyEmail, status, title, payments
     };
 
     const Layout = getLayout(auth.user.role);
+    const userRole = auth.user.role;
     const data = payments;
-
+    
     return (
         <Layout auth={auth}>
             <ToasterComponent />
@@ -27,7 +28,7 @@ export default function Payments({auth, mustVerifyEmail, status, title, payments
                 <h1 className="text-xl font-bold md:ml-5">{title}</h1>
             </div>
             <div className="p-6 mt-14">
-                <DataTablePayment mustVerifyEmail={mustVerifyEmail} status={status} data={data} />
+                <DataTablePayment mustVerifyEmail={mustVerifyEmail} status={status} data={data} userRole={userRole} />
             </div>
         </Layout>
     );

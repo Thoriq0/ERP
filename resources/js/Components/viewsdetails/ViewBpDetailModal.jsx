@@ -14,25 +14,25 @@ export function ViewBpDetailModal({ open, onClose, bp }) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] max-w-[370px] md:max-w-[750px] overflow-y-auto border border-gray-300 p-7 md:p-10 rounded-md">
         <DialogHeader>
-          <DialogTitle>Detail Data BP</DialogTitle>
+          <DialogTitle>Billed Party Details</DialogTitle>
           <DialogDescription>
-            Berikut adalah detail data BP.
+            Below is the detailed information of the billed party.
           </DialogDescription>
           <hr />
         </DialogHeader>
         <div className="mt-4 space-y-2 text-sm md:text-md">
           <div className="flex">
-            <strong className="min-w-[150px]">Nama PT</strong>
+            <strong className="min-w-[150px]">Company Name</strong>
             <span className="mr-2">:</span>
             <span>{bp?.bill_to || "Tidak Diketahui"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Kontak</strong>
+            <strong className="min-w-[150px]">Contact</strong>
             <span className="mr-2">:</span>
             <span>{bp?.contact_bill || "Tidak Diketahui"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Alamat</strong>
+            <strong className="min-w-[150px]">Address</strong>
             <span className="mr-2">:</span>
             <span>{bp?.address_bill || "Tidak Diketahui"}</span>
           </div>
@@ -42,17 +42,17 @@ export function ViewBpDetailModal({ open, onClose, bp }) {
             <span>{bp?.email_bill || "Tidak Diketahui"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Nomor Rekening</strong>
+            <strong className="min-w-[150px]">Bank Account Number</strong>
             <span className="mr-2">:</span>
             <span>{bp?.account_bill || "Tidak Diketahui"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Pemilik Rekening</strong>
+            <strong className="min-w-[150px]">Account Holder Name</strong>
             <span className="mr-2">:</span>
             <span>{bp?.account_bill_name || "Tidak Diketahui"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Nama Bank</strong>
+            <strong className="min-w-[150px]">Bank Name</strong>
             <span className="mr-2">:</span>
             <span>{bp?.account_bank_name || "Tidak Diketahui"}</span>
           </div>

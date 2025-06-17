@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('status', ['in', 'out']);
+            $table->string('created_by')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
         });

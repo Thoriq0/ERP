@@ -7,7 +7,7 @@ ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip,
 
 const LineChart = () => {
     const data = {
-        labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei'],
+        labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
         datasets: [
             {
                 label: 'Penjualan Toko A',

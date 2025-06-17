@@ -17,6 +17,7 @@ return new class extends Migration
             // $table->foreignId('inbound_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('payment_code')->nullable();
             $table->string('status_payment');
+            $table->string('created_by')->nullable();
             // $table->string('');
             $table->timestamps();
         });

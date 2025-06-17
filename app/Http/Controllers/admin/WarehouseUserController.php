@@ -95,6 +95,7 @@ class WarehouseUserController extends Controller
      */
     public function destroy(user $user)
     {
+        // dd($user);
         $user->delete();
         return redirect()->back();
     }

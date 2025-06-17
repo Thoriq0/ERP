@@ -14,20 +14,20 @@ export function ViewCategoryDetailModal({ open, onClose, category }) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] max-w-[375px] md:max-w-[750px] overflow-y-auto border border-gray-300 p-8 md:p-10 rounded-md">
         <DialogHeader>
-          <DialogTitle>Detail Data Category</DialogTitle>
+          <DialogTitle>Category Information</DialogTitle>
           <DialogDescription>
-            Berikut adalah detail data category.
+            This is the detailed information of the selected category.
           </DialogDescription>
           <hr />
         </DialogHeader>
         <div className="mt-4 space-y-2">
           <div className="flex">
-            <strong className="min-w-[150px]">Nama Category</strong>
+            <strong className="min-w-[150px]">Category Name</strong>
             <span className="mr-2">:</span>
             <span>{category?.name || "Tidak Diketahui"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Tanggal Masuk</strong>
+            <strong className="min-w-[150px]">Created At</strong>
             <span className="mr-2">:</span>
             <span>{new Date(category?.created_at).toLocaleString("id-ID")}</span>
           </div>

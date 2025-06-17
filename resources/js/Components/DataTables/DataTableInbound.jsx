@@ -183,6 +183,7 @@ export function DataTableInbound({ data, userRole, productData, roleName, user }
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
+        // console.log(item)
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -193,9 +194,9 @@ export function DataTableInbound({ data, userRole, productData, roleName, user }
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
+              {/* <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
                 <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
                 <FaEdit size={16} className="text-yellow-500 "/>Update

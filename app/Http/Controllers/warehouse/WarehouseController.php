@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers\warehouse;
 
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Stock;
-use App\Models\User;
 use App\Models\Inbound;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Employee;
 use App\Models\Outbound;
 use App\Models\Shipment;
 use App\Models\Supplier;
-use App\Models\Employee;
 use App\Models\Attendance;
 use App\Models\LeaveQuota;
-use App\Models\StagingInbound;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Exports\InboundExport;
+use App\Imports\InboundImport;
+use App\Models\AdjustPrestock;
+use App\Models\StagingInbound;
 use Illuminate\Support\Facades\DB; 
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 
 class WarehouseController extends Controller
 {
@@ -82,6 +86,17 @@ class WarehouseController extends Controller
             
         ]);
         // dd(Inbound::all());
+    }
+
+    public function inboundFailView(){
+        return inertia::render('features/InboundFail', [
+            'title' => 'Admin InboundFail',
+            'inbndf' => AdjustPrestock::with([
+                'inbound',
+                'inbound.product',
+                'inbound.product.supplier'
+            ])->get() 
+        ]);
     }
 
     public function outboundView(){
@@ -252,6 +267,19 @@ class WarehouseController extends Controller
         // dd(Inbound::all());
     }
 
+    public function importInbound(Request $request){
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
 
+        Excel::import(new InboundImport, $request->file('file'));
+
+        return redirect()->back();
+    }
+    public function exportInbound(Request $request){
+
+        return Excel::download(new InboundExport, 'data_inbound.xlsx');
+
+    }
 
 }

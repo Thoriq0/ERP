@@ -20,22 +20,24 @@ export function ButtonModalImportInbound({userRole}) {
   const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({});
 
+  const [open, setOpen] = useState(false);
+
   function handleChange(e) {
     setFile(e.target.files[0]);
   }
-
+  
   function handleSubmit(e) {
     e.preventDefault();
     setErrors({});
     
     if (!file) {
-      // toast.error("Harap pilih file sebelum mengimpor!");
+      toast.error("Harap pilih file sebelum mengimpor!");
       return;
     }
 
     const rolePaths = {
       admin: "/admin/ibnd/",
-      wrhs: "/wrhs/inbound/importinbound",
+      wrhs: "/wrhs/ibnd/",
     };
 
     const userPath = rolePaths[userRole];
@@ -53,6 +55,7 @@ export function ButtonModalImportInbound({userRole}) {
       onSuccess: () => {
         toast.success("File berhasil diunggah! 🎉");
         setFile(null);
+        setOpen(false);
       },
       onError: (err) => {
         setErrors(err);
@@ -62,13 +65,25 @@ export function ButtonModalImportInbound({userRole}) {
   }
 
   function handleExport() {
-    window.location.href = "/admin/inbound/export";
+    const rolePaths = {
+      admin: "/admin/inbound/export",
+      wrhs: "/wrhs/inbound/export",
+    };
+  
+    const userExportPath = rolePaths[userRole];
+  
+    if (!userExportPath) {
+      toast.error("Role tidak valid! ❌");
+      return;
+    }
+  
+    window.location.href = userExportPath;
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-validateTimeRequest hover:bg-[#05603A]">
+        <Button className="bg-[#0E9F6E] hover:bg-[#0C8B60]">
             <FaFileImport size={16}/>Import
         </Button>
       </DialogTrigger>
@@ -76,7 +91,7 @@ export function ButtonModalImportInbound({userRole}) {
         <DialogHeader>
           <DialogTitle>Import Data</DialogTitle>
           <DialogDescription>
-            Masukkan file data inbound, lalu klik Simpan.
+            Upload the inbound data file, then click Save.
           </DialogDescription>
         </DialogHeader>
 
@@ -84,13 +99,13 @@ export function ButtonModalImportInbound({userRole}) {
             <div className="mt-4">
                 <InputLabel htmlFor="download" value="Download Template File Data Inbound" className="mb-2" />
                 <div className="flex items-center">
-                    <button onClick={handleExport} className="bg-validateTimeRequest p-2 rounded-md text-white w-[300px]"> Download <FaFileExport size={16} className="inline-block"/></button>
+                    <button onClick={handleExport} className="bg-[#0E9F6E] hover:bg-[#0C8B60] p-2 rounded-md text-white w-[300px]"> Download <FaFileExport size={16} className="inline-block"/></button>
                     <p className="text-[12px] ml-2">Template for importing inbound data : Please ensure the id_product column is filled with the corresponding ID from the Product sheet. The Product sheet will not be included in the import process.</p>
                 </div>   
             </div>
             <hr className="mt-5 bg-[#D5D7DA]"></hr>
             <div className="mt-4">
-              <InputLabel htmlFor="file" value="Masukan File Data Inbound" className="mb-2" />
+              <InputLabel htmlFor="file" value="Upload File Data Inbound" className="mb-2" />
               <input
                 id="file"
                 type="file"

@@ -2,22 +2,18 @@
 
 namespace Database\Factories;
 
+use App\Models\AccountPayable;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Payment>
- */
 class PaymentFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'account_payable_id' => AccountPayable::inRandomOrder()->first()?->id ?? AccountPayable::factory(),
+            'payment_code' => 'PAY-' . strtoupper(Str::random(5)),
+            'status_payment' => fake()->randomElement(['paid', 'unpaid', 'partial']),
         ];
     }
 }

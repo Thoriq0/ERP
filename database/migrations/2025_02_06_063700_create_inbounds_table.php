@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
             $table->integer('qty');
             $table->foreignId('pic')->constrained('users')->onUpdate('cascade');
-            $table->string('created_by');
+            $table->string('created_by')->nullable();
             $table->string('qc_status')->default('checking');
             $table->json('image')->nullable();
             $table->json('pdf')->nullable();

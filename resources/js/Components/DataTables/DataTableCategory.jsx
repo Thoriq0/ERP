@@ -57,6 +57,22 @@ export function DataTableCategory({data, userRole}) {
 
   // console.log(userRole, "role get");
 
+  function handleExport() {
+    const rolePaths = {
+      admin: "/admin/category/export",
+      wrhs: "/wrhs/category/export",
+    };
+  
+    const userExportPath = rolePaths[userRole];
+  
+    if (!userExportPath) {
+      toast.error("Role tidak valid! ❌");
+      return;
+    }
+  
+    window.location.href = userExportPath;
+  }
+
   const handleDelete = () => {
     if (!selectedId) return;
 
@@ -149,6 +165,7 @@ export function DataTableCategory({data, userRole}) {
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
+        
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -159,8 +176,11 @@ export function DataTableCategory({data, userRole}) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="cursor-pointer">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
-                <FaCopy size={16} className="text-blue-500"/>Copy product ID
+              <DropdownMenuItem onClick={() => {
+                navigator.clipboard.writeText(item.name)
+                toast.success("Name Copied!");
+                }} className="cursor-pointer">
+                <FaCopy size={16} className="text-blue-500"/>Copy category name 
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
@@ -177,7 +197,7 @@ export function DataTableCategory({data, userRole}) {
           </DropdownMenu>
           
         );
-      },
+      }
     },
   ];
 
@@ -252,7 +272,10 @@ export function DataTableCategory({data, userRole}) {
             className="max-w-xs"
           />
         </div>
-        <ButtonModalCategory userRole={userRole}/>
+        <div className="flex  space-x-2">
+            <Button className="bg-green-400 hover:bg-green-500" onClick={handleExport}>Export</Button>
+            <ButtonModalCategory userRole={userRole}/>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>

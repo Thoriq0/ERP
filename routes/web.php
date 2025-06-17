@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WarehouseManagementController;
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\InventoryController;
 use App\Http\Controllers\finance\FinanceController;
@@ -22,12 +23,16 @@ Route::middleware('auth', 'verified')->group(function () {
         // route userwarehouse action & view
         Route::resource('/admin/user', WarehouseUserController::class);
 
+        // route warehouse
+        Route::resource('/admin/warehouse', WarehouseManagementController::class);
+
         // ======= route view features inventory/warehouse ======= 
         Route::get('/admin/dashboard', [AdminController::class, 'view'])->name('admin.dashboard');
         Route::get('/admin/product', [AdminController::class, 'productView'])->name('admin.product');
         Route::get('/admin/category', [AdminController::class, 'categoryView'])->name('admin.category');
         Route::get('/admin/supplier', [AdminController::class, 'supplierView'])->name('admin.supplier');
         Route::get('/admin/inbound', [AdminController::class, 'inboundView'])->name('admin.inbound');
+        Route::get('/admin/inboundFail', [AdminController::class, 'inboundFailView'])->name('admin.inboundFail');
         Route::get('/admin/outbound', [AdminController::class, 'outboundView'])->name('admin.outbound');
         Route::get('/admin/stock', [AdminController::class, 'stockView'])->name('admin.stock');
         Route::get('/admin/shipment', [AdminController::class, 'shipmentView'])->name('admin.shipment');
@@ -48,6 +53,13 @@ Route::middleware('auth', 'verified')->group(function () {
         // route inbound pre-stock
         Route::post('/admin/validatestock', [InventoryController::class, 'validateStock'])->name('inventory.stock.store');
         Route::post('/admin/qcstock', [InventoryController::class, 'qcStock'])->name('inventory.qcstock.store');
+        Route::post('/admin/prestock-adjust', [InventoryController::class, 'adjustPrestock'])->name('inventory.adjustprestock');
+
+        // Route Inbound Fail
+        Route::get('/admin/ibndf/export', [InventoryController::class, 'exportInboundFail']);
+
+        // route stock
+        Route::post('/admin/adjust-stock', [InventoryController::class, 'adjustStock'])->name('wrhs.adjustStock');
 
         // route outbound action
         Route::post('/admin/outbound', [InventoryController::class, 'outboundStore'])->name('inventory.outbound.store');
@@ -59,16 +71,19 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::post('/admin/supplier', [InventoryController::class, 'supplierStore'])->name('inventory.supplier.store');
         Route::delete('/admin/supplier/{supplier}', [InventoryController::class, 'supplierDestroy'])->name('inventory.supplier.destroy');
         Route::put('/admin/supplier/{supplier}', [InventoryController::class, 'supplierUpdate'])->name('inventory.supplier.update');
+        Route::get('/admin/supplier/export', [InventoryController::class, 'exportSupplier']);
 
         // route product action
         Route::post('/admin/product', [InventoryController::class, 'productStore'])->name('inventory.product.store');
         Route::delete('/admin/product/{product}', [InventoryController::class, 'productDestroy'])->name('inventory.product.destroy');
         Route::put('/admin/product/{product}', [InventoryController::class, 'productUpdate'])->name('inventory.product.update');
+        Route::get('/admin/product/export', [InventoryController::class, 'exportProduct']);
 
         // route category action
         Route::post('/admin/category', [InventoryController::class, 'categoryStore'])->name('inventory.category.store');
         Route::delete('/admin/category/{category}', [InventoryController::class, 'categoryDestroy'])->name('inventory.category.destroy');
         Route::put('/admin/category/{category}', [InventoryController::class, 'categoryUpdate'])->name('inventory.category.update');
+        Route::get('/admin/category/export', [InventoryController::class, 'exportCategory']);
 
         // route account payable action
         Route::post('/admin/ap', [InventoryController::class, 'apStore'])->name('inventory.ap.store');
@@ -205,15 +220,22 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/wrhs/prestock', [WarehouseController::class, 'prestockView'])->name('wrhs.prestock');
         Route::get('/wrhs/attendance', [WarehouseController::class, 'attendanceView'])->name('wrhs.attendance');
         Route::get('/wrhs/time', [WarehouseController::class, 'timeView'])->name('wrhs.time');
+        Route::get('/wrhs/inboundFail', [WarehouseController::class, 'inboundFailView'])->name('wrhs.inboundFail');
 
         // Route inbound action 
         Route::post('/wrhs/inbound', [InventoryController::class, 'inboundStore'])->name('wrhs.inbound.store');
         Route::delete('/wrhs/inbound/{inbound}', [InventoryController::class, 'inboundDestroy'])->name('wrhs.inbound.destroy');
+        Route::post('/wrhs/ibnd/', [WarehouseController::class, 'importInbound'])->name('inventory.inbound.import');
+        Route::get('/wrhs/inbound/export', [InventoryController::class, 'exportInbound']);
 
         // route inbound pre-stock
         Route::post('/wrhs/validatestock', [InventoryController::class, 'validateStock'])->name('wrhs.stock.store');
         Route::post('/wrhs/qcstock', [InventoryController::class, 'qcStock'])->name('wrhs.qcstock.store');
         Route::put('/wrhs/inbound/{inbound}', [InventoryController::class, 'inboundUpdate'])->name('wrhs.inbound.update');
+        Route::post('/wrhs/prestock-adjust', [InventoryController::class, 'adjustPrestock'])->name('wrhs.adjustprestock');
+
+        // route stock
+        Route::post('/wrhs/adjust-stock', [InventoryController::class, 'adjustStock'])->name('wrhs.adjustStock');
 
         // Route outbound action
         Route::post('/wrhs/outbound', [InventoryController::class, 'outboundStore'])->name('wrhs.outbound.store');

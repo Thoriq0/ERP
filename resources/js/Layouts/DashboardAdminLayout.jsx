@@ -9,7 +9,7 @@ export default function DashboardAdminLayout({ children, auth, ...props}) {
     const menuItems = [
         { name: "Dashboard", path: "/admin/dashboard", icon: <HiChartPie /> },
         { name: "User Warehouse", path: "/admin/user", icon: <HiUser /> },
-        { name: "Warehouse", path: "/warehouse", icon: <FaWarehouse /> },
+        { name: "Warehouse", path: "/admin/warehouse", icon: <FaWarehouse /> },
     ];
 
     const dropdownMenus = [
@@ -22,6 +22,7 @@ export default function DashboardAdminLayout({ children, auth, ...props}) {
                 { name: "Category", path: "/admin/category"},
                 { name: "Inbound", path: "/admin/inbound" },
                 { name: "Pre-Stock", path: "/admin/prestock" },
+                { name: "Inbound Fail", path:"/admin/inboundFail"},
                 { name: "Outbound", path: "/admin/outbound" },
                 { name: "Stock", path: "/admin/stock" },
                 // { name: "Reports", path: "/admin/reports" },
@@ -92,7 +93,7 @@ export default function DashboardAdminLayout({ children, auth, ...props}) {
                 dropdownMenus={dropdownMenus}
             />
             <div className={`transition-all duration-300 w-full mt-0 ${
-                    isSidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
+                    isSidebarCollapsed ? "lg:ml-20" : "max-w-[1095px] lg:ml-64"
                 }`}>
                 {children}
             </div>

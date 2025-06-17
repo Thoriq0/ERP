@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Stock;
@@ -16,11 +17,13 @@ use App\Models\Shipment;
 use App\Models\Supplier;
 use App\Models\Attendance;
 use App\Models\LeaveQuota;
+use App\Models\AdjustStock;
 use App\Models\BilledParty;
 use Illuminate\Http\Request;
 use App\Models\AccountPayable;
 use App\Models\StagingInbound;
 use App\Http\Controllers\Controller;
+use App\Models\AdjustPrestock;
 
 class AdminController extends Controller
 {
@@ -29,12 +32,61 @@ class AdminController extends Controller
         $totalSchedule = Shipment::where('status_shipment', 'preparing')->count();
         $totalShipped = Shipment::where('status_shipment', 'shipping process')->count();
         $totalDelivered = Shipment::where('status_shipment', 'Delivered')->count();
+
+        $year = Carbon::now()->year;
+
+        $monthlyExpenses = Expense::selectRaw("CAST(strftime('%Y', created_at) AS INTEGER) as year,
+                                          CAST(strftime('%m', created_at) AS INTEGER) as month,
+                                          SUM(total) as total")
+        ->groupBy('year', 'month')
+        ->orderBy('year', 'asc')
+        ->orderBy('month', 'asc')
+        ->get();
+
+    // Kalau data kosong
+    if ($monthlyExpenses->isEmpty()) {
+        $expensesByMonth = array_fill(0, 12, 0);
+        $lastMonth = now()->month - 1; // 0-based
+        $lastYear = now()->year;
+    } else {
+        // Ambil data bulan terakhir & tahun terakhir
+        $lastRecord = $monthlyExpenses->last();
+        $lastMonth = $lastRecord->month - 1; // 0-based untuk JS
+        $lastYear = $lastRecord->year;
+
+        // Siapkan array expenses indexed by year-month string supaya gampang ambil data mundur nanti
+        $expensesByYearMonth = [];
+        foreach ($monthlyExpenses as $item) {
+            $key = $item->year . '-' . str_pad($item->month, 2, '0', STR_PAD_LEFT);
+            $expensesByYearMonth[$key] = $item->total;
+        }
+
+        // Generate 12 bulan terakhir key (year-month) dari bulan terakhir mundur
+        $keys12 = [];
+        $date = \Carbon\Carbon::create($lastYear, $lastMonth + 1, 1); // +1 karena lastMonth 0-based
+        for ($i = 0; $i < 12; $i++) {
+            $keys12[] = $date->format('Y-m');
+            $date->subMonth();
+        }
+        $keys12 = array_reverse($keys12); // biar urut dari lama ke baru
+
+        // Ambil data expenses dari keys12, kalau gak ada isi 0
+        $expensesByMonth = [];
+        foreach ($keys12 as $key) {
+            $expensesByMonth[] = $expensesByYearMonth[$key] ?? 0;
+        }
+    }
+
         return Inertia::render('admin/Dashboard', [
             'title' => 'Dashboard Admin',
             'total_user' => $totalUser,
             'total_schedule' => $totalSchedule,
             'total_shipped' => $totalShipped,
             'total_delivered' => $totalDelivered,
+            'total_expenses' => array_sum($expensesByMonth),
+            'monthly_expenses' => $expensesByMonth,
+            'lastMonth' => $lastMonth,
+            'lastYear' => $lastYear,
         ]);
     }
 
@@ -80,6 +132,17 @@ class AdminController extends Controller
         // dd(Inbound::all());
     }
 
+    public function inboundFailView(){
+        return inertia::render('features/InboundFail', [
+            'title' => 'Admin InboundFail',
+            'inbndf' => AdjustPrestock::with([
+                'inbound',
+                'inbound.product',
+                'inbound.product.supplier'
+            ])->get() 
+        ]);
+    }
+
     public function prestockView(){
         return inertia::render('features/PreStockValidation', [
             'title' => 'Admin Validating Stock',
@@ -117,6 +180,7 @@ class AdminController extends Controller
         return inertia::render('features/Stock', [
             'title' => 'Admin Inventory Stock',
             'stock' => Stock::with(['product.category', 'product.supplier'])->get(),
+            'adjust' => AdjustStock::all(),
         ]);
         // dd(Inbound::all());
     }
@@ -227,7 +291,7 @@ class AdminController extends Controller
         ->with([
             'accountPayable:id,inbound_id,unit_price,tax,total_amount,due_date,status_payment,ap_code,item_description,discount,note,terms_condition,billed_party_id,status_inbound',
             'accountPayable.billedParty:id,bill_to,account_bill,account_bill_name,account_bank_name',
-            'accountPayable.inbound:id,product_id,qty',
+            'accountPayable.inbound:id,product_id,qty,inbound_code',
             'accountPayable.inbound.product:id,name,supplier_id',
             'accountPayable.inbound.product.supplier:id,name,contact,account_number,account_name,account_bank_name'
         ])

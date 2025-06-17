@@ -17,13 +17,19 @@ use App\Models\Attendance;
 use App\Models\LeaveQuota;
 // use Illuminate\Support\Facades\DB;
 // use Illuminate\Support\Facades\Log;
+use App\Models\AdjustStock;
 use App\Models\BilledParty;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Exports\InboundExport;
+use App\Exports\ProductExport;
 use App\Imports\InboundImport;
 use App\Models\AccountPayable;
+use App\Models\AdjustPrestock;
 use App\Models\StagingInbound;
+use App\Exports\CategoryExport;
+use App\Exports\SupplierExport;
+use App\Exports\InboundFailExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -216,69 +222,164 @@ class InventoryController extends Controller
         return redirect()->back()->with('success', 'Inbound berhasil disimpan! 🎉');;
     }
 
-    public function qcStock(Request $request){
-        $request->merge([
-            'selected_products' => array_map('intval', $request->selected_products)
-        ]);
-        // dd($request->selected_products);
+
+    public function qcStock(Request $request)
+    {
+    $request->merge([
+        'selected_products' => array_map('intval', $request->selected_products)
+    ]);
+
+    $request->validate([
+        'selected_products' => 'required|array',
+        'selected_products.*' => 'exists:staging_inbounds,id',
+    ]);
+
+    $selectedStaging = StagingInbound::whereIn('id', $request->selected_products)->get();
+
+    // Cek apakah ada yang sudah tervalidasi
+    if ($selectedStaging->contains('status', 'validated')) {
+        return redirect()->back()->with('error', 'Some products are already validated!');
+    }
     
-        $request->validate([
-            'selected_products' => 'required|array',
-            'selected_products.*' => 'exists:staging_inbounds,id',
+    $inboundIds = $selectedStaging->pluck('inbound_id')->toArray();
+
+    // Update status
+    Inbound::whereIn('id', $inboundIds)->update(['qc_status' => 'check']);
+    StagingInbound::whereIn('id', $request->selected_products)->update(['status' => 'validated']);
+
+    $today = Carbon::now()->format('dmy');
+
+    // Ambil data inbound lengkap dan kelompokkan berdasarkan inbound_code
+    $inbounds = Inbound::whereIn('id', $inboundIds)->get();
+    // $grouped = $inbounds->groupBy('inbound_code');
+
+    $grouped = $inbounds->whereNotNull('inbound_code')->groupBy('inbound_code');
+    $noCode = $inbounds->whereNull('inbound_code');
+    
+    $apCounter = AccountPayable::whereDate('created_at', Carbon::today())
+    ->distinct('ap_code')
+    ->count('ap_code');
+
+    foreach ($noCode as $inbound) {
+        $apCounter++;
+        $ap_code = "INV-{$today}-{$apCounter}";
+    
+        while (AccountPayable::where('ap_code', $ap_code)->exists()) {
+            $apCounter++;
+            $ap_code = "INV-{$today}-{$apCounter}";
+        }
+    
+        AccountPayable::create([
+            'ap_code' => $ap_code,
+            'inbound_id' => $inbound->id,
+            'inbound_bundling' => false,
+            'unit_price' => 0,
+            'tax' => 0,
+            'total_amount' => 0,
+            'status_payment' => 'unpaid',
+            'due_date' => null,
+            'status_inbound' => true
         ]);
-        
-        $inboundIds = StagingInbound::whereIn('id', $request->selected_products)
-        ->pluck('inbound_id') // Ambil inbound_id dari setiap staging_inbounds
-        ->toArray();
-        
-        // CHECKING STATUS STAGING
+    }
 
-        $checking = StagingInbound::whereIn('id', $request->selected_products)->get();
 
-        if ($checking->contains('status', 'validated')) {
-            return redirect()->back()->with('error', 'Some products are already validated!');
+    foreach ($grouped as $code => $group) {
+        $apCounter++;
+        $ap_code = "INV-{$today}-{$apCounter}";
+        
+        // Kalau ternyata ap_code sudah ada, cari yang belum dipakai
+        while (AccountPayable::where('ap_code', $ap_code)->exists()) {
+            $apCounter++;
+            $ap_code = "INV-{$today}-{$apCounter}";
         }
 
-        // Update qc_status di tabel inbounds
-        Inbound::whereIn('id', $inboundIds)
-        ->update(['qc_status' => 'check']);
-    
-        // Update status langsung
-        StagingInbound::whereIn('id', $request->selected_products)
-            ->update(['status' => 'validated']);
-        
-        $today = Carbon::now()->format('dmy'); // Format: 030225 (03 Feb 2025)
-
-        // Looping setiap produk yang dipilih untuk buat Account Payable
-        foreach ($inboundIds as $index => $inbound_id) {
-            
-            // Hitung jumlah record yang sudah ada untuk hari ini + index agar tetap unik
-            $recordCount = AccountPayable::whereDate('created_at', Carbon::today())->count() + $index + 1;
-            
-            // Generate Kode Unik untuk AP
-            $ap_code = "INV-{$today}-{$recordCount}";
-
-            // Cek apakah ap_code sudah ada
-            while (AccountPayable::where('ap_code', $ap_code)->exists()) {
-                $recordCount++;  // Tambah count untuk menghasilkan kode yang berbeda
-                $ap_code = "INV-{$today}-{$recordCount}";  // Generate kode baru
-            }
-    
-            // Buat record Account Payable
+        foreach ($group as $inbound) {
             AccountPayable::create([
                 'ap_code' => $ap_code,
-                'inbound_id' => $inbound_id,
+                'inbound_id' => $inbound->id,
+                'inbound_bundling' => count($group) > 1 ? true : false,
                 'unit_price' => 0,
                 'tax' => 0,
                 'total_amount' => 0,
                 'status_payment' => 'unpaid',
-                'due_date' => null, 
+                'due_date' => null,
                 'status_inbound' => true
             ]);
         }
-            
-        return redirect()->back()->with('success', 'Stock validated successfully!');
     }
+
+    return redirect()->back()->with('success', 'Stock validated & invoice created successfully!');
+    }
+
+
+    public function adjustPrestock(Request $request){
+        
+        // dd($request->all());
+        $adjustments = $request->input('adjustments');
+
+        foreach($adjustments as $adjustment){
+
+            $inbound = Inbound::find($adjustment['inboundId']);
+
+            $adjustQty = (int) $adjustment['quantity'];
+
+            if ($adjustQty > $inbound->qty) {
+                return back()->withErrors([
+                    'msg' => "Stok untuk '{$adjustment['name']}' tidak mencukupi. Maksimal hanya {$inbound->qty}."
+                ])->withInput();
+            }
+
+            $newQty = $inbound->qty - $adjustQty;
+
+            $inbound->update([
+                'qty' => $newQty
+            ]);
+
+            AdjustPrestock::create([
+                'inbound_id' => $inbound->id,
+                'adjust_qty' => $adjustQty,
+                'note' => $adjustment['note'],
+            ]);
+        }
+        return back()->with('success', 'Stok berhasil di-adjust.');
+    }
+
+    public function adjustStock(Request $request)
+    {
+        $adjustments = $request->input('items');
+        
+        foreach ($adjustments as $item) {
+            $productId = $item['productId'];
+            $qty = (int) $item['qty'];
+            $status = $item['status'];
+            $note = $item['note'];
+
+            // Ambil stok
+            $stock = Stock::where('product_id', $productId);
+
+            if ($status === 'extra') {
+                $newQty = $stock->first()->qty + $qty;
+            } else {
+                if ($qty > $stock->first()->qty) {
+                    return redirect()->back()->with('error', 'Qty melebihi stok yang tersedia.');
+                }
+                $newQty = $stock->first()->qty - $qty;
+            }
+
+            $stock->update([
+                'qty' => $newQty
+            ]);
+
+            AdjustStock::create([
+                'product_id' => $productId,
+                'qty' => $qty,
+                'status' => $status,
+                'note' => $note,
+            ]);
+        }
+        return redirect()->back()->with('success', 'Stok berhasil disesuaikan.');
+    }
+
 
     public function validateStock(Request $request){
         $request->validate([
@@ -692,10 +793,20 @@ class InventoryController extends Controller
             'bp' => 'required|integer'
         ]);
 
-        $today = Carbon::now()->format('dmy'); // Format: 030225 (03 Feb 2025)
-        $recordCount = AccountPayable::whereDate('created_at', Carbon::today())->count() + 1;
-        $ap_code = "INV-{$today}-{$recordCount}";
+        $today = Carbon::now()->format('dmy'); // Misalnya: 300525
+        $prefix = "INV-{$today}-";
 
+        // Cari kode terakhir hari ini (yang paling besar)
+        $lastAp = AccountPayable::where('ap_code', 'like', "{$prefix}%")
+            ->orderByRaw("CAST(SUBSTR(ap_code, LENGTH('{$prefix}') + 1) AS UNSIGNED) DESC")
+            ->first();
+
+        // Ambil nomor terakhir dan tambahkan 1
+        $lastNumber = $lastAp ? (int)substr($lastAp->ap_code, strlen($prefix)) : 0;
+        $nextNumber = $lastNumber + 1;
+
+        $ap_code = "{$prefix}{$nextNumber}";
+        
         AccountPayable::create([
             'ap_code' => $ap_code,
             'status_inbound' => false,
@@ -716,52 +827,101 @@ class InventoryController extends Controller
     public function apUpdate(Request $request, AccountPayable $ap){
         // dd($request->all());
         if($request->selected_item === "single"){
-            try {
-                // Validasi input
-                $request->validate([
-                    'unit_price' => 'required|numeric|min:0',
-                    'tax' => 'nullable|numeric|min:0',
-                    'total_amount' => 'required|numeric|min:0',
-                    'status_payment' => 'required|in:unpaid,scheduled,paid',
-                    'due_date' => 'required|date',
-                ]);
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                return response()->json(['error' => $e->errors()], 422);
-            }
-            
-            // Update data jika validasi lolos
-            $ap->update([
-                'unit_price' => $request->unit_price,
-                'tax' => $request->tax,
-                'total_amount' => $request->total_amount,
-                'status_payment' => $request->status_payment,
-                'due_date' => $request->due_date,
-            ]);
-
-            // dd($request->all(), $ap);
-            if($request->status_payment === "scheduled"){
-                $existingPayment = Payment::where('account_payable_id', $request->id)->first();
-                
-                if ($existingPayment) {
-                    return redirect()->back()->with('error', 'Payment sudah terjadwal sebelumnya.');
+            if($request->isInboundBunlding === false){
+                // dd("SINGLE");
+                try {
+                    // Validasi input
+                    $request->validate([
+                        'unit_price' => 'required|numeric|min:0',
+                        'tax' => 'nullable|numeric|min:0',
+                        'total_amount' => 'required|numeric|min:0',
+                        'status_payment' => 'required|in:unpaid,scheduled,paid',
+                        'due_date' => 'required|date',
+                    ]);
+                } catch (\Illuminate\Validation\ValidationException $e) {
+                    return response()->json(['error' => $e->errors()], 422);
                 }
 
-                $inboundId = $request->inbound_id;
-                $status = $request->status_payment;
-
-                StagingInbound::where('inbound_id', $inboundId)
-                    ->update([
-                        'payment_status' => $status
-                    ]);
-                Payment::create([
-                    'account_payable_id' => $request->id,
-                    'payment_code' => 'scheduled',
-                    'status_payment' => $status
+                // Update data jika validasi lolos
+                $ap->update([
+                    'unit_price' => $request->unit_price,
+                    'tax' => $request->tax,
+                    'total_amount' => $request->total_amount,
+                    'status_payment' => $request->status_payment,
+                    'due_date' => $request->due_date,
                 ]);
+    
+                
+                if($request->status_payment === "scheduled"){
+                    $existingPayment = Payment::where('account_payable_id', $request->id)->first();
+                    
+                    if ($existingPayment) {
+                        return redirect()->back()->with('error', 'Payment sudah terjadwal sebelumnya.');
+                    }
+    
+                    $inboundId = $request->inbound_id;
+                    $status = $request->status_payment;
+    
+                    StagingInbound::where('inbound_id', $inboundId)
+                        ->update([
+                            'payment_status' => $status
+                        ]);
+                    Payment::create([
+                        'account_payable_id' => $request->id,
+                        'payment_code' => 'scheduled',
+                        'status_payment' => $status
+                    ]);
+                }else{
+                    $apId = $request->id;
+                    Payment::where('account_payable_id', $apId)->delete();
+                }
             }else{
-                $apId = $request->id;
-                Payment::where('account_payable_id', $apId)->delete();
+                $inboundBundling = $request->inboundBundling;
+                // dd("BUNDLING");
+                $dudate = $request->due_date;
+                $tax = $request->tax;
+                $statusPayment = $request->status_payment;
+                
+                foreach($inboundBundling as $inbound){
+                    $queryAp = AccountPayable::where('inbound_id', $inbound['inboundId'] );
+                    $getAp = $queryAp->first();
+                    
+                    $unitPrice = $inbound['unit_price'];
+                    $totalAmount = $inbound['total_item'];
+
+                    $queryAp->update([
+                        'due_date' => $dudate,
+                        'unit_price' => $unitPrice,
+                        'tax' => $tax,
+                        'total_amount' =>  $totalAmount,
+                        'status_payment' => $statusPayment
+                    ]);
+                }
+
+                if($statusPayment === "scheduled"){
+
+                    $existingPayment = Payment::where('account_payable_id', $request->id)->first();
+                    // dd($existingPayment);
+                    if ($existingPayment) {
+                        return redirect()->back()->with('error', 'Payment sudah terjadwal sebelumnya.');
+                    }
+                    foreach($inboundBundling as $inbound){
+
+                        StagingInbound::where('inbound_id', $inbound['inboundId'])
+                        ->update([
+                            'payment_status' => $statusPayment
+                        ]);
+
+                        Payment::create([
+                            'account_payable_id' => $inbound['id'], 
+                            'payment_code' => 'scheduled',
+                            'status_payment' => $statusPayment
+                        ]);
+                    }
+
+                }
             }
+            
         }else{
             try{
                 $request->validate([
@@ -834,29 +994,76 @@ class InventoryController extends Controller
         // dd($request->all());
 
         foreach ($payments as $payment) {
-            Payment::where('id', $payment['payment_id'])
+            // dd($payment);
+            $queryAp = AccountPayable::where('ap_code', $payment['ap_code']);
+            $apGet = $queryAp->get();
+            
+            // dd($apGet);
+
+            if ($apGet->count() > 1) { //Bundling
+                
+                foreach ($apGet as $ap) {
+
+                    $queryPayment = Payment::where('account_payable_id', $ap->id);
+                    $getPayment = $queryPayment->first();
+
+                    $paidCode = str_replace('INV', 'PAID', $ap->ap_code);
+
+                    // Update Payment (pastikan relasi id-nya benar)
+                    Payment::where('account_payable_id', $ap->id)
+                        ->update([
+                            'payment_code' => $paidCode,
+                            'status_payment' => 'paid'
+                        ]);
+            
+                    // Update AccountPayable
+                    AccountPayable::where('id', $ap->id)
+                        ->update([
+                            'status_payment' => 'paid'
+                        ]);
+            
+                    // Insert Expense
+                    Expense::create([
+                        'payment_id' => $getPayment->id,
+                        'paid_code' => $paidCode,
+                        'references' => $ap->ap_code,
+                        'total' => $ap->total_amount
+                    ]);
+
+                    if($payment['inbound_id']){
+                        StagingInbound::where('inbound_id', $ap->inbound_id)
+                            ->update([
+                                'payment_status' => 'paid'
+                            ]);
+                    }
+                }
+
+            }else{
+                Payment::where('id', $payment['payment_id'])
                 ->update([
                     'payment_code' => str_replace('INV', 'PAID', $payment['ap_code']),
                     'status_payment' => 'paid'
                 ]);
-            AccountPayable::where('id', $payment['account_payable_id'])
-                ->update([
-                    'status_payment' => 'paid'
+                AccountPayable::where('id', $payment['account_payable_id'])
+                    ->update([
+                        'status_payment' => 'paid'
+                    ]);
+
+                Expense::create([
+                    'payment_id' => $payment['payment_id'],
+                    'paid_code' => str_replace('INV', 'PAID', $payment['ap_code']),
+                    'references' => $payment['ap_code'],
+                    'total' => $payment['total_amount']
                 ]);
 
-            Expense::create([
-                'payment_id' => $payment['payment_id'],
-                'paid_code' => str_replace('INV', 'PAID', $payment['ap_code']),
-                'references' => $payment['ap_code'],
-                'total' => $payment['total_amount']
-            ]);
-
-            if($payment['inbound_id']){
-                StagingInbound::where('inbound_id', $payment['inbound_id'])
-                    ->update([
-                        'payment_status' => 'paid'
-                    ]);
+                if($payment['inbound_id']){
+                    StagingInbound::where('inbound_id', $payment['inbound_id'])
+                        ->update([
+                            'payment_status' => 'paid'
+                        ]);
+                }
             }
+            
             // dd($payment);
         }
         session()->flash('success', 'Invoice berhasil dibayarkan!');
@@ -918,6 +1125,21 @@ class InventoryController extends Controller
         return Excel::download(new InboundExport, 'data_inbound.xlsx');
 
     }
+    public function exportProduct(Request $request){
+
+        return Excel::download(new ProductExport, 'data_product.xlsx');
+
+    }
+    public function exportSupplier(Request $request){
+        return Excel::download(new SupplierExport, 'data_supplier.xlsx');
+    }
+    public function exportCategory(Request $request){
+        return Excel::download(new CategoryExport, 'data_category.xlsx');
+    }
+    public function exportInboundFail(Request $request){
+        return Excel::download(new InboundFailExport, 'data_inboundFail.xlsx');
+    }
+    
     public function shipmentOrder(Request $request){
         $data = $request->validate([
             'shipments' => 'required|array',

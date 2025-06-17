@@ -60,9 +60,9 @@ export function UpdateCategoryModal({ userRole, open, onClose, category }) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Update Category Masuk</DialogTitle>
+          <DialogTitle>Update Category</DialogTitle>
           <DialogDescription>
-            Update data category yang masuk, lalu klik Simpan.
+            Edit the category data, then click Save.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -88,7 +88,7 @@ export function UpdateCategoryModal({ userRole, open, onClose, category }) {
               Cancel
             </Button>
             <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

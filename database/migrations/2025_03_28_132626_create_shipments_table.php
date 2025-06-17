@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('outbound_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->date('delivery_estimate')->nullable();
             $table->string('status_shipment');
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

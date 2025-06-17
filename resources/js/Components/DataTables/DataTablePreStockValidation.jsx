@@ -30,10 +30,14 @@ import {
 import toast from "react-hot-toast";
 import { router } from "@inertiajs/react";
 import { usePage } from "@inertiajs/react";
+import AdjustPrestockModal from "../AdjustPrestockModal";
 
 export default function DataTablePrestock({ stagingData, userRole }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const { flash } = usePage().props;
+
+  const [showAdjustModal, setShowAdjustModal] = useState(false);
+  const [selectedProductsData, setSelectedProductsData] = useState([]);
 
   useEffect(() => {
     if (flash?.success) {
@@ -43,6 +47,37 @@ export default function DataTablePrestock({ stagingData, userRole }) {
       toast.error(flash.error, { duration: 5000 });
     }
   }, [flash]);
+
+  // Handle Adjust Stock
+  const handleAdjustStock = () => {
+    if (selectedProducts.length === 0) {
+      toast.error("No products selected!");
+      return;
+    }
+  
+    // Cek apakah produk sudah berstatus 'validated'
+    const unvalidatedProducts = stagingData.filter(
+      (product) => selectedProducts.includes(product.id) && product.status === "validated"
+    );
+    
+
+    if (unvalidatedProducts.length > 0) {
+      toast.error("Some products already validated");
+      return;
+    }
+
+    const filteredProducts = stagingData
+    .filter((product) => selectedProducts.includes(product.id))
+    .map((product) => ({
+      id: product.id,
+      name: product.inbound.product?.name ?? "Unknown Product", 
+      inboundId: product.inbound.id ?? 0,
+    }));
+  
+    setSelectedProductsData(filteredProducts);
+    setShowAdjustModal(true);
+
+  }
 
   // Handle Transfer Stock
   const handleTransferStock = () => {
@@ -110,37 +145,66 @@ export default function DataTablePrestock({ stagingData, userRole }) {
     );
   };
 
-  // Handle Validate Stock (QC)
   const handleValidateStock = () => {
     if (selectedProducts.length === 0) {
       toast.error("No products selected!");
-    return;
-  }
-
-  // Mapping role endpoint
-  const rolePaths = {
-    admin: "/admin/qcstock",
-    wrhs: "/wrhs/qcstock",
-  };
-
-  const userPath = rolePaths[userRole];
-
-  if (!userPath) {
-    toast.error("You don't have permission to validate stock!");
-    return;
-  }
-
-  router.post(
-    userPath, // ✅ Gunakan path sesuai role
-    { selected_products: selectedProducts }, // ✅ Kirim hanya array ID
-    {
-      onError: (err) => {
-        console.error(err);
-        toast.error("Validation failed!");
-      },
+      return;
     }
-  );
-};
+  
+    // Ambil data lengkap berdasarkan ID
+    const selectedFullData = stagingData.filter(item => selectedProducts.includes(item.id));
+  
+    const withInboundCode = selectedFullData.filter(item => item.inbound?.inbound_code);
+    const withoutInboundCode = selectedFullData.filter(item => !item.inbound?.inbound_code);
+  
+    if (withoutInboundCode.length > 0) {
+      // toast.error("Some selected items don't have an inbound code. They will be ignored.");
+    }
+  
+    const selectedCodes = withInboundCode.map(item => item.inbound.inbound_code);
+    const uniqueCodes = [...new Set(selectedCodes)];
+  
+    for (let code of uniqueCodes) {
+      const allWithCode = stagingData.filter(item => item.inbound?.inbound_code === code);
+      const selectedWithCode = withInboundCode.filter(item => item.inbound?.inbound_code === code);
+  
+      if (selectedWithCode.length < allWithCode.length) {
+        toast.error(`Please select all data with inbound code: ${code}`);
+        return; // STOP di sini
+      }
+    }
+  
+    // Mapping role endpoint
+    const rolePaths = {
+      admin: "/admin/qcstock",
+      wrhs: "/wrhs/qcstock",
+    };
+  
+    const userPath = rolePaths[userRole];
+  
+    if (!userPath) {
+      toast.error("You don't have permission to validate stock!");
+      return;
+    }
+  
+    // Kalau semua aman, lanjut kirim ID doang
+    const idsToSend = selectedFullData.map(item => item.id);
+  
+    router.post(
+      userPath,
+      { selected_products: idsToSend },
+      {
+        onError: (err) => {
+          console.error(err);
+          toast.error("Validation failed!");
+        },
+        onSuccess: () => {
+          // toast.success("Validation success!");
+        }
+      }
+    );
+  };
+  
 
 
   const columns = [
@@ -182,6 +246,19 @@ export default function DataTablePrestock({ stagingData, userRole }) {
       cell: ({ row }) => (
         <div className="capitalize">
           {row.original.inbound?.product?.name || "Unknown"}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "inbound.product.name",
+      header: "Inbound Code",
+      cell: ({ row }) => (
+        <div className="capitalize">
+          {
+            row.original.inbound?.inbound_code === null || row.original.inbound?.inbound_code === 0
+            ? "Single Inbound"
+            : row.original.inbound?.inbound_code
+          }
         </div>
       ),
     },
@@ -261,7 +338,7 @@ export default function DataTablePrestock({ stagingData, userRole }) {
         return (
           <div
             className={`capitalize text-center rounded-xl text-white p-2 ${
-              status === "unpaid" ? "bg-[#dc3545]" : status === "paid" ? "bg-[#28A745]": "bg-[#FFC107]"
+              status === "unpaid" ? "bg-[#e55353]" : status === "paid" ? "bg-[#3ac66c]": "bg-[#ebb523]"
             }`}
           >
             {status ?? "N/A"}
@@ -277,7 +354,7 @@ export default function DataTablePrestock({ stagingData, userRole }) {
         return (
           <div
             className={`capitalize text-center rounded-xl text-white p-2 ${
-              status === "On Hold" ? "bg-[#FFC107]" : "bg-[#28A745]"
+              status === "On Hold" ? "bg-[#ffcb3b]" : "bg-[#3ac66c]"
             }`}
           >
             {status ?? "N/A"}
@@ -292,7 +369,7 @@ export default function DataTablePrestock({ stagingData, userRole }) {
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
-
+  
   const table = useReactTable({
     data: stagingData,
     columns,
@@ -349,12 +426,16 @@ export default function DataTablePrestock({ stagingData, userRole }) {
           />
         </div>
         <div className="flex space-x-2">
-          <Button className="bg-indigo-700 hover:bg-indigo-500" onClick={handleTransferStock}>
-            Transfer Stock
+          <Button className="bg-orange-400 hover:bg-orange-500" onClick={handleAdjustStock}>
+            Fail QTY
           </Button>
-          <Button className="bg-green-600 hover:bg-green-400" onClick={handleValidateStock}>
+          <Button className="bg-green-400 hover:bg-green-500" onClick={handleValidateStock}>
             Validate Stock
           </Button>
+          <Button className="bg-indigo-400 hover:bg-indigo-500" onClick={handleTransferStock}>
+            Transfer Stock
+          </Button>
+          
         </div>
       </div>
       <div className="rounded-md border">
@@ -414,6 +495,14 @@ export default function DataTablePrestock({ stagingData, userRole }) {
             Next <AiOutlineRight className="ml-1" />
         </button>
       </div>
+      {showAdjustModal && (
+        <AdjustPrestockModal
+          products={selectedProductsData}
+          // productName={}
+          onClose={() => setShowAdjustModal(false)}
+          userRole={userRole}
+        />
+      )}
     </div>
   );
 }

@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('account_payables', function (Blueprint $table) {
             $table->id();
-            $table->string('ap_code')->unique();
+            $table->string('ap_code');
             $table->foreignId('inbound_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->boolean('inbound_bundling')->nullable();
             $table->decimal('unit_price', 15, 2)->nullable(); 
             $table->integer('tax')->nullable();
             $table->decimal('total_amount', 15, 2)->nullable(); 
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->text('terms_condition')->nullable();
             $table->foreignId('billed_party_id')->nullable()->constrained()->onUpdate('cascade');
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

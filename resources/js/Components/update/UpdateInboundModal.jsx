@@ -136,9 +136,9 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Update Data Inbound</DialogTitle>
+          <DialogTitle>Update Inbound Data</DialogTitle>
           <DialogDescription>
-            Update data inbound yang masuk, lalu klik Simpan.
+            Update the inbound data, then click Save.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -150,7 +150,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
                 id="product"
                 options={productOptions}
                 isSearchable={true}
-                placeholder="Pilih Product"
+                placeholder="Select Product"
                 value={selectedProduct?.product ?? ""}
                 onChange={(selected) => handleSelectChange("product", selected)}
                 className="mt-1"
@@ -160,13 +160,13 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
             </div>
 
             <div className="mt-4">
-              <InputLabel htmlFor="qty" value="Jumlah Produk" />
+              <InputLabel htmlFor="qty" value="Quantity Product" />
               <input
                 id="qty"
                 type="number"
                 name="qty"
                 className="mt-1 block w-full border p-2 rounded-md"
-                placeholder="Jumlah Produk Masuk"
+                placeholder="Quantity Product"
                 value={data?.qty ?? 0}
                 onChange={(e) => setData("qty", e.target.value)}
               />
@@ -174,13 +174,13 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
             </div>
 
             <div className="mt-4">
-              <InputLabel htmlFor="pic" value="Penerima Produk" />
+              <InputLabel htmlFor="pic" value="PIC" />
               <input
                 id="pic"
                 type="text"
                 name="pic"
                 className="mt-1 block w-full border p-2 rounded-md bg-gray-200"
-                placeholder="Nama Penerima Produk"
+                placeholder="PIC"
                 value={picName ?? ""}
                 onChange={(e) => setData("pic", e.target.value)}
                 readOnly
@@ -189,7 +189,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
             </div>
 
             <div className="mt-4">
-              <InputLabel htmlFor="supplierName" value="Nama Supplier" />
+              <InputLabel htmlFor="supplierName" value="Supplier Name" />
               <TextInput
                 type="text"
                 className="mt-1 block w-full bg-gray-200"
@@ -199,7 +199,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
             </div>
 
             <div className="mt-4">
-              <InputLabel htmlFor="categoryName" value="Kategori Produk" />
+              <InputLabel htmlFor="categoryName" value="Category Product" />
               <TextInput
                 type="text"
                 className="mt-1 block w-full bg-gray-200"
@@ -209,7 +209,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
             </div>
 
             <div className="mt-4">
-              <InputLabel htmlFor="image" value="Surat Terima" />
+              <InputLabel htmlFor="image" value="Attach Photo" />
               <input
                 id="image"
                 type="file"
@@ -219,10 +219,11 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
                 className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 onChange={handleChange}
               />
+              <span className="text-gray-500 text-xs">- Maximum photo size: 2 MB (JPEG, PNG, JPG)</span>
             </div>
 
             <div className="mt-4">
-              <InputLabel htmlFor="document" value="Dokumen (PDF)" />
+              <InputLabel htmlFor="document" value="Attach Document" />
               <input
                 id="document"
                 type="file"
@@ -232,12 +233,13 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
                 className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 onChange={handleChange}
               />
+              <span className="text-gray-500 text-xs">- Maximum document size: 5 MB (PDF)</span>
             </div>
             </>
           ) : (
             <>
             <div className="mt-4">
-              <InputLabel htmlFor="image" value="Surat Jalan" />
+              <InputLabel htmlFor="image" value="Attach Photo" />
               <input
                 id="image"
                 type="file"
@@ -247,10 +249,11 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
                 className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 onChange={handleChange}
               />
+              <span className="text-gray-500 text-xs">- Maximum photo size: 2 MB (JPEG, PNG, JPG)</span>
             </div>
 
             <div className="mt-4">
-              <InputLabel htmlFor="document" value="Dokumen (PDF)" />
+              <InputLabel htmlFor="document" value="Attach Document" />
               <input
                 id="document"
                 type="file"
@@ -260,6 +263,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
                 className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 onChange={handleChange}
               />
+              <span className="text-gray-500 text-xs">- Maximum document size: 5 MB (PDF)</span>
             </div>
             </>
           )}
@@ -273,7 +277,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
               Cancel
             </Button>
             <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

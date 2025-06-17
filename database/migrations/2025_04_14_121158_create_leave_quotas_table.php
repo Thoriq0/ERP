@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('note');
             $table->string('dueto');
             $table->string('status');
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

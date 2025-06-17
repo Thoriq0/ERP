@@ -15,6 +15,7 @@ import { router } from "@inertiajs/react";
 import toast from "react-hot-toast"; 
 
 export function ButtonModalBp({userRole}) {
+  const [open, setOpen] = useState(false);
   // State untuk form
   const [values, setValues] = useState({
     bill_to: "",
@@ -71,6 +72,7 @@ export function ButtonModalBp({userRole}) {
             account_bill_name: "",
             account_bank_name: "",
           });
+          setOpen(false);
         },
         onError: (err) => {
           setErrors(err); // Simpan error ke state
@@ -83,27 +85,27 @@ export function ButtonModalBp({userRole}) {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-PurpleFive hover:bg-primaryPurple">Create</Button>
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Data Billed Party</DialogTitle>
+          <DialogTitle>Billed Party Information</DialogTitle>
           <DialogDescription>
-            Masukkan data billed party, lalu klik Simpan.
+            Please fill in the billed party details, then click Save to proceed.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
         <div className="mt-4">
-            <InputLabel htmlFor="bill_to" value="Bill To" />
+            <InputLabel htmlFor="bill_to" value="Company Name" />
             <TextInput
               id="bill_to"
               type="text"
               name="bill_to"
               className="mt-1 block w-full"
-              placeholder="Bill To"
+              placeholder="Company Name"
               value={values.bill_to}
               onChange={handleChange}
             />
@@ -111,7 +113,7 @@ export function ButtonModalBp({userRole}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="contact_bill" value="Contact Bill" />
+            <InputLabel htmlFor="contact_bill" value="Contact" />
             <TextInput
               id="contact_bill"
               type="number"
@@ -125,7 +127,7 @@ export function ButtonModalBp({userRole}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="address_bill" value="Address Bill" />
+            <InputLabel htmlFor="address_bill" value="Address" />
             <TextInput
               id="address_bill"
               type="text"
@@ -139,7 +141,7 @@ export function ButtonModalBp({userRole}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="email_bill" value="Email Bill" />
+            <InputLabel htmlFor="email_bill" value="Email" />
             <TextInput
               id="email_bill"
               type="email"
@@ -153,13 +155,13 @@ export function ButtonModalBp({userRole}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="account_bill" value="Account Bill" />
+            <InputLabel htmlFor="account_bill" value="Bank Account Number" />
             <TextInput
               id="account_bill"
               type="number"
               name="account_bill"
               className="mt-1 block w-full"
-              placeholder="Account Bill"
+              placeholder="Bank Account Number"
               value={values.account_bill}
               onChange={handleChange}
             />
@@ -167,13 +169,13 @@ export function ButtonModalBp({userRole}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="account_bill_name" value="Account Bill Name" />
+            <InputLabel htmlFor="account_bill_name" value="Account Holder Name" />
             <TextInput
               id="account_bill_name"
               type="text"
               name="account_bill_name"
               className="mt-1 block w-full"
-              placeholder="Account Bill Name"
+              placeholder="Account Holder Name"
               value={values.account_bill_name}
               onChange={handleChange}
             />
@@ -197,7 +199,7 @@ export function ButtonModalBp({userRole}) {
 
           <DialogFooter>
             <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

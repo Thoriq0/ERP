@@ -70,42 +70,42 @@ export function ViewInboundDetailModal({ open, onClose, inbound, productData, us
       <Dialog open={open} onOpenChange={onClose}>
         <DialogContent className="max-w-[375px] md:max-w-[750px] max-h-[550px] border p-8 md:p-10 rounded-lg shadow-lg overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-lg font-semibold">Detail Data Inbound</DialogTitle>
-            <DialogDescription className="text-sm text-gray-500">
-              Berikut adalah detail data inbound.
-            </DialogDescription>
+            <DialogTitle className="text-lg font-semibold">Inbound Data Details</DialogTitle>
+              <DialogDescription className="text-sm text-gray-500">
+                Here are the details of the inbound data.
+              </DialogDescription>
             <hr />
           </DialogHeader>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 border p-4 rounded-md">
             <div className="space-y-2">
-              <h3 className="font-semibold text-lg mb-5">Detail Produk</h3>
+              <h3 className="font-semibold text-lg mb-5">Details Product </h3>
               <div className="flex justify-between border-b pb-1">
-                <span className="font-medium">Produk:</span>
+                <span className="font-medium">Product:</span>
                 <span className="ttext-end break-all pl-6">{product?.name || "Tidak Diketahui"}</span>
               </div>
               <div className="flex justify-between border-b pb-1">
-                <span className="font-medium">QTY:</span>
+                <span className="font-medium">Quantity:</span>
                 <span>{inbound?.qty || "Tidak Diketahui"}</span>
               </div>
               <div className="flex justify-between border-b pb-1">
-                <span className="font-medium">Penerima:</span>
+                <span className="font-medium">PIC:</span>
                 <span className="text-end break-all pl-6">{userGetProduct?.name || "Tidak Diketahui"}</span>
               </div>
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-semibold text-lg mb-5">Detail Supplier</h3>
+              <h3 className="font-semibold text-lg mb-5">Details Supplier</h3>
               <div className="flex justify-between border-b pb-1">
                 <span className="font-medium">Supplier:</span>
                 <span className="text-end break-all pl-6">{product?.supplier?.name || "Tidak Diketahui"}</span>
               </div>
               <div className="flex justify-between border-b pb-1">
-                <span className="font-medium">Kontak:</span>
+                <span className="font-medium">Contact:</span>
                 <span className="text-end break-all pl-6">{product?.supplier?.contact || "Tidak Diketahui"}</span>
               </div>
               <div className="flex justify-between border-b pb-1">
-                <span className="font-medium">Alamat:</span>
+                <span className="font-medium">Address:</span>
                 <span className="text-end break-all pl-6">
                   {product?.supplier?.address || "Tidak Diketahui"}
                 </span>
@@ -150,7 +150,7 @@ export function ViewInboundDetailModal({ open, onClose, inbound, productData, us
                     🖼️ {file}
                   </span>
                   <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
-                    Hapus
+                    Delete
                   </Button>
                 </div>
               ))}
@@ -163,7 +163,7 @@ export function ViewInboundDetailModal({ open, onClose, inbound, productData, us
                     📄 {file}
                   </span>
                   <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
-                    Hapus
+                    Delete
                   </Button>
                 </div>
               ))}
@@ -180,14 +180,14 @@ export function ViewInboundDetailModal({ open, onClose, inbound, productData, us
       <Dialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <DialogContent className="max-w-md border p-6 rounded-lg">
           <DialogHeader>
-            <DialogTitle>Konfirmasi Hapus</DialogTitle>
+            <DialogTitle>Delete Confirmation</DialogTitle>
             <DialogDescription>
-              Apakah Anda yakin ingin menghapus file <strong>{fileToDelete}</strong>?
+            Are you sure you want to delete the file ? <strong>{fileToDelete}</strong>?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex justify-end space-x-2">
-            <Button className="bg-gray-300 text-black hover:bg-gray-400" onClick={() => setConfirmDelete(false)}>Batal</Button>
-            <Button className="bg-red-500 text-white hover:bg-red-600" onClick={() => {handleDeleteFile();onClose(); setConfirmDelete(false);}}>Ya, Hapus</Button>
+            <Button className="bg-gray-300 text-black hover:bg-gray-400" onClick={() => setConfirmDelete(false)}>Cancel</Button>
+            <Button className="bg-red-500 text-white hover:bg-red-600" onClick={() => {handleDeleteFile();onClose(); setConfirmDelete(false);}}>Yes, Delete</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

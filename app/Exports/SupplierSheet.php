@@ -17,6 +17,7 @@ class SupplierSheet implements FromCollection, WithHeadings, WithTitle
     public function headings(): array
     {
         return Supplier::first() ? array_keys(Supplier::first()->toArray()) : [];
+        // return ['id', 'name', 'contact', 'address', 'account_number', 'account_name', 'account_bank_name', 'created_at', 'updated_at'];
     }
     public function title(): string
     {

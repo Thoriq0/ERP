@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -47,25 +47,6 @@ export function DataTableOutcome({data, userRole}) {
     setOpen(false); // Tutup modal setelah delete
   };
   const columns = [
-    // {
-    //   id: "select",
-    //   header: ({ table }) => (
-    //     <Checkbox
-    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //       aria-label="Select all"
-    //     />
-    //   ),
-    //   cell: ({ row }) => (
-    //     <Checkbox
-    //       checked={row.getIsSelected()}
-    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-    //       aria-label="Select row"
-    //     />
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
     {
       accessorKey: "paid_code",
       header: "Paid Code",
@@ -104,41 +85,41 @@ export function DataTableOutcome({data, userRole}) {
       },
     },
     {
-      accessorKey: "total",
+      accessorKey: "grand_total",
       header: "Total",
-      cell: ({ row }) => <div className="capitalize">Rp.{row.getValue("total").toLocaleString("id-ID")}</div>,
+      cell: ({ row }) => <div className="capitalize">Rp.{row.getValue("grand_total").toLocaleString("id-ID")}</div>,
     },
-    {
-      id: "actions",
-      enableHiding: false,
-      cell: ({ row }) => {
-        const item = row.original;
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-                Copy Paid Code
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {/* <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
-                Delete
-              </DropdownMenuItem> */}
-            </DropdownMenuContent>
+    // {
+    //   id: "actions",
+    //   enableHiding: false,
+    //   cell: ({ row }) => {
+    //     const item = row.original;
+    //     return (
+    //       <DropdownMenu>
+    //         <DropdownMenuTrigger asChild>
+    //           <Button variant="ghost" className="h-8 w-8 p-0">
+    //             <span className="sr-only">Open menu</span>
+    //             <MoreHorizontal />
+    //           </Button>
+    //         </DropdownMenuTrigger>
+    //         <DropdownMenuContent align="end">
+    //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+    //           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
+    //             Copy Paid Code
+    //           </DropdownMenuItem>
+    //           <DropdownMenuSeparator />
+    //           {/* <DropdownMenuItem>View customer</DropdownMenuItem>
+    //           <DropdownMenuItem>View payment details</DropdownMenuItem>
+    //           <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }}>
+    //             Delete
+    //           </DropdownMenuItem> */}
+    //         </DropdownMenuContent>
             
-          </DropdownMenu>
+    //       </DropdownMenu>
           
-        );
-      },
-    },
+    //     );
+    //   },
+    // },
   ];
 
   const [sorting, setSorting] = useState([]);
@@ -146,8 +127,41 @@ export function DataTableOutcome({data, userRole}) {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
+  // const uniquePaidData = useMemo(() => {
+  //   return Array.from(
+  //     new Map(data.map(item => [item?.account_payable?.ap_code, item])).values()
+  //   );
+  // }, [data]);
+
+  const uniquePaidData = useMemo(() => {
+    const apMap = new Map();
+  
+    data.forEach(item => {
+      const key = item?.paid_code;
+      const total = item?.total || 0;
+  
+      if (apMap.has(key)) {
+        const existing = apMap.get(key);
+        apMap.set(key, {
+          ...existing,
+          grand_total: existing.grand_total + total
+        });
+      } else {
+        apMap.set(key, {
+          ...item,
+          grand_total: total
+        });
+      }
+    });
+  
+    return Array.from(apMap.values());
+  }, [data]);
+  
+
+  console.log(data);
+
   const table = useReactTable({
-    data,
+    data: uniquePaidData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

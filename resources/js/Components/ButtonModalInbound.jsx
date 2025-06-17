@@ -30,6 +30,8 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
     document: null,
   });
 
+  const [open, setOpen] = useState(false);
+
   // Untuk Disabled Feild
   const [supplierName, setSupplierName] = useState("");
   const [categoryName, setCategoryName] = useState("");
@@ -78,6 +80,17 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
 
   useEffect(() => {
     if (flash.success) {
+      setValues({
+        product: null,
+        qty: "",
+        pic: null,
+        image: null,
+        document: null,
+        created: nameRole,
+      });
+      setSupplierName("");
+      setCategoryName("");
+      setOpen(false);
       // toast.success(flash.success, { duration: 5000 });
     }
   }, [flash]);
@@ -132,15 +145,15 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-PurpleFive hover:bg-primaryPurple">Create</Button>
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
-        <DialogHeader>
-          <DialogTitle>Data Produk Masuk</DialogTitle>
-          <DialogDescription>Masukkan data produk yang masuk, lalu klik Simpan.</DialogDescription>
-        </DialogHeader>
+      <DialogHeader>
+        <DialogTitle>Incoming Product Data</DialogTitle>
+        <DialogDescription>Enter the incoming product data, then click Save.</DialogDescription>
+      </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
@@ -149,7 +162,7 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
               id="product"
               options={productOptions}
               isSearchable={true}
-              placeholder="Pilih Product"
+              placeholder="Select Product"
               value={values.product}
               onChange={(selected) => handleSelectChange("product", selected)}
               className="mt-1"
@@ -157,13 +170,13 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="qty" value="Jumlah Produk" />
+            <InputLabel htmlFor="qty" value="Quantity Product" />
             <TextInput
               id="qty"
               type="number"
               name="qty"
               className="mt-1 block w-full"
-              placeholder="Jumlah Produk Masuk"
+              placeholder="Quantity Product"
               value={values.qty}
               onChange={handleChange}
             />
@@ -175,7 +188,7 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
               id="pic"
               options={picOptions}
               isSearchable={true}
-              placeholder="Pilih PIC"
+              placeholder="Select PIC"
               value={values.pic}
               onChange={(selected) => handleSelectUser("pic", selected)}
               className="mt-1"
@@ -183,7 +196,7 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="supplierName" value="Nama Supplier" />
+            <InputLabel htmlFor="supplierName" value="Supplier Name" />
             <TextInput
               type="text"
               className="mt-1 block w-full bg-gray-200"
@@ -193,7 +206,7 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="categoryName" value="Kategori Produk" />
+            <InputLabel htmlFor="categoryName" value="Category Product" />
             <TextInput
               type="text"
               className="mt-1 block w-full bg-gray-200"
@@ -203,7 +216,7 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="image" value="Surat Terima" />
+            <InputLabel htmlFor="image" value="Attach Photo" />
             <input
               id="image"
               type="file"
@@ -213,10 +226,11 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
               className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               onChange={handleChange}
             />
+            <span className="text-gray-500 text-xs">- Maximum photo size: 2 MB (JPEG, PNG, JPG)</span>
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="document" value="Dokumen (PDF)" />
+            <InputLabel htmlFor="document" value="Attach Document" />
             <input
               id="document"
               type="file"
@@ -226,11 +240,12 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
               className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               onChange={handleChange}
             />
+            <span className="text-gray-500 text-xs">- Maximum document size: 5 MB (PDF)</span>
           </div>
 
           <DialogFooter>
             <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

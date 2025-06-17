@@ -8,7 +8,7 @@ import { FaUser, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Head, Link, useForm } from '@inertiajs/react';
 import React, { useState } from "react";
 
-export default function Login({ status, canResetPassword}) {
+export default function Login({error, status, canResetPassword}) {
     
     const [showPassword, setShowPassword] = React.useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -28,6 +28,12 @@ export default function Login({ status, canResetPassword}) {
     return (
         <LoginLayout>
             <Head title="Log in" />
+
+            {/* {error && (
+                <div className="mb-4 text-sm font-medium text-red-600 bg-red-100 p-3 rounded">
+                    {error}
+                </div>
+            )} */}
 
             {status && (
                 <div className="mb-4 text-sm font-medium text-green-600">
@@ -87,7 +93,7 @@ export default function Login({ status, canResetPassword}) {
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="mt-4 block flex flex-col justify-between lg:flex-row">
+                <div className="mt-4 flex flex-col justify-between lg:flex-row">
                     <label className="flex items-center">
                         <Checkbox
                             name="remember"
