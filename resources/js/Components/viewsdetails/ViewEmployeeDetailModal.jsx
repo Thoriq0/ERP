@@ -14,47 +14,47 @@ export function ViewEmployeeDetailModal({ open, onClose, employee }) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] max-w-[370px] md:max-w-[750px] overflow-y-auto border border-gray-300 p-5 md:p-10 rounded-md">
         <DialogHeader>
-          <DialogTitle>Detail Data Karyawan</DialogTitle>
+          <DialogTitle>Detail Employee Data</DialogTitle>
           <DialogDescription>
-            Berikut adalah detail data karyawan.
+           Here are the employee data details.
           </DialogDescription>
           <hr  />
         </DialogHeader>
         <div className="mt-4 space-y-2 text-sm md:text-md">
           <div className="flex">
-            <strong className="min-w-[150px]">Nama Karyawan</strong>
+            <strong className="min-w-[150px]">Name Employee</strong>
             <span className="mr-2">:</span>
-            <span>{employee?.name || "Tidak Diketahui"}</span>
+            <span>{employee?.name || "Unknow"}</span>
           </div>
           <div className="flex">
             <strong className="min-w-[150px]">Email</strong>
             <span className="mr-2">:</span>
-            <span>{employee?.email || "Tidak Diketahui"}</span>
+            <span>{employee?.email || "Unknow"}</span>
           </div>
           <div className="flex">
             <strong className="min-w-[150px]">Departemen</strong>
             <span className="mr-2">:</span>
-            <span className="capitalize">{employee?.departemen || "Tidak Diketahui"}</span>
+            <span className="capitalize">{employee?.departemen || "Unknow"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Tanggal Lahir</strong>
+            <strong className="min-w-[150px]">Date Of Birth</strong>
             <span className="mr-2">:</span>
-            <span>{employee?.dateOfBirth || "Tidak Diketahui"}</span>
+            <span>{employee?.dateOfBirth || "Unknow"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Jenis Kelamin</strong>
+            <strong className="min-w-[150px]">Gender</strong>
             <span className="mr-2">:</span>
-            <span className="capitalize">{employee?.gender || "Tidak Diketahui"}</span>
+            <span className="capitalize">{employee?.gender || "Unknow"}</span>
           </div>
           <div className="flex">
             <strong className="min-w-[150px]">Contact</strong>
             <span className="mr-2">:</span>
-            <span>{employee?.phone || "Tidak Diketahui"}</span>
+            <span>{employee?.phone || "Unknow"}</span>
           </div>
           <div className="flex">
-            <strong className="min-w-[150px]">Alamat</strong>
+            <strong className="min-w-[150px]">Address</strong>
             <span className="mr-2">:</span>
-            <span>{employee?.address || "Tidak Diketahui"}</span>
+            <span>{employee?.address || "Unknow"}</span>
           </div>
           <div className="flex">
             <strong className="min-w-[150px]">Created Data</strong>

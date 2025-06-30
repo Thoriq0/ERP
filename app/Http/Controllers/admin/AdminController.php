@@ -373,4 +373,15 @@ class AdminController extends Controller
         // dd(Inbound::all());
     }
 
+    public function reportAttendanceView(){
+        // dd();
+        return inertia::render('report/AttendanceReports', [
+            'title' => 'Admin Reports Attendance',
+            'attendance' => Attendance::all(),
+            // 'usr' => User::select('id', 'name', 'role')->get()            
+            'usr' => User::all()            
+        ]);
+        // dd(Inbound::all());
+    }
+
 }

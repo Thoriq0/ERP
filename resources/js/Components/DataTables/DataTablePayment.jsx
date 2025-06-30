@@ -83,10 +83,10 @@ export function DataTablePayment({data, userRole}) {
       { payments },
       {
         onSuccess: () => {
-          toast.success("Pembayaran berhasil diproses! 🎉", { duration: 5000 });
+          toast.success("Payment processed successfully! 🎉", { duration: 5000 });
         },
         onError: (errors) => {
-          toast.error("Gagal memproses pembayaran! ❌", { duration: 5000 });
+          toast.error("Failed to process payment! ❌", { duration: 5000 });
           console.error("Error:", errors);
         },
       }

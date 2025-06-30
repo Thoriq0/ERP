@@ -59,7 +59,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
       const inputQty = parseInt(value || 0, 10);
 
       if (inputQty > selectedStock.qty) {
-        setStockError("QTY Melebihi Stock, data tidak bisa dibuat");
+        setStockError("QTY Exceeds Stock, Data cannot be generated");
       } else {
         setStockError("");
       }
@@ -89,7 +89,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
   // Handle submit
   function handleSubmit(e) {
     if (stockError) {
-      toast.error("Tidak bisa submit: QTY melebihi stock!");
+      toast.error("Can't submit: QTY exceeds stock!");
       return;
     }
     
@@ -127,9 +127,9 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
       {
         forceFormData: true, 
         onSuccess: () => {
-          toast.success("Produk berhasil disimpan! 🎉", {
-            duration: 5000,
-          });
+          // toast.success("Product saved successfully! 🎉", {
+          //   duration: 5000,
+          // });
           setValues({
             product: null,
             qty: "",
@@ -143,8 +143,8 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
         },
         onError: (err) => {
           setErrors(err); 
-          const errorMessage = err.message || "Terjadi kesalahan!";
-          toast.error(`Gagal menyimpan produk!, ${errorMessage}`, { duration: 5000 });
+          const errorMessage = err.message || "An error occurred!";
+          toast.error(`Failed to store the product!, ${errorMessage}`, { duration: 5000 });
         },
       }
     );
@@ -157,9 +157,9 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Data Produk Masuk</DialogTitle>
+          <DialogTitle>Outgoing Product Data</DialogTitle>
           <DialogDescription>
-            Masukkan data produk yang masuk, lalu klik Simpan.
+            Enter the outgoing product data, then click Save.
           </DialogDescription>
         </DialogHeader>
 
@@ -170,7 +170,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
               id="product"
               options={productOptions}
               isSearchable={true}
-              placeholder="Pilih Product"
+              placeholder="Select Product"
               value={values.product}
               onChange={(selected) => handleSelectChange("product", selected)}
               className="mt-1"
@@ -179,7 +179,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="supplierName" value="Nama Supplier" />
+            <InputLabel htmlFor="supplierName" value="Name Supplier" />
             <TextInput
               type="text"
               className="mt-1 block w-full bg-gray-200"
@@ -189,14 +189,14 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="qty" value="Jumlah Produk" />
+            <InputLabel htmlFor="qty" value="Number of Products" />
             {stockError && <p className="text-red-500 text-sm mb-1">{stockError}</p>}
             <TextInput
               id="qty"
               type="number"
               name="qty"
               className="mt-1 block w-full"
-              placeholder="Jumlah Produk Masuk"
+              placeholder="Number of Outgoing Products"
               value={values.qty}
               onChange={handleChange}
             />
@@ -204,13 +204,13 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
           </div>
           
           <div className="mt-4">
-            <InputLabel htmlFor="receiver" value="Penerima" />
+            <InputLabel htmlFor="receiver" value="Receiver" />
             <TextInput
               id="receiver"
               type="text"
               name="receiver"
               className="mt-1 block w-full"
-              placeholder="Nama Penerima"
+              placeholder="Name Receiver"
               value={values.receiver}
               onChange={handleChange}
             />
@@ -224,7 +224,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
               type="text"
               name="address"
               className="mt-1 block w-full"
-              placeholder="Alamat Penerima"
+              placeholder="Address Receiver"
               value={values.address}
               onChange={handleChange}
             />
@@ -232,12 +232,12 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="pic" value="Penanggung Jawab Produk" />
+            <InputLabel htmlFor="pic" value="Person in charge of Product" />
             <Select
               id="pic"
               options={picOptions}
               isSearchable={true}
-              placeholder="Pilih PIC"
+              placeholder="Select PIC"
               value={values.pic} 
               onChange={(selected) => handleSelectChangeUsr("pic", selected)} 
               className="mt-1"
@@ -247,7 +247,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
 
 
           <div className="mt-4">
-            <InputLabel htmlFor="image" value="Surat Jalan" />
+            <InputLabel htmlFor="image" value="Mailing Letter" />
             <input
               id="image"
               type="file"
@@ -261,7 +261,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="document" value="Dokumen (PDF)" />
+            <InputLabel htmlFor="document" value="Document (PDF)" />
             <input
               id="document"
               type="file"
@@ -275,7 +275,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
 
           <DialogFooter>
             <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

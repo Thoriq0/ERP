@@ -51,11 +51,11 @@ export function DataTableOutbound({data}) {
   
     router.delete(`/admin/user/${user}`, {
       onSuccess: () => {
-        toast.success("Penggua berhasil dihapus! 🗑️", { duration: 5000 });
+        toast.success("user warehouse successfully deleted! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
         console.error(err);
-        toast.error("Gagal menghapus Pengguna! ❌", { duration: 5000 });
+        toast.error("Failed to delete user warehouse! ❌", { duration: 5000 });
       },
     });
   };

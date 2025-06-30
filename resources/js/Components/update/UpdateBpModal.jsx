@@ -63,7 +63,7 @@ export function UpdateBpModal({ userRole, open, onClose, bp }) {
       forceFormData: true,
       onError: (errors) => {
         setErrors(errors);
-        toast.error("Gagal memperbarui Data bp! ❌");
+        toast.error("Failed to update Data Billed Party! ❌");
       },
     });
     

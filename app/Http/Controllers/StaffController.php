@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\LeaveQuota;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class StaffController extends Controller
@@ -36,5 +37,16 @@ class StaffController extends Controller
             'lqa' => LeaveQuota::where('status', 'validating')->get()
         ]);
         // dd(Employee::all());
+    }
+
+    public function reportAttendanceView(){
+        // dd();
+        return inertia::render('features/ReportAttendanceUser', [
+            'title' => 'Reports Attendance',
+            'attendance' => Attendance::all(),
+            // 'usr' => User::select('id', 'name', 'role')->get()            
+            'usr' => User::all()            
+        ]);
+        // dd(Inbound::all());
     }
 }

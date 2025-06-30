@@ -13,6 +13,7 @@ export default function DashboardInventoryLayout({ children, auth, ...props }) {
         { name: "Dashboard", path: "/wrhs/dashboard", icon: <HiChartPie /> },
         { name: "Attendance", path: "/wrhs/attendance", icon: <FaClipboardList /> },
         { name: "Time of Request", path: "/wrhs/time", icon: <MdAccessTime /> },
+        { name: "Reports Attendance", path: "/wrhs/reportattendance", icon: <FaFileAlt /> },
     ];
 
     const dropdownMenus = [
@@ -36,16 +37,6 @@ export default function DashboardInventoryLayout({ children, auth, ...props }) {
             items: [
                 { name: "Shipment ", path: "/wrhs/shipment" },
                 { name: "Delivery", path: "/wrhs/delivery" },
-            ],
-        },
-        {
-            title: "Reports",
-            icon: <FaFileAlt  />,
-            items: [
-                { name: "Inbound Reports", path: "/wrhs/inboundReports" },
-                { name: "Outbound Reports", path: "/wrhs/outboundreports" },
-                { name: "Stock Reports", path: "/wrhs/stockreports" },
-                { name: "Shipment Reports", path: "/wrhs/shipmentreports" },
             ],
         },
     ];

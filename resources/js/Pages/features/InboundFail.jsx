@@ -1,4 +1,4 @@
-import DashboardAdminLayout from "@/Layouts/DashboardAdminLayout";
+    import DashboardAdminLayout from "@/Layouts/DashboardAdminLayout";
 import DashboardInventoryLayout from "@/Layouts/DashboardInventoryLayout";
 import { DataTableInboundFail } from "@/Components/DataTables/DataTableInboundFail";
 import ToasterComponent from "@/Components/ToasterComponent";

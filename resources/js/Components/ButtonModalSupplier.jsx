@@ -58,7 +58,7 @@ export function ButtonModalSupplier({userRole}) {
       {
         forceFormData: true,
         onSuccess: () => {
-          toast.success("Supplier berhasil disimpan! 🎉", {
+          toast.success("Supplier data saved successfully! 🎉", {
             duration: 5000,
           });
           setValues({
@@ -72,7 +72,7 @@ export function ButtonModalSupplier({userRole}) {
         },
         onError: (err) => {
           setErrors(err); // Simpan error ke state
-          toast.error("Gagal menyimpan produk! ❌", {
+          toast.error("Failed to save supplier data! ❌", {
               duration: 5000,
           });
         },

@@ -61,7 +61,7 @@ export function UpdateUserModal({open, onClose, userSelected, users }) {
       forceFormData: true,
       onError: (errors) => {
         setErrors(errors);
-        toast.error("Gagal memperbarui Data User! ❌");
+        toast.error("Failed to update Data User! ❌");
       },
     });
     
@@ -71,46 +71,46 @@ export function UpdateUserModal({open, onClose, userSelected, users }) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Update Supplier Masuk</DialogTitle>
+          <DialogTitle>Update Data User Warehouse</DialogTitle>
           <DialogDescription>
-            Update data supplier yang masuk, lalu klik Simpan.
+            Update the user warehouse data, then click Save.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="name" value="Nama Pengguna" />
+            <InputLabel htmlFor="name" value="Name User" />
             <input
               id="name"
               type="text"
               name="name"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Nama Produk"
+              placeholder="Name User"
               value={data.name || ""}
               onChange={(e) => setData("name", e.target.value)}
             />
             {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="email" value="email" />
+            <InputLabel htmlFor="email" value="Email" />
             <input
               id="email"
               type="text"
               name="email"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="email Supplier"
+              placeholder="Email User"
               value={data.email || ""}
               onChange={(e) => setData("email", e.target.value)}
             />
             {errors.contact && <p className="text-red-500 text-sm">{errors.contact}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="address" value="Alamat" />
+            <InputLabel htmlFor="address" value="Address" />
             <input
               id="address"
               type="text"
               name="address"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Alamat"
+              placeholder="Address"
               value={data.address || ""}
               onChange={(e) => setData("address", e.target.value)}
             />
@@ -144,7 +144,7 @@ export function UpdateUserModal({open, onClose, userSelected, users }) {
                 value={data.status || ""}
                 onChange={(e) => setData("status", e.target.value)}
             >
-                <option value="">-- Pilih Status --</option>
+                <option value="">-- Select Status --</option>
                 <option value="active">Active</option>
                 <option value="not active">Not Active</option>
                 <option value="validating">Validating</option>
@@ -162,7 +162,7 @@ export function UpdateUserModal({open, onClose, userSelected, users }) {
               Cancel
             </Button>
             <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white mt-5">
-              Simpan
+              Save
             </Button>
 
           </DialogFooter>

@@ -138,7 +138,7 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
         },
         onError: (err) => {
           setErrors(err);
-          toast.error("Gagal menyimpan Inbound! ❌", { duration: 5000 });
+          toast.error("Failed to save Inbound! ❌", { duration: 5000 });
         },
       }
     );

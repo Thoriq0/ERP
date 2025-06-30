@@ -75,7 +75,7 @@ export function ButtonModalEmployee({userRole}) {
       {
         forceFormData: true,
         onSuccess: () => {
-          toast.success("Data Karyawan berhasil disimpan! 🎉", {
+          toast.success("Employee data saved successfully! 🎉", {
             duration: 5000,
           });
           setValues({
@@ -90,7 +90,7 @@ export function ButtonModalEmployee({userRole}) {
         },
         onError: (err) => {
           setErrors(err); // Simpan error ke state
-          toast.error("Gagal menyimpan Data! ❌", {
+          toast.error("Failed to save Employee data! ❌", {
             duration: 5000,
           });
         },
@@ -105,21 +105,21 @@ export function ButtonModalEmployee({userRole}) {
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Data Karyawan</DialogTitle>
+          <DialogTitle>Data Employee</DialogTitle>
           <DialogDescription>
-            Masukkan data karyawan, lalu klik Simpan.
+            Enter employee data, then click Save.Enter employee data, then click Save.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="name" value="Nama" />
+            <InputLabel htmlFor="name" value="Name" />
             <TextInput
               id="name"
               type="text"
               name="name"
               className="mt-1 block w-full"
-              placeholder="Nama Karyawan"
+              placeholder="Name Employee"
               value={values.name}
               onChange={handleChange}
             />
@@ -132,7 +132,7 @@ export function ButtonModalEmployee({userRole}) {
               type="text"
               name="email"
               className="mt-1 block w-full"
-              placeholder="Nama Email"
+              placeholder="Name Email"
               value={values.email}
               onChange={handleChange}
             />
@@ -158,7 +158,7 @@ export function ButtonModalEmployee({userRole}) {
               id="departemen"
               name="departemen"
               options={departemenOptions}
-              placeholder="Pilih Departemen"
+              placeholder="Select Departemen"
               value={departemenOptions.find(option => option.value === values.departemen)}
               onChange={(option) => setValues((prevValues) => ({ ...prevValues, departemen: option.value }))}
               className="mt-1"
@@ -166,7 +166,7 @@ export function ButtonModalEmployee({userRole}) {
             {errors.departemen && <p className="text-red-500 text-sm">{errors.departemen}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="dateOfBirth" value="Tanggal Lahir" />
+            <InputLabel htmlFor="dateOfBirth" value="Date of Birth" />
             <TextInput
               id="dateOfBirth"
               type="date"
@@ -180,12 +180,12 @@ export function ButtonModalEmployee({userRole}) {
           </div>
           {/* dropdown jenis kelamin */}
           <div className="mt-4">
-            <InputLabel htmlFor="gender" value="Jenis Kelamin" />
+            <InputLabel htmlFor="gender" value="Gender" />
             <Select
               id="gender"
               name="gender"
               options={genderOptions}
-              placeholder="Pilih Jenis Kelamin"
+              placeholder="Select Gender"
               value={genderOptions.find(option => option.value === values.gender)}
               onChange={(option) => setValues((prevValues) => ({ ...prevValues, gender: option.value }))}
               className="mt-1"
@@ -193,26 +193,26 @@ export function ButtonModalEmployee({userRole}) {
             {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="phone" value="Nomor Handphone" />
+            <InputLabel htmlFor="phone" value="Phone Number" />
             <TextInput
               id="phone"
               type="text"
               name="phone"
               className="mt-1 block w-full"
-              placeholder="Nomor Handphone"
+              placeholder="Phone Number"
               value={values.phone}
               onChange={handleChange}
             />
             {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="address" value="Alamat" />
+            <InputLabel htmlFor="address" value="Address" />
             <TextInput
               id="address"
               type="text"
               name="address"
               className="mt-1 block w-full"
-              placeholder="Nama Alamat"
+              placeholder="Name Address"
               value={values.address}
               onChange={handleChange}
             />
@@ -220,7 +220,7 @@ export function ButtonModalEmployee({userRole}) {
           </div>
           <DialogFooter>
             <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

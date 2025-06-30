@@ -45,7 +45,7 @@ export function ButtonModalAttandanceOut({role}) {
         status: 'out'
       },
       {
-        onError: () => toast.error("Gagal melakukan absensi ❌", {
+        onError: () => toast.error("Failed to take attendance ❌", {
           duration: 5000,
         }),
         onFinish: () => {
@@ -82,7 +82,7 @@ export function ButtonModalAttandanceOut({role}) {
                   facingMode: "user",
                 }}
                 onUserMediaError={() => {
-                  alert("Gagal akses kamera. Pastikan kamu buka lewat https.");
+                  alert("Failed to access the camera. Make sure you open via https.");
                 }}
               />
               <div className="mt-4">
@@ -107,7 +107,7 @@ export function ButtonModalAttandanceOut({role}) {
                   disabled={loading}
                   className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
                 >
-                  {loading ? "Mengirim..." : "Submit Attendance"}
+                  {loading ? "Submit..." : "Submit Attendance"}
                 </button>
                 <button
                   onClick={retakePhoto}

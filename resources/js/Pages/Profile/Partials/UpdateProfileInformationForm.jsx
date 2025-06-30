@@ -16,6 +16,7 @@ export default function UpdateProfileInformation({
         useForm({
             name: user.name,
             email: user.email,
+            role: user.role,
             uniqueNumber: user.uniqueNumber
         });
 
@@ -33,7 +34,7 @@ export default function UpdateProfileInformation({
                 </h2>
 
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    Update your account's profile information and email address.
+                    your account's profile information and email address.
                 </p>
             </header>
 
@@ -83,6 +84,20 @@ export default function UpdateProfileInformation({
                     />
 
                     <InputError className="mt-2" message={errors.email} />
+                </div>
+                <div>
+                    <InputLabel htmlFor="role" value="Role" />
+
+                    <TextInput
+                        id="role"
+                        className="mt-1 block w-full"
+                        value={data.role}
+                        onChange={(e) => setData('role', e.target.value)}
+                        required
+                        autoComplete="role"
+                    />
+
+                    <InputError className="mt-2" message={errors.role} />
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (

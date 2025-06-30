@@ -84,7 +84,7 @@ export function ButtonModalAp({ userRole, bp }) {
       forceFormData: true,
       onError: (errors) => {
         setErrors(errors);
-        toast.error("Gagal menyimpan Data Account Payable! ❌");
+        toast.error("Failed to save Data Account Payable! ❌");
       },
     });
   }

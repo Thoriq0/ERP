@@ -66,7 +66,7 @@ export function DataTableDelivery({data, userRole}) {
       });
     
       if (deliveredProducts.length > 0) {
-        toast.error("Produk sudah dikirim!");
+        toast.error("The product has been shipped!");
         return;
       }
 
@@ -204,40 +204,7 @@ export function DataTableDelivery({data, userRole}) {
              </div>
            ),
          },
-    //  {
-    //    id: "actions",
-    //    header: "Actions",
-    //    enableHiding: false,
-    //    cell: ({ row }) => {
-    //      const item = row.original;
-    //      return (
-    //        <DropdownMenu>
-    //          <DropdownMenuTrigger asChild>
-    //            <Button variant="ghost" className="h-8 w-8 p-0">
-    //              <span className="sr-only">Open menu</span>
-    //              <MoreHorizontal />
-    //            </Button>
-    //          </DropdownMenuTrigger>
-    //          <DropdownMenuContent align="end">
-    //            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-    //            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)} className="cursor-pointer">
-    //              <FaCopy size={16} className="text-blue-500 "/>Copy payment ID
-    //            </DropdownMenuItem>
-    //            <DropdownMenuSeparator />
-    //            <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
-    //              <FaEdit size={16} className="text-yellow-500 "/>Update
-    //            </DropdownMenuItem>
-    //            <DropdownMenuItem onClick={() => handleViewDetails(item)} className="cursor-pointer">
-    //              <FaEye size={16} className="text-green-500 "/>View details
-    //            </DropdownMenuItem>
-    //            <DropdownMenuItem onClick={() => { setSelectedId(item.id); setOpen(true); }} className="cursor-pointer">
-    //              <FaTrash size={16} className="text-red-500"/>Delete
-    //            </DropdownMenuItem>
-    //          </DropdownMenuContent>
-    //        </DropdownMenu>
-    //      );
-    //    },
-    //  },
+  
    ];
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);

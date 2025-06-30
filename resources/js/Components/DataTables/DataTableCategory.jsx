@@ -86,11 +86,11 @@ export function DataTableCategory({data, userRole}) {
   
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
-        toast.success("Kategori berhasil dihapus! 🗑️", { duration: 5000 });
+        toast.success("Category successfully deleted! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
         console.error(err);
-        toast.error("Gagal menghapus Kategori! ❌", { duration: 5000 });
+        toast.error("Failed to delete Category! ❌", { duration: 5000 });
       },
     });
     setOpen(false); 

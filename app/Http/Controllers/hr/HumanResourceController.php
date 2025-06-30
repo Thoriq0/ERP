@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Employee;
 use App\Models\Attendance;
 use App\Models\LeaveQuota;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller; 
@@ -63,6 +64,7 @@ class HumanResourceController extends Controller
         }
         
         return Inertia::render('hr/Dashboard', [
+            'title' => 'Dashboard',
             'totalEmployee' => $totalEmployee,
             'totalPendigApproval' => $totalPendigApproval,
             'totalApprovalRequest' => $totalApprovalRequest,
@@ -95,5 +97,76 @@ class HumanResourceController extends Controller
             'atdnc' => Attendance::all()
         ]);
         // dd(Inbound::all());
+    }
+
+        public function reportAttendanceView(){
+        // dd();
+        return inertia::render('report/AttendanceReports', [
+            'title' => 'Human Resource Reports Attendance',
+            'attendance' => Attendance::all(),           
+            'usr' => User::all()            
+        ]);
+        // dd(Inbound::all());
+    }
+
+        public function edit(Request $request): Response
+    {
+        
+        return Inertia::render('Profile/ProfilePage', [
+            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'status' => session('status'),
+            'title' => 'Profile',
+        ]);
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function update(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->fill($request->validated());
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+        // dd($request->uniqueNumber);
+        $employee = Employee::where('uniqueNumber', $request->uniqueNumber);
+
+        $employee->update([
+            'name' => $request->name,
+            'email' => $request->email
+        ]);
+        
+        $request->user()->save();
+
+        return Redirect::route("profile.edit");
+    }
+
+    /**
+     * Delete the user's account.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return Redirect::to('/');
+    }
+
+    public function index()
+    {
+        return Inertia::render('admin/UserWarehouse', [
+            'title' => 'User Warehouse',
+            'user' => User::all()
+        ]);
     }
 }

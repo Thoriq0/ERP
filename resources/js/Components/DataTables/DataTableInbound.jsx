@@ -63,11 +63,11 @@ export function DataTableInbound({ data, userRole, productData, roleName, user }
 
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
-        toast.success("Inbound berhasil dihapus! 🗑️", { duration: 5000 });
+        toast.success("Inbound successfully deleted! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
         // console.error(err);
-        toast.error("Gagal menghapus Inbound! ❌", { duration: 5000 });
+        toast.error("Failed to delete inbound data! ❌", { duration: 5000 });
       },
     });
     setOpen(false);

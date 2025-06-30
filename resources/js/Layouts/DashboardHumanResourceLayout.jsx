@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import MainSidebar from '@/Components/MainSidebar';
-import { HiChartPie} from "react-icons/hi";
+import { HiChartPie, HiUser} from "react-icons/hi";
 import { FaClipboardList, FaUserTie, FaFileAlt } from "react-icons/fa";
 import { MdAccessTime } from "react-icons/md";
 
@@ -9,21 +9,15 @@ export default function DashboardHumanResourceLayout({ children, auth, ...props 
 
     const menuItems = [
         { name: "Dashboard", path: "/hr/dashboard", icon: <HiChartPie /> },
+        { name: "User Warehouse", path: "/hr/user", icon: <HiUser /> },
         { name: "Employee", path: "/hr/employee", icon: <FaUserTie /> },
         { name: "Time Off Request", path: "/hr/time", icon: <MdAccessTime  /> },
         { name: "Attendance", path: "/hr/attendance", icon: <FaClipboardList  /> },
+        { name: "Reports Attendance", path: "/hr/reportattendance", icon: <FaFileAlt  /> },
     ];
 
     const dropdownMenus = [
-        {
-            title: "Reports",
-            icon: <FaFileAlt  />,
-            items: [
-                { name: "Stock List", path: "/inventory/stock" },
-                { name: "Add Item", path: "/inventory/add" },
-                { name: "Reports", path: "/inventory/reports" },
-            ],
-        },
+
     ];
 
     return (

@@ -53,7 +53,7 @@ export function ButtonModalCategory({userRole}) {
       {
         forceFormData: true,
         onSuccess: () => {
-          toast.success("Kategori berhasil disimpan! 🎉", {
+          toast.success("Category saved successfully! 🎉", {
             duration: 5000,
           });
           setValues({
@@ -62,7 +62,7 @@ export function ButtonModalCategory({userRole}) {
         },
         onError: (err) => {
           setErrors(err); // Simpan error ke state
-          toast.error("Gagal menyimpan Kategori! ❌", {
+          toast.error("Failed to save Category! ❌", {
               duration: 5000,
           });
         },

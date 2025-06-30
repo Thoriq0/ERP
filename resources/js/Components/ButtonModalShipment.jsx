@@ -70,7 +70,7 @@ export function ButtonModalShipment({ userRole, selectedId, shipment }) {
       {
         forceFormData: true,
         onSuccess: () => {
-          toast.success("Produk berhasil disimpan! 🎉", { duration: 5000 });
+          toast.success("Shipment saved successfully! 🎉", { duration: 5000 });
           setValues(
             selectedId.reduce((acc, id) => {
               acc[id] = { date: "" };
@@ -80,7 +80,7 @@ export function ButtonModalShipment({ userRole, selectedId, shipment }) {
         },
         onError: (err) => {
           setErrors(err);
-          toast.error("Gagal menyimpan produk! ❌", { duration: 5000 });
+          toast.error("Failed to save Shipment! ❌", { duration: 5000 });
         },
       }
     );
@@ -93,9 +93,9 @@ export function ButtonModalShipment({ userRole, selectedId, shipment }) {
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Data Produk</DialogTitle>
+          <DialogTitle>Shipment Data</DialogTitle>
           <DialogDescription>
-            Masukkan tanggal untuk setiap produk, lalu klik Simpan.
+            Enter the date for each product delivery, then click Save.
           </DialogDescription>
         </DialogHeader>
 
@@ -108,7 +108,7 @@ export function ButtonModalShipment({ userRole, selectedId, shipment }) {
                 type="date"
                 name={`shipment-${id}`}
                 className="mt-1 block w-full"
-                placeholder="Tanggal"
+                placeholder="Date"
                 value={values[id]?.date || ""}
                 onChange={(e) => handleChange(e, id)}
               />
@@ -118,7 +118,7 @@ export function ButtonModalShipment({ userRole, selectedId, shipment }) {
 
           <DialogFooter>
             <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

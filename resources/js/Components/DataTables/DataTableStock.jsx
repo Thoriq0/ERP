@@ -219,8 +219,8 @@ export function DataTableStock({ data, userRole, adjust }) {
         stock={selectedStock}
         adjust={adjust}
       />
-      <div className="flex justify-between items-center py-4">
-        <div className="flex items-center space-x-4 w-[50%]">
+      <div className="flex flex-col md:flex-row justify-between items-center py-4">
+        <div className="flex items-center space-x-4 s md:w-[50%]">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="border-solid border-2 border-primaryPurple">
@@ -256,7 +256,7 @@ export function DataTableStock({ data, userRole, adjust }) {
             className="max-w-xs"
           />
         </div>
-        <div className="flex  space-x-2">
+        <div className="flex  items-center space-x-2 mt-3">
             <Button className="bg-green-400 hover:bg-green-500" onClick={handleExport}>Export</Button>
             <ButtonModalAdjustStock userRole={userRole} selectedItems={table.getSelectedRowModel().rows.map(row => row.original)} />
         </div>

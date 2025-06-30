@@ -391,8 +391,8 @@ export default function DataTablePrestock({ stagingData, userRole }) {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center py-4">
-        <div className="flex items-center space-x-4 w-[50%]">
+      <div className="flex flex-col md:flex-row justify-between items-center py-4">
+        <div className="flex items-center space-x-4 w-full md:w-[50%]">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -426,7 +426,7 @@ export default function DataTablePrestock({ stagingData, userRole }) {
             className="max-w-xs"
           />
         </div>
-        <div className="flex space-x-2">
+        <div className="flex items-center space-x-2 mt-5">
           <Button className="bg-orange-400 hover:bg-orange-500" onClick={handleAdjustStock}>
             Fail QTY
           </Button>
@@ -436,7 +436,6 @@ export default function DataTablePrestock({ stagingData, userRole }) {
           <Button className="bg-indigo-400 hover:bg-indigo-500" onClick={handleTransferStock}>
             Transfer Stock
           </Button>
-          
         </div>
       </div>
       <div className="rounded-md border">

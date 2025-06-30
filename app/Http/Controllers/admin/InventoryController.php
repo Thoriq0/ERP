@@ -87,7 +87,7 @@ class InventoryController extends Controller
             'account_bank_name' => $request->accountBankName
         ]);
     
-        session()->flash('success', 'Data Supplier berhasil diperbarui!');
+        session()->flash('success', 'Data supplier saved successfully!');
         return redirect()->back();
     }
 
@@ -129,7 +129,7 @@ class InventoryController extends Controller
             'sku' => $request->sku
         ]);
     
-        session()->flash('success', 'Data Product berhasil diperbarui! 🎉');
+        session()->flash('success', 'Data Product saved successfully! 🎉');
         return redirect()->back();
     }
 
@@ -159,7 +159,7 @@ class InventoryController extends Controller
             'name' => $request->name,
         ]);
     
-        session()->flash('success', 'Data Category berhasil diperbarui! 🎉');
+        session()->flash('success', 'Data Category saved successfully! 🎉');
         return redirect()->back();
     }
 
@@ -221,7 +221,7 @@ class InventoryController extends Controller
             'payment_status' => 'unpaid',
         ]);
 
-        return redirect()->back()->with('success', 'Inbound berhasil disimpan! 🎉');;
+        return redirect()->back()->with('success', 'Inbound saved successfully! 🎉');;
     }
 
 
@@ -327,7 +327,7 @@ class InventoryController extends Controller
 
             if ($adjustQty > $inbound->qty) {
                 return back()->withErrors([
-                    'msg' => "Stok untuk '{$adjustment['name']}' tidak mencukupi. Maksimal hanya {$inbound->qty}."
+                    'msg' => "Stok untuk '{$adjustment['name']}' insufficient. The maximum is only {$inbound->qty}."
                 ])->withInput();
             }
 
@@ -343,7 +343,7 @@ class InventoryController extends Controller
                 'note' => $adjustment['note'],
             ]);
         }
-        return back()->with('success', 'Stok berhasil di-adjust.');
+        return back()->with('success', 'The stock was adjusted successfully');
     }
 
     public function adjustStock(Request $request)
@@ -363,7 +363,7 @@ class InventoryController extends Controller
                 $newQty = $stock->first()->qty + $qty;
             } else {
                 if ($qty > $stock->first()->qty) {
-                    return redirect()->back()->with('error', 'Qty melebihi stok yang tersedia.');
+                    return redirect()->back()->with('error', 'Qty exceeds available stock');
                 }
                 $newQty = $stock->first()->qty - $qty;
             }
@@ -379,7 +379,7 @@ class InventoryController extends Controller
                 'note' => $note,
             ]);
         }
-        return redirect()->back()->with('success', 'Stok berhasil disesuaikan.');
+        return redirect()->back()->with('success', 'Stock successfully adjusted');
     }
 
 
@@ -472,7 +472,7 @@ class InventoryController extends Controller
             } else {
                 // dd("File tidak ditemukan!", $filePath);
             }
-            return redirect()->back()->with('success', 'Document Berhasil Terhapus');
+            return redirect()->back()->with('success', 'Document Deleted Successfully');
         }else{
             $getImg = json_decode($outboundFind->image, true);
             $updatedImg = array_filter($getImg, function ($img) use ($fileName) {
@@ -487,7 +487,7 @@ class InventoryController extends Controller
             } else {
                 // dd("File tidak ditemukan!", $filePath);
             }
-            return redirect()->back()->with('success', 'Image Berhasil Terhapus');
+            return redirect()->back()->with('success', 'Image Deleted Successfully');
         }
     }
 
@@ -523,7 +523,7 @@ class InventoryController extends Controller
             } else {
                 // dd("File tidak ditemukan!", $filePath);
             }
-            return redirect()->back()->with('success', 'Document Berhasil Terhapus');
+            return redirect()->back()->with('success', 'Document Deleted Successfully');
         }else{
             $getImg = json_decode($outboundFind->image, true);
             $updatedImg = array_filter($getImg, function ($img) use ($fileName) {
@@ -538,7 +538,7 @@ class InventoryController extends Controller
             } else {
                 // dd("File tidak ditemukan!", $filePath);
             }
-            return redirect()->back()->with('success', 'Image Berhasil Terhapus');
+            return redirect()->back()->with('success', 'Image Deleted Successfully');
         }
     }
 
@@ -602,7 +602,7 @@ class InventoryController extends Controller
         // Simpan semua perubahan ke database
         $inbound->save();
 
-        return redirect()->back()->with('success', 'Data Inbound berhasil diperbarui! 🎉');
+        return redirect()->back()->with('success', 'Inbound data updated successfully! 🎉');
     }
 
     // ==== OUTBOUND ====
@@ -633,7 +633,7 @@ class InventoryController extends Controller
         
         // Jika stok tidak cukup
         if (!$stock || $stock->qty < $request->qty) {
-            return back()->withErrors(['message' => 'Stok tidak mencukupi ❌']);
+            return back()->withErrors(['message' => 'Not enough stock ❌']);
         }
     
         $imageNames = [];
@@ -683,7 +683,7 @@ class InventoryController extends Controller
         ]);
 
     
-        return redirect()->back()->with(['message' => 'Barang berhasil dikeluarkan.']);
+        return redirect()->back()->with(['message' => 'Item successfully removed']);
     }
 
     public function outboundUpdate(Request $request, Outbound $outbound){
@@ -705,7 +705,7 @@ class InventoryController extends Controller
             $selisih = $newQty - $oldQty;
 
             if ($stock->qty < $selisih) {
-                return redirect()->back()->with('error', 'Stok tidak mencukupi untuk menambah jumlah outbound.');
+                return redirect()->back()->with('error', 'Insufficient stock to increase the number of outbound');
             }
 
             // Kurangi stok
@@ -729,7 +729,7 @@ class InventoryController extends Controller
             'address' => $request->address,
         ]);
 
-        return redirect()->back()->with('success', 'Outbound berhasil diubah! 🎉');
+        return redirect()->back()->with('success', 'Outbound was successfully changed! 🎉');
     }
     
 
@@ -823,7 +823,7 @@ class InventoryController extends Controller
             'billed_party_id' => $request->bp,
         ]);
 
-        return redirect()->back()->with('success', 'Account Payable berhasil dibuat! 🎉');
+        return redirect()->back()->with('success', 'Account Payable successfully created! 🎉');
     }
 
     public function apUpdate(Request $request, AccountPayable $ap){
@@ -858,7 +858,7 @@ class InventoryController extends Controller
                     $existingPayment = Payment::where('account_payable_id', $request->id)->first();
                     
                     if ($existingPayment) {
-                        return redirect()->back()->with('error', 'Payment sudah terjadwal sebelumnya.');
+                        return redirect()->back()->with('error', 'Payment is pre-scheduled.');
                     }
     
                     $inboundId = $request->inbound_id;
@@ -905,7 +905,7 @@ class InventoryController extends Controller
                     $existingPayment = Payment::where('account_payable_id', $request->id)->first();
                     // dd($existingPayment);
                     if ($existingPayment) {
-                        return redirect()->back()->with('error', 'Payment sudah terjadwal sebelumnya.');
+                        return redirect()->back()->with('error', 'Payment is pre-scheduled.');
                     }
                     foreach($inboundBundling as $inbound){
 
@@ -965,7 +965,7 @@ class InventoryController extends Controller
                 
                 if ($existingPayment) {
                     // Jika sudah ada, kirim session flash error
-                    return redirect()->back()->with('error', 'Payment sudah terjadwal sebelumnya.');
+                    return redirect()->back()->with('error', 'Payment is pre-scheduled.');
                 }
             
                 // Jika belum ada, buat Payment baru
@@ -975,7 +975,7 @@ class InventoryController extends Controller
                     'status_payment' => $status
                 ]);
             
-                return redirect()->back()->with('success', 'Data Account Payable berhasil diperbarui!');
+                return redirect()->back()->with('success', 'Account Payable data is updated successfully');
             }else{
                 $apId = $request->id;
                 Payment::where('account_payable_id', $apId)->delete();
@@ -983,7 +983,7 @@ class InventoryController extends Controller
         }
         
         // Redirect dengan pesan sukses
-        session()->flash('success', 'Data Account Payable berhasil diperbarui!');
+        session()->flash('success', 'Account Payable data is updated successfully!');
         return redirect()->back();
     }
 
@@ -1068,7 +1068,7 @@ class InventoryController extends Controller
             
             // dd($payment);
         }
-        session()->flash('success', 'Invoice berhasil dibayarkan!');
+        session()->flash('success', 'Invoice successfully paid!');
         return redirect()->back();
     }
     
@@ -1103,7 +1103,7 @@ class InventoryController extends Controller
     
         $billedParty->update($request->all());
     
-        session()->flash('success', 'Data Category berhasil diperbarui!');
+        session()->flash('success', 'Billed Party data updated successfully!');
         return redirect()->back();
     }
 
@@ -1170,7 +1170,7 @@ class InventoryController extends Controller
                 ]);
         }
         // dd($request->all());
-        return redirect()->back()->with('success', 'Produk Proses Pengiriman! 🚚');
+        return redirect()->back()->with('success', 'Product is in the Shipping Process! 🚚');
     }
 
     // ---- EMPLOYEE ----
@@ -1226,6 +1226,7 @@ class InventoryController extends Controller
         $employee->delete();
         return redirect()->back();
     }
+    
     public function employeeUpdate(Request $request, Employee $employee){
         $request->validate([
             'name' => 'required|string',
@@ -1253,7 +1254,7 @@ class InventoryController extends Controller
             'address' => $request->address,
         ]);
     
-        session()->flash('success', 'Data Karyawan berhasil diperbarui! 🎉');
+        session()->flash('success', 'Employee Data updated successfully! 🎉');
         return redirect()->back();
     }
     public function deliveryVal(Request $request){
@@ -1275,7 +1276,7 @@ class InventoryController extends Controller
             ]);
         }
 
-        session()->flash('success', 'Data Pengiriman berhasil diperbarui! 🎉');
+        session()->flash('success', 'Delivery Data updated successfully! 🎉');
         return redirect()->back();
     }
 
@@ -1329,7 +1330,7 @@ class InventoryController extends Controller
         $leavequota->save();
 
         
-        return back()->with('success', 'Data cuti berhasil diupdate.');
+        return back()->with('success', 'Leave data is successfully updateds! 🎉');
     }
 
     public function timeValidate(Request $request){
@@ -1358,7 +1359,7 @@ class InventoryController extends Controller
                 'status' => 'validated'
             ]);
         }
-        return back()->with('success', 'Data cuti berhasil validasi.');
+        return back()->with('success', 'Leave data is successfully validated! 🎉');
     }
     
     public function attendanceTake(Request $request){
@@ -1397,6 +1398,6 @@ class InventoryController extends Controller
         ]);
     
         // return response()->json(['message' => 'Absensi berhasil disimpan.']);
-        return redirect()->back()->with('success', 'Absensi berhasil disimpan 🎉');
+        return redirect()->back()->with('success', 'Attendance is saved successfully 🎉');
     }
 }

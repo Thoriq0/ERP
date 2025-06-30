@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\finance;
 
 use Inertia\Inertia;
+use App\Models\User;
 use App\Models\Inbound;
 use App\Models\Product;
 use App\Models\AccountPayable;
@@ -155,6 +156,16 @@ class FinanceController extends Controller
         return inertia::render('features/Attendance', [
             'title' => 'Finance Attendance',
             'atdnc' => Attendance::all()
+        ]);
+        // dd(Inbound::all());
+    }
+
+    public function reportAttendanceView(){
+        // dd();
+        return inertia::render('features/ReportAttendanceUser', [
+            'title' => 'Finance Reports Attendance',
+            'attendance' => Attendance::all(),           
+            'usr' => User::all()            
         ]);
         // dd(Inbound::all());
     }

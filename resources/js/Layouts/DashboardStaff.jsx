@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import NavbarUser from '@/Components/NavbarUser';
+
 import { HiChartPie, HiUser, HiInbox } from "react-icons/hi";
 import { MdAccessTime } from "react-icons/md";
-import { FaClipboardList } from "react-icons/fa";
+import { FaClipboardList, FaFileAlt } from "react-icons/fa";
 
 export default function DashboardStaff({ children, auth, ...props }) {
 
@@ -12,6 +13,7 @@ export default function DashboardStaff({ children, auth, ...props }) {
         { name: "Dashboard", path: "/staff/dashboard", icon: <HiChartPie /> },
         { name: "Attendance", path: "/staff/attandance", icon: <FaClipboardList /> },
         { name: "Time Of Request", path: "/staff/time", icon: <MdAccessTime /> },
+        { name: "Reports Attendance", path: "/staff/reportattendance", icon: <FaFileAlt /> },
         { name: "Profil", path: "/staff/profile", icon: <HiUser /> },
     ];
 
@@ -33,7 +35,9 @@ export default function DashboardStaff({ children, auth, ...props }) {
                     isSidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
                 }`}>
                 {children}
+                
             </div>
+            
         </div>
     );
 }

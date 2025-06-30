@@ -87,6 +87,7 @@ class WarehouseUserController extends Controller
         $user = User::findOrFail($id);
 
         $user->update($validated);
+        session()->flash('success', 'User Warehouse Data updated successfully! 🎉');
         return redirect()->back();
     }
 

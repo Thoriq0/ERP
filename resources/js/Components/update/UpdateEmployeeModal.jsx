@@ -72,7 +72,7 @@ export function UpdateEmployeeModal({ userRole, open, onClose, employee }) {
       forceFormData: true,
       onError: (err) => {
         setErrors(err);
-        toast.error("Gagal memperbarui Data Karyawan! ❌", { duration: 5000 });
+        toast.error("Failed to update Employee data! ❌", { duration: 5000 });
       },
     });
   }
@@ -81,20 +81,20 @@ export function UpdateEmployeeModal({ userRole, open, onClose, employee }) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Update Karyawan Masuk</DialogTitle>
+          <DialogTitle>Update Data Employee </DialogTitle>
           <DialogDescription>
-            Update data karyawan yang masuk, lalu klik Simpan.
+           Update the entered employee data, then click Save.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="name" value="Nama Karyawan" />
+            <InputLabel htmlFor="name" value="Name Employee" />
             <input
               id="name"
               type="text"
               name="name"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Nama Karyawan"
+              placeholder="Name Employee"
               value={data.name}
               onChange={(e) => setData("name", e.target.value)}
             />
@@ -107,7 +107,7 @@ export function UpdateEmployeeModal({ userRole, open, onClose, employee }) {
               type="text"
               name="email"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Nama Email"
+              placeholder="Name Email"
               value={data.email}
               onChange={(e) => setData("email", e.target.value)}
             />
@@ -120,7 +120,7 @@ export function UpdateEmployeeModal({ userRole, open, onClose, employee }) {
                 id="departemen"
                 name="departemen"
                 options={departemenOptions}
-                placeholder="Pilih Departemen"
+                placeholder="Select Departemen"
                 value={departemenOptions.find(option => option.value === data.departemen)}
                 onChange={(option) => setData("departemen", option.value)} 
                 className="mt-1"
@@ -128,13 +128,13 @@ export function UpdateEmployeeModal({ userRole, open, onClose, employee }) {
                 {errors.departemen && <p className="text-red-500 text-sm">{errors.departemen}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="dateOfBirth" value="Tanggal Lahir" />
+            <InputLabel htmlFor="dateOfBirth" value="Date of Birth" />
             <input
               id="dateOfBirth"
               type="date"
               name="dateOfBirth"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Nama dateOfBirth"
+              placeholder="Nama Date Of Birth"
               value={data.dateOfBirth}
               onChange={(e) => setData("dateOfBirth", e.target.value)}
             />
@@ -142,12 +142,12 @@ export function UpdateEmployeeModal({ userRole, open, onClose, employee }) {
           </div>
           {/* dropdown jenis kelamin */}
           <div className="mt-4">
-            <InputLabel htmlFor="gender" value="Jenis Kelamin" />
+            <InputLabel htmlFor="gender" value="Gender" />
             <Select
                 id="gender"
                 name="gender"
                 options={genderOptions}
-                placeholder="Pilih Jenis Kelamin"
+                placeholder="Select Gender"
                 value={genderOptions.find(option => option.value === data.gender)}
                 onChange={(option) => setData("gender", option.value)} 
                 className="mt-1"
@@ -155,26 +155,26 @@ export function UpdateEmployeeModal({ userRole, open, onClose, employee }) {
                 {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="phone" value="Nomor Handphone" />
+            <InputLabel htmlFor="phone" value="Phone Number" />
             <input
               id="phone"
               type="text"
               name="phone"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Nomor Handphone"
+              placeholder="Phone Number"
               value={data.phone}
               onChange={(e) => setData("phone", e.target.value)}
             />
             {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="address" value="Alamat" />
+            <InputLabel htmlFor="address" value="Address" />
             <input
               id="address"
               type="text"
               name="address"
               className="mt-1 block w-full border p-2 rounded-md"
-              placeholder="Nama Alamat"
+              placeholder="Name Address"
               value={data.address}
               onChange={(e) => setData("address", e.target.value)}
             />
@@ -189,7 +189,7 @@ export function UpdateEmployeeModal({ userRole, open, onClose, employee }) {
               Cancel
             </Button>
             <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

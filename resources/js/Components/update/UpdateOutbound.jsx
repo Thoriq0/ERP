@@ -46,7 +46,7 @@ export function UpdateOutboundModal({ userRole, open, onClose, outbound, product
       
       setData({
         product_id: outbound.product_id,
-        supplier_name: selectedProduct?.supplier?.name || "Tidak Diketahui",
+        supplier_name: selectedProduct?.supplier?.name || "Unknown",
         qty: outbound.qty,
         receiver: outbound.receiver,
         address: outbound.address
@@ -72,13 +72,13 @@ export function UpdateOutboundModal({ userRole, open, onClose, outbound, product
       {
         forceFormData: true,
         onSuccess: () => {
-          toast.success("Data Outbound berhasil diperbarui! 🎉");
+          toast.success("Outbound data updated successfully! 🎉");
           reset();
           onClose(); // Tutup modal setelah sukses
         },
         onError: (err) => {
           setErrors(err);
-          toast.error("Gagal memperbarui Data Outbound! ❌");
+          toast.error("Failed to update Outbound Data! ❌");
         },
       }
     );
@@ -90,7 +90,7 @@ export function UpdateOutboundModal({ userRole, open, onClose, outbound, product
         <DialogHeader>
           <DialogTitle>Update Data Outbound</DialogTitle>
           <DialogDescription>
-            Update data outbound yang masuk, lalu klik Simpan.
+            Update the outbound data, then click Save.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -101,7 +101,7 @@ export function UpdateOutboundModal({ userRole, open, onClose, outbound, product
                 name="product_id"
                 options={productOptions}
                 isSearchable={true}
-                placeholder="Pilih Product"
+                placeholder="Select Product"
                 value={productOptions.find(opt => opt.value === data.product_id)}
                 onChange={(selected) => {
                   const selectedStock = dataStocks.find(
@@ -115,51 +115,51 @@ export function UpdateOutboundModal({ userRole, open, onClose, outbound, product
               {errors.product_id && <p className="text-red-500 text-sm">{errors.product_id}</p>}
             </div>
             <div className="mt-4">
-                <InputLabel htmlFor="supplier_name" value="Nama Supplier" />
+                <InputLabel htmlFor="supplier_name" value="Name Supplier" />
                 <input
                 id="supplier_name"
                 type="text"
                 name="supplier_name"
                 className="mt-1 block w-full border p-2 rounded-md"
-                placeholder="Nama Supplier"
+                placeholder="Name Supplier"
                 value={data.supplier_name}
                 readOnly
                 />
                 {errors.supplier_name && <p className="text-red-500 text-sm">{errors.supplier_name}</p>}
             </div>
             <div className="mt-4">
-                <InputLabel htmlFor="qty" value="Jumlah Produk" />
+                <InputLabel htmlFor="qty" value="Total Product" />
                 <input
                 id="qty"
                 type="number"
                 name="qty"
                 className="mt-1 block w-full border p-2 rounded-md"
-                placeholder="Jumlah Produk Masuk"
+                placeholder="Total Product Entry"
                 value={data.qty}
                 onChange={(e) => setData("qty", e.target.value)}
                 />
                 {errors.qty && <p className="text-red-500 text-sm">{errors.qty}</p>}
             </div>
             <div className="mt-4">
-                <InputLabel htmlFor="receiver" value="Penerima" />
+                <InputLabel htmlFor="receiver" value="Receiver" />
                 <input
                 id="receiver"
                 type="text"
                 name="receiver"
                 className="mt-1 block w-full border p-2 rounded-md"
-                placeholder="Nama Penerima"
+                placeholder="Name Receiver"
                 value={data.receiver}
                 onChange={(e) => setData("receiver", e.target.value)}
                 />
                 {errors.receiver && <p className="text-red-500 text-sm">{errors.receiver}</p>}
             </div>
             <div className="mt-4">
-                <InputLabel htmlFor="address" value="Alamat" />
+                <InputLabel htmlFor="address" value="Address" />
                 <textarea
                 id="address"
                 name="address"
                 className="mt-1 block w-full border p-2 rounded-md"
-                placeholder="Alamat"
+                placeholder="Address"
                 value={data.address}
                 onChange={(e) => setData("address", e.target.value)}
                 />
@@ -188,7 +188,7 @@ export function UpdateOutboundModal({ userRole, open, onClose, outbound, product
               Cancel
             </Button>
             <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white mt-5">
-              Simpan
+              Save
             </Button>
 
           </DialogFooter>

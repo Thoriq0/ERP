@@ -229,7 +229,7 @@ export function DataTableInboundFail({data, userRole}) {
         inbndf={selectedInbndfDetail}
       />
       <div className="flex justify-between items-center py-4">
-        <div className="flex items-center space-x-4 w-[50%]">
+        <div className="flex items-center space-x-4 w-[74%] md:w-[50%]">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="border-solid border-2 border-primaryPurple">

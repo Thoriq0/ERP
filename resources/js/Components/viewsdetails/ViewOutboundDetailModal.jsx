@@ -41,7 +41,7 @@ export function ViewOutboundDetailModal({ open, onClose, outbound, productData, 
 
   const handleDeleteFile = () => {
     if (!fileToDelete || !outbound) {
-      toast.error("Gagal menghapus file! ❌");
+      toast.error("Failed to delete file! ❌");
       return;
     }
 
@@ -52,7 +52,7 @@ export function ViewOutboundDetailModal({ open, onClose, outbound, productData, 
     const userPath = rolePaths[userRole];
 
     if (!userPath) {
-      toast.error("Role user tidak valid! ❌");
+      toast.error("Invalid user role! ❌");
       return;
     }
 
@@ -60,10 +60,10 @@ export function ViewOutboundDetailModal({ open, onClose, outbound, productData, 
       data: { fileName: fileToDelete, outboundId: outbound.id },
       onSuccess: () => {
         setConfirmDelete(false);
-        toast.success("File berhasil dihapus! 🗑️");
+        toast.success("File deleted successfully! 🗑️");
       },
       onError: () => {
-        toast.error("Gagal menghapus file! ❌");
+        toast.error("Failed to delete file! ❌");
       },
     });
   };
@@ -73,16 +73,16 @@ export function ViewOutboundDetailModal({ open, onClose, outbound, productData, 
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] max-w-[375px] md:max-w-[750px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Detail Data Outbound</DialogTitle>
+          <DialogTitle>Outbound Detail Data</DialogTitle>
           <DialogDescription>
-            Berikut adalah detail data outbound.
+            Here are the details of the outbound data.
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 border p-4 rounded-md">
             <div className="space-y-2">
               <h3 className="font-semibold text-lg mb-5">Detail Produk</h3>
               <div className="flex">
-                <strong className="min-w-[150px]">Nama Product</strong>
+                <strong className="min-w-[150px]">Name Product</strong>
                 <span className="mr-2">:</span>
                 <span>{product?.name || "Tidak Diketahui"}</span>
               </div>
@@ -104,14 +104,14 @@ export function ViewOutboundDetailModal({ open, onClose, outbound, productData, 
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-semibold text-lg mb-5">Detail Penerima</h3>
+              <h3 className="font-semibold text-lg mb-5">Detail Receiver</h3>
               <div className="flex">
-                <strong className="min-w-[150px]">Nama Penerima</strong>
+                <strong className="min-w-[150px]">Name Receiver</strong>
                 <span className="mr-2">:</span>
                 <span>{outbound === null ? 'Tidak Terdaftar' : outbound.receiver }</span>
               </div>
               <div className="flex">
-                <strong className="min-w-[150px]">Alamat</strong>
+                <strong className="min-w-[150px]">Address</strong>
                 <span className="mr-2">:</span>
                 <span className="break-all ">
                   {outbound === null ? "Tidak Terdaftar" : outbound.address}
@@ -122,7 +122,7 @@ export function ViewOutboundDetailModal({ open, onClose, outbound, productData, 
 
         <div className="mt-4 space-y-2">
           <div className="flex">
-            <strong className="min-w-[150px]">Tanggal Keluar</strong>
+            <strong className="min-w-[150px]">Exit Date</strong>
             <span className="mr-2">:</span>
             <span>{new Date(outbound?.created_at).toLocaleString("id-ID")}</span>
           </div>
@@ -151,7 +151,7 @@ export function ViewOutboundDetailModal({ open, onClose, outbound, productData, 
                             📄 {file}
                           </span>
                           <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
-                            Hapus
+                            Delete
                           </Button>
                         </div>
                       ))}
@@ -173,14 +173,14 @@ export function ViewOutboundDetailModal({ open, onClose, outbound, productData, 
       <Dialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <DialogContent className="max-w-md border p-6 rounded-lg">
           <DialogHeader>
-            <DialogTitle>Konfirmasi Hapus</DialogTitle>
+            <DialogTitle>Confirm Delete</DialogTitle>
             <DialogDescription>
-              Apakah Anda yakin ingin menghapus file <strong>{fileToDelete}</strong>?
+              Are you sure you want to delete the file <strong>{fileToDelete}</strong>?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex justify-end space-x-2">
-            <Button className="bg-gray-300 text-black hover:bg-gray-400" onClick={() => setConfirmDelete(false)}>Batal</Button>
-            <Button className="bg-red-500 text-white hover:bg-red-600" onClick={() => {handleDeleteFile();onClose(); setConfirmDelete(false);}}>Ya, Hapus</Button>
+            <Button className="bg-gray-300 text-black hover:bg-gray-400" onClick={() => setConfirmDelete(false)}>Cancle</Button>
+            <Button className="bg-red-500 text-white hover:bg-red-600" onClick={() => {handleDeleteFile();onClose(); setConfirmDelete(false);}}>Yes, Delete</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

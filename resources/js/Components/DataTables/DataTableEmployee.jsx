@@ -67,11 +67,11 @@ export function DataTableEmployee({data, userRole}) {
   
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
-        toast.success("Data Karyawan berhasil dihapus! 🗑️", { duration: 5000 });
+        toast.success("Employee Data successfully deleted! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
         console.error(err);
-        toast.error("Gagal menghapus data karyawan! ❌", { duration: 5000 });
+        toast.error("Failed to delete Employee data! ❌", { duration: 5000 });
       },
     });
     setOpen(false); 

@@ -82,7 +82,7 @@ export function ButtonModalAdjustStock({ userRole, selectedItems }) {
             <DialogHeader>
               <DialogTitle>Adjust Stock</DialogTitle>
               <DialogDescription>
-                Isi data stock yang ingin disesuaikan
+                Fill in the stock data that you want to customize
               </DialogDescription>
             </DialogHeader>
   
@@ -91,7 +91,7 @@ export function ButtonModalAdjustStock({ userRole, selectedItems }) {
                 <div key={item.stockId} className="mb-6 border p-4 rounded">
                   <p className="mb-2 font-medium">{item.name}</p>
   
-                  <InputLabel htmlFor={`qty-${index}`} value="Qty Baru" />
+                  <InputLabel htmlFor={`qty-${index}`} value="New Qty" />
                   <TextInput
                     type="number"
                     id={`qty-${index}`}
@@ -115,21 +115,21 @@ export function ButtonModalAdjustStock({ userRole, selectedItems }) {
                     <option value="extra">Extra</option>
                   </select>
   
-                  <InputLabel htmlFor={`note-${index}`} value="Catatan" />
+                  <InputLabel htmlFor={`note-${index}`} value="Notes" />
                   <textarea
                     type="text"
                     id={`note-${index}`}
                     value={item.note}
                     onChange={(e) => handleChange(index, "note", e.target.value)}
-                    placeholder="Tulis catatan"
+                    placeholder="Take Notes"
                     className="rounded-sm w-full"
                   />
                 </div>
               ))}
   
               <DialogFooter>
-                <Button type="submit" className="bg-primaryPurple text-white">
-                  Simpan Penyesuaian
+                <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple text-white">
+                  Save Adjustments
                 </Button>
               </DialogFooter>
             </form>

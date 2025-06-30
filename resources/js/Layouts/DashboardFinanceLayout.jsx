@@ -17,19 +17,11 @@ export default function DashboardFinanceLayout({ children, auth, ...props}) {
         { name: "Billed Party", path: "/finance/bp", icon: <FaArrowCircleDown  /> },
         { name: "Attendance", path: "/finance/attendance", icon: <FaClipboardList /> },
         { name: "Time of Request", path: "/finance/time", icon: <MdAccessTime /> },
-        // { name: "Budget Control", path: "/finance/budget", icon: <FaBalanceScale   /> },
+        { name: "Reports Attendance", path: "/finance/reportattendance", icon: <FaFileAlt /> },
     ];
 
     const dropdownMenus = [
-        {
-            title: "Reports",
-            icon: <FaFileAlt  />,
-            items: [
-                { name: "Income Reports", path: "/finance/Income Reports" },
-                { name: "Outcome Reports", path: "/finance/Outcome Reports" },
-                { name: "Account Payable Reports", path: "/finance/Budget Reports" },
-            ],
-        },
+
     ];
 
     return (

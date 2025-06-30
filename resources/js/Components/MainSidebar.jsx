@@ -9,8 +9,26 @@ import {
     AvatarImage,
 } from "@/components/ui/avatar"
 
-export default function MainSidebar({ title, menuItems, logo, dropdownMenus, user, isSidebarCollapsed, setIsSidebarCollapsed }) {
+export default function MainSidebar({ title, menuItems, logo, dropdownMenus, isSidebarCollapsed, setIsSidebarCollapsed }) {
+    const { props } = usePage();
+    const user = props.auth.user;
 
+    const roleBasedRoute = (role) => {
+        switch (role) {
+            case 'admin':
+            return route('admin.profile.edit');
+            case 'staff':
+            return route('staff.profile.edit');
+            case 'hr':
+            return route('hr.profile.edit');
+            case 'wrhs':
+            return route('wrhs.profile.edit');
+            case 'fnc':
+            return route('fnc.profile.edit');
+            default:
+            return route('profile.edit'); // fallback
+        }
+    };
     const { url } = usePage();
     const [openDropdowns, setOpenDropdowns] = useState({});
     const [isSidebarOpen, setIsSidebarOpen] = useState(false); //mobile toggle 
@@ -214,7 +232,7 @@ export default function MainSidebar({ title, menuItems, logo, dropdownMenus, use
                                 <div className="text-xs text-gray-500">{user.email}</div>
                             </div>
                             <div className="py-2">
-                                <Link href={route("profile.edit")} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100">
+                                <Link href={roleBasedRoute(user.role)} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100">
                                     <FaUser className="text-primaryPurple" /> Profile
                                 </Link>
                             </div>

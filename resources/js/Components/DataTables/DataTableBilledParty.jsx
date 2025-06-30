@@ -71,11 +71,11 @@ export function DataTableBilledParty({data, userRole}) {
   
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
-        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
+        toast.success("Billed Party data deleted successfully! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
         console.error(err);
-        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
+        toast.error("Failed to delete Billed Party Data!  ❌", { duration: 5000 });
       },
     });
     setOpen(false); 

@@ -60,7 +60,7 @@ export function ButtonModalBp({userRole}) {
       {
         forceFormData: true,
         onSuccess: () => {
-          toast.success("Produk berhasil disimpan! 🎉", {
+          toast.success("Billed Party data saved successfully! 🎉", {
             duration: 5000,
           });
           setValues({
@@ -76,7 +76,7 @@ export function ButtonModalBp({userRole}) {
         },
         onError: (err) => {
           setErrors(err); // Simpan error ke state
-          toast.error("Gagal menyimpan produk! ❌", {
+          toast.error("Failed to save Billed Party Data! ❌", {
               duration: 5000,
           });
         },

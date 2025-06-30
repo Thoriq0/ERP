@@ -276,10 +276,22 @@ class WarehouseController extends Controller
 
         return redirect()->back();
     }
+
     public function exportInbound(Request $request){
 
         return Excel::download(new InboundExport, 'data_inbound.xlsx');
 
+    }
+
+    public function reportAttendanceView(){
+        // dd();
+        return inertia::render('features/ReportAttendanceUser', [
+            'title' => 'Warehouse Reports Attendance',
+            'attendance' => Attendance::all(),
+            // 'usr' => User::select('id', 'name', 'role')->get()            
+            'usr' => User::all()            
+        ]);
+        // dd(Inbound::all());
     }
 
 }

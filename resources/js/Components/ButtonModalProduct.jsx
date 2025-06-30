@@ -108,12 +108,12 @@ export function ButtonModalProduct({ userRole, categoryData, supplierData }) {
       {
         forceFormData: true,
         onSuccess: () => {
-          toast.success("Produk berhasil disimpan! 🎉");
+          toast.success("product data saved successfully! 🎉");
           setValues({ name: "", category: null, supplier: null, sku: "" });
         },
         onError: (err) => {
           setErrors(err);
-          toast.error("Gagal menyimpan produk! ❌");
+          toast.error("Failed to store the product! ❌");
         },
       }
     );

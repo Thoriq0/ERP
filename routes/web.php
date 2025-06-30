@@ -119,6 +119,7 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/employee', [AdminController::class, 'employeeView'])->name('admin.employee');
         Route::get('/admin/time', [AdminController::class, 'timeView'])->name('admin.time');
         Route::get('/admin/attendance', [AdminController::class, 'attendanceView'])->name('admin.attendance');
+        Route::get('/admin/reportAttendance', [AdminController::class, 'reportAttendanceView'])->name('admin.reportAttendance');
         // ======= end route view features human resource ======= 
 
 
@@ -138,6 +139,7 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/admin/reportinbound', [AdminController::class, 'reportInboundView'])->name('admin.reportinbound');
         Route::get('/admin/reportoutbound', [AdminController::class, 'reportOutboundView'])->name('admin.reportoutbound');
         Route::get('/admin/reportstock', [AdminController::class, 'reportStockView'])->name('admin.reportstock');
+        Route::get('/admin/reportattendance', [AdminController::class, 'reportAttendanceView'])->name('admin.reportattendance');
 
         // Route Attandance
         Route::post('/admin/attendance/take', [InventoryController::class, 'attendanceTake'])->name('admin.attandance');
@@ -172,6 +174,7 @@ Route::middleware('auth', 'verified')->group(function () {
 
         // Route Attandance
         Route::post('/fnc/attendance/take', [InventoryController::class, 'attendanceTake'])->name('fnc.attendance');
+        Route::get('/finance/reportattendance', [FinanceController::class, 'reportAttendanceView'])->name('finance.reportattendance');
 
         // route action cuti
         Route::post('/fnc/timeoff', [InventoryController::class, 'timeStore'])->name('fnc.time.store');
@@ -186,6 +189,8 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::get('/hr/employee', [HumanResourceController::class, 'employeeView'])->name('hr.employee');
         Route::get('/hr/time', [HumanResourceController::class, 'timeView'])->name('hr.time');
         Route::get('/hr/attendance', [HumanResourceController::class, 'attendanceView'])->name('hr.attendance');
+        Route::resource('/hr/user', WarehouseUserController::class);
+        
         
         // Route employee action
         Route::post('/hr/employee', [InventoryController::class, 'employeeStore'])->name('hr.employee.store');
@@ -200,6 +205,7 @@ Route::middleware('auth', 'verified')->group(function () {
 
         // Route Attandance
         Route::post('/hr/attendance/take', [InventoryController::class, 'attendanceTake'])->name('hr.attandance');
+        Route::get('/hr/reportattendance', [HumanResourceController::class, 'reportAttendanceView'])->name('hr.reportattendance');
     });
 
     // ==== ROLE Warehouse/Inventory (wrhs) ====
@@ -262,6 +268,7 @@ Route::middleware('auth', 'verified')->group(function () {
         
         // Route Attandance
         Route::post('/wrhs/attendance/take', [InventoryController::class, 'attendanceTake'])->name('wrhs.attendance');
+        Route::get('/wrhs/reportattendance', [WarehouseController::class, 'reportAttendanceView'])->name('wrhs.reportattendance');
 
         // route action cuti
         Route::post('/wrhs/timeoff', [InventoryController::class, 'timeStore'])->name('wrhs.time.store');
@@ -274,6 +281,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/staff/dashboard', [StaffController::class, 'view'])->name('staff.dashboard');
     Route::get('/staff/attandance', [StaffController::class, 'attendanceView'])->name('staff.attandance');
     Route::get('/staff/time', [StaffController::class, 'timeView'])->name('staff.time');
+    Route::get('/staff/reportattendance', [StaffController::class, 'reportAttendanceView'])->name('staff.reportattendance');
 
     // route action cuti
     Route::post('/staff/timeoff', [InventoryController::class, 'timeStore'])->name('staff.time.store');
@@ -287,12 +295,13 @@ Route::middleware('auth', 'verified')->group(function () {
     
     // Profile User
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::get('/staff/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/staff/profile', [ProfileController::class, 'edit'])->name('staff.profile.edit');
     Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::get('/wrhs/profile', [ProfileController::class, 'edit'])->name('wrhs.profile.edit');
     Route::get('/fnc/profile', [ProfileController::class, 'edit'])->name('fnc.profile.edit');
     Route::get('/hr/profile', [ProfileController::class, 'edit'])->name('hr.profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/hr/profile', [ProfileController::class, 'update'])->name('hr.profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

@@ -65,11 +65,11 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
 
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
-        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
+        toast.success("Product successfully deleted! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
         console.error(err);
-        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
+        toast.error("Failed to delete product data!❌", { duration: 5000 });
       },
     });
     setOpen(false);

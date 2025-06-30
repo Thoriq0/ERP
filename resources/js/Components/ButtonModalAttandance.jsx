@@ -43,7 +43,7 @@ export function ButtonModalAttandance({role}) {
       status: 'in',
     }, {
       onError: () => 
-        toast.error("Gagal melakukan absensi ❌", {
+        toast.error("Failed to take attendance ❌", {
           duration: 5000,
         }),
       onFinish: () => setLoading(false),
@@ -93,7 +93,7 @@ export function ButtonModalAttandance({role}) {
                   disabled={loading}
                   className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
                 >
-                  {loading ? 'Mengirim...' : 'Submit Attendance'}
+                  {loading ? 'Submit...' : 'Submit Attendance'}
                 </button>
                 <button
                   onClick={retakePhoto}

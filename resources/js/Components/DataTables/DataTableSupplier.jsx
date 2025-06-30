@@ -86,11 +86,11 @@ export function DataTableSupplier({data, userRole}) {
   
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
-        toast.success("Data Supplier berhasil dihapus! 🗑️", { duration: 5000 });
+        toast.success("Supplier data deleted successfully! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
         console.error(err);
-        toast.error("Gagal menghapus data supplier! ❌", { duration: 5000 });
+        toast.error("Failed to delete supplier data! ❌", { duration: 5000 });
       },
     });
     setOpen(false); 

@@ -66,11 +66,11 @@ export function DataTableOutbound({ data, userRole, supplierData, productData, d
 
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
-        toast.success("Produk berhasil dihapus! 🗑️", { duration: 5000 });
+        toast.success("Outbound product data successfully deleted! 🗑️", { duration: 5000 });
       },
       onError: (err) => {
         console.error(err);
-        toast.error("Gagal menghapus produk! ❌", { duration: 5000 });
+        toast.error("Failed to delete product outbound data! ❌", { duration: 5000 });
       },
     });
     setOpen(false); 
@@ -262,7 +262,7 @@ export function DataTableOutbound({ data, userRole, supplierData, productData, d
         user={usr}
       />
       <div className="flex justify-between items-center py-4">
-        <div className="flex items-center space-x-4 w-[50%]">
+        <div className="flex items-center space-x-4 w-[74%] md:w-[50%]">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="border-solid border-2 border-primaryPurple">
