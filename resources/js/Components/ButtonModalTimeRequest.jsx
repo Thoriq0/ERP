@@ -76,7 +76,7 @@ export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
     router.post(userPath, payload, {
       forceFormData: true,
       onSuccess: () => {
-        toast.success("Cuti berhasil disimpan! 🎉", {
+        toast.success("Leave data saved successfully! 🎉", {
           duration: 5000,
         });
         setValues({
@@ -88,7 +88,7 @@ export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
       },
       onError: (err) => {
         setErrors(err);
-        toast.error("Gagal menyimpan data cuti! ❌", {
+        toast.error("Failed to save leave data! ❌", {
           duration: 5000,
         });
       },
@@ -103,15 +103,15 @@ export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
       </DialogTrigger>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Data Cuti Karyawan</DialogTitle>
+          <DialogTitle>employee leave data</DialogTitle>
           <DialogDescription>
-            Masukkan data Cut karyawan, lalu klik Simpan.
+            Enter the employee's Leave data, then click Save.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="name" value="Nama Karyawan" />
+            <InputLabel htmlFor="name" value="Name Emplyoee" />
             <TextInput
               id="name"
               type="text"
@@ -125,19 +125,19 @@ export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
             {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="note" value="Alasan Cuti" />
+            <InputLabel htmlFor="note" value="Reason for leaving" />
             <Textarea
               id="note"
               name="note"
               className="mt-1 block w-full"
-              placeholder="Contoh: Sakit, Keperluan keluarga, dll"
+              placeholder="Example: Sickness, Family needs, etc."
               value={values.note}
               onChange={handleChange}
             />
             {errors.note && <p className="text-red-500 text-sm">{errors.note}</p>}
           </div>
           <div className="mt-4">
-            <InputLabel htmlFor="leave_dates" value="Tanggal Cuti" className=""/>
+            <InputLabel htmlFor="leave_dates" value="Date of Leave" className=""/>
             <DatePicker
               multiple
               value={values.leave_dates}
@@ -151,7 +151,7 @@ export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
 
           <DialogFooter>
             <Button type="submit" className="bg-PurpleFive hover:bg-primaryPurple mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

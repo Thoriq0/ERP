@@ -58,11 +58,11 @@ export function DataTableTimeRequestUser({data, userRole, employee, selectedIds,
   
       router.delete(`${userPath}/${selectedId}`, {
         onSuccess: () => {
-          toast.success("Inbound berhasil dihapus! 🗑️", { duration: 5000 });
+          toast.success("Leave data successfully deleted! 🗑️", { duration: 5000 });
         },
         onError: (err) => {
           // console.error(err);
-          toast.error("Gagal menghapus Inbound! ❌", { duration: 5000 });
+          toast.error("Failed to delete leave data ❌", { duration: 5000 });
         },
       });
       setOpen(false);
@@ -82,10 +82,10 @@ export function DataTableTimeRequestUser({data, userRole, employee, selectedIds,
     
       router.post(userPath, { selected: selectedIds }, {
         onSuccess: () => {
-          toast.success("Validasi berhasil dikirim! ✅", { duration: 5000 });
+          toast.success("Validation sent successfully! ✅", { duration: 5000 });
         },
         onError: () => {
-          toast.error("Gagal mengirim validasi! ❌", { duration: 5000 });
+          toast.error("Failed to send validation! ❌", { duration: 5000 });
         },
       });
     }

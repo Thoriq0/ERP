@@ -203,7 +203,7 @@ export function DataTableValidasiTimeRequest({data, employee, selectedIds, setSe
   return (
     <div className="w-full">
         <div className="flex justify-between items-center py-4">
-            <h1 className="font-extrabold text-xl">Data Validasi (there will be changes title)</h1>
+            <h1 className="font-extrabold text-xl">Data Validasi</h1>
         </div>
         <div className="rounded-md border">
             <Table>
