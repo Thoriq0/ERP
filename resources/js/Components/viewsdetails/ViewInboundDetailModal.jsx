@@ -142,33 +142,46 @@ export function ViewInboundDetailModal({ open, onClose, inbound, productData, us
 
           <div className="mt-4 space-y-3">
             <strong className="block">Files</strong>
+
+            {/* Images */}
             <div className="space-y-2">
               <strong className="block">Images</strong>
-              {images.map((file, index) => (
-                <div key={index} className="flex items-center justify-between border rounded p-2">
-                  <span className="cursor-pointer text-blue-600" onClick={() => handleDownload(file, "image")}>
-                    🖼️ {file}
-                  </span>
-                  <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
-                    Delete
-                  </Button>
-                </div>
-              ))}
+              {images.length === 0 ? (
+                <p className="text-sm text-gray-500 italic">No images available.</p>
+              ) : (
+                images.map((file, index) => (
+                  <div key={index} className="flex items-center justify-between border rounded p-2">
+                    <span className="cursor-pointer text-blue-600" onClick={() => handleDownload(file, "image")}>
+                      🖼️ {file}
+                    </span>
+                    <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
+                      Delete
+                    </Button>
+                  </div>
+                ))
+              )}
             </div>
+
+            {/* PDFs */}
             <div className="space-y-2">
               <strong className="block">PDFs</strong>
-              {pdfs.map((file, index) => (
-                <div key={index} className="flex items-center justify-between border rounded p-2">
-                  <span className="cursor-pointer text-blue-600" onClick={() => handleDownload(file, "pdf")}>
-                    📄 {file}
-                  </span>
-                  <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
-                    Delete
-                  </Button>
-                </div>
-              ))}
+              {pdfs.length === 0 ? (
+                <p className="text-sm text-gray-500 italic">No PDF files available.</p>
+              ) : (
+                pdfs.map((file, index) => (
+                  <div key={index} className="flex items-center justify-between border rounded p-2">
+                    <span className="cursor-pointer text-blue-600" onClick={() => handleDownload(file, "pdf")}>
+                      📄 {file}
+                    </span>
+                    <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
+                      Delete
+                    </Button>
+                  </div>
+                ))
+              )}
             </div>
           </div>
+
 
           <DialogFooter className="mt-4">
             <Button className=" max-w-[100px] md:w-full bg-gray-300 text-black hover:bg-gray-400" onClick={onClose}>Close</Button>

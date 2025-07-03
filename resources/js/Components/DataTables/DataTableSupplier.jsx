@@ -130,10 +130,27 @@ export function DataTableSupplier({data, userRole}) {
     //   enableHiding: false,
     // },
     {
+      id: "no",
+      header: () => <div className="text-center">No</div>,
+      cell: ({ row }) => (
+        <div className="text-center">{row.index + 1}</div>
+      ),
+    },
+    {
       accessorKey: "name",
       header: "Name",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
-    },
+      cell: ({ row }) => {
+        const name = row.getValue("name")?.toString() || "";
+        const words = name.split(" ");
+        const displayText = words.length > 3 ? words.slice(0, 3).join(" ") + "..." : name;
+    
+        return (
+          <div className="capitalize" title={name}>
+            {displayText}
+          </div>
+        );
+      },
+    },    
     {
       accessorKey: "created_at",
       header: ({ column }) => (

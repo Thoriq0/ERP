@@ -112,7 +112,19 @@ export function DataTableEmployee({data, userRole}) {
     {
       accessorKey: "name",
       header: "Name",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+      cell: ({ row }) => {
+        const name = row.getValue("name");
+        const words = name?.toString().split(" ") || [];
+    
+        const displayText =
+          words.length > 4 ? words.slice(0, 4).join(" ") + "..." : name;
+    
+        return (
+          <div className="capitalize" title={name}>
+            {displayText}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "created_at",
@@ -160,8 +172,24 @@ export function DataTableEmployee({data, userRole}) {
     {
       accessorKey: "address",
       header: "Address",
-      cell: ({ row }) => <div className="capitalize ">{row.getValue("address")}</div>,
+      cell: ({ row }) => {
+        const address = row.getValue("address")?.toString() || "";
+    
+        const displayText =
+          address.length > 12 ? address.slice(0, 12) + "..." : address;
+    
+        return (
+          <div
+            className="capitalize"
+            title={address}
+          >
+            {displayText}
+          </div>
+        );
+      },
     },
+    
+    
     
     {
       id: "actions",

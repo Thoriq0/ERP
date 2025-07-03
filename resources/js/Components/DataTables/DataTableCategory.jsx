@@ -128,6 +128,13 @@ export function DataTableCategory({data, userRole}) {
     //   enableHiding: false,
     // },
     {
+      id: "no",
+      header: () => <div className="text-center">No</div>,
+      cell: ({ row }) => (
+        <div className="text-center">{row.index + 1}</div>
+      ),
+    },
+    {
       accessorKey: "name",
       header: "Category Name",
       cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,

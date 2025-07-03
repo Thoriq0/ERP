@@ -232,33 +232,43 @@ Route::middleware('auth', 'verified')->group(function () {
         // Route inbound action 
         Route::post('/wrhs/inbound', [InventoryController::class, 'inboundStore'])->name('wrhs.inbound.store');
         Route::delete('/wrhs/inbound/{inbound}', [InventoryController::class, 'inboundDestroy'])->name('wrhs.inbound.destroy');
-        Route::post('/wrhs/ibnd/', [WarehouseController::class, 'importInbound'])->name('inventory.inbound.import');
+        Route::post('/wrhs/inbound/{inbound}', [InventoryController::class, 'inboundUpdate'])->name('wrhs.inbound.update');
+        Route::post('/wrhs/ibnd/', [InventoryController::class, 'importInbound'])->name('inventory.inbound.import');
         Route::get('/wrhs/inbound/export', [InventoryController::class, 'exportInbound']);
 
         // route inbound pre-stock
         Route::post('/wrhs/validatestock', [InventoryController::class, 'validateStock'])->name('wrhs.stock.store');
         Route::post('/wrhs/qcstock', [InventoryController::class, 'qcStock'])->name('wrhs.qcstock.store');
         Route::put('/wrhs/inbound/{inbound}', [InventoryController::class, 'inboundUpdate'])->name('wrhs.inbound.update');
+        Route::post('/wrhs/deletefile', [InventoryController::class, 'deleteFile'])->name('delete.file');//FILE DELETE
         Route::post('/wrhs/prestock-adjust', [InventoryController::class, 'adjustPrestock'])->name('wrhs.adjustprestock');
 
         // route stock
         Route::post('/wrhs/adjust-stock', [InventoryController::class, 'adjustStock'])->name('wrhs.adjustStock');
 
-        // Route outbound action
+        // route outbound
         Route::post('/wrhs/outbound', [InventoryController::class, 'outboundStore'])->name('wrhs.outbound.store');
         Route::delete('/wrhs/outbound/{outbound}', [InventoryController::class, 'outboundDestroy'])->name('wrhs.outbound.destroy');
+        Route::post('/wrhs/outbounddelete', [InventoryController::class, 'deleteOutbound']);
+        Route::put('/wrhs/outbound/{outbound}', [InventoryController::class, 'outboundUpdate'])->name('wrhs.outbound.update');
 
         // route supplier action
         Route::post('/wrhs/supplier', [InventoryController::class, 'supplierStore'])->name('wrhs.supplier.store');
         Route::delete('/wrhs/supplier/{supplier}', [InventoryController::class, 'supplierDestroy'])->name('wrhs.supplier.destroy');
+        Route::put('/wrhs/supplier/{supplier}', [InventoryController::class, 'supplierUpdate'])->name('wrhs.supplier.update');
+        Route::get('/wrhs/supplier/export', [InventoryController::class, 'exportSupplier']);
 
         // route product action
         Route::post('/wrhs/product', [InventoryController::class, 'productStore'])->name('wrhs.product.store');
         Route::delete('/wrhs/product/{product}', [InventoryController::class, 'productDestroy'])->name('wrhs.product.destroy');
+        Route::put('/wrhs/product/{product}', [InventoryController::class, 'productUpdate'])->name('wrhs.product.update');
+        Route::get('/wrhs/product/export', [InventoryController::class, 'exportProduct']);
 
         // route category
         Route::post('/wrhs/category', [InventoryController::class, 'categoryStore'])->name('wrhs.category.store');
         Route::delete('/wrhs/category/{category}', [InventoryController::class, 'categoryDestroy'])->name('wrhs.category.destroy');
+        Route::put('/wrhs/category/{category}', [InventoryController::class, 'categoryUpdate'])->name('wrhs.category.update');
+        Route::get('/wrhs/category/export', [InventoryController::class, 'exportCategory']);
 
         // route shipmentaction action
         Route::post('/wrhs/shipmentorder', [InventoryController::class, 'shipmentOrder'])->name('wrhs.shipmentorder');

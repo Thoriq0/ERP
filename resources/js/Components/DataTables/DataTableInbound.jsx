@@ -106,6 +106,13 @@ export function DataTableInbound({ data, userRole, productData, roleName, user }
     //   enableHiding: false,
     // },
     {
+      id: "no",
+      header: () => <div className="text-center">No</div>,
+      cell: ({ row }) => (
+        <div className="text-center">{row.index + 1}</div>
+      ),
+    },
+    {
       accessorKey: "product_id",
       header: "Product",
       cell: ({ row }) => {

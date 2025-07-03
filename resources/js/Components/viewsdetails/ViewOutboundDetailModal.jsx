@@ -129,34 +129,47 @@ export function ViewOutboundDetailModal({ open, onClose, outbound, productData, 
         </div>
 
         <div className="mt-4 space-y-3">
-                    <strong className="block">Files</strong>
-                    <div className="space-y-2">
-                      <strong className="block">Images</strong>
-                      {images.map((file, index) => (
-                        <div key={index} className="flex items-center justify-between border rounded p-2">
-                          <span className="cursor-pointer text-blue-600" onClick={() => handleDownload(file, "image")}>
-                            🖼️ {file}
-                          </span>
-                          <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
-                            Hapus
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="space-y-2">
-                      <strong className="block">PDFs</strong>
-                      {pdfs.map((file, index) => (
-                        <div key={index} className="flex items-center justify-between border rounded p-2">
-                          <span className="cursor-pointer text-blue-600" onClick={() => handleDownload(file, "pdf")}>
-                            📄 {file}
-                          </span>
-                          <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
-                            Delete
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+  <strong className="block">Files</strong>
+
+          {/* Images Section */}
+          <div className="space-y-2">
+            <strong className="block">Images</strong>
+            {images.length === 0 ? (
+              <p className="text-sm text-gray-500 italic">🖼️ No images available.</p>
+            ) : (
+              images.map((file, index) => (
+                <div key={index} className="flex items-center justify-between border rounded p-2">
+                  <span className="cursor-pointer text-blue-600" onClick={() => handleDownload(file, "image")}>
+                    🖼️ {file}
+                  </span>
+                  <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
+                    Hapus
+                  </Button>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* PDFs Section */}
+          <div className="space-y-2">
+            <strong className="block">PDFs</strong>
+            {pdfs.length === 0 ? (
+              <p className="text-sm text-gray-500 italic">📄 No PDF files available.</p>
+            ) : (
+              pdfs.map((file, index) => (
+                <div key={index} className="flex items-center justify-between border rounded p-2">
+                  <span className="cursor-pointer text-blue-600" onClick={() => handleDownload(file, "pdf")}>
+                    📄 {file}
+                  </span>
+                  <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
+                    Delete
+                  </Button>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
         <DialogFooter>
           <Button
             type="button"

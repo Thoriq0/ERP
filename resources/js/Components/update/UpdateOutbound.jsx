@@ -74,7 +74,7 @@ export function UpdateOutboundModal({ userRole, open, onClose, outbound, product
         onSuccess: () => {
           toast.success("Outbound data updated successfully! 🎉");
           reset();
-          onClose(); // Tutup modal setelah sukses
+          onClose();
         },
         onError: (err) => {
           setErrors(err);

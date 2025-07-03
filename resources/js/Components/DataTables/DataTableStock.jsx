@@ -62,7 +62,7 @@ export function DataTableStock({ data, userRole, adjust }) {
     }
 
   const handleDelete = () => {
-    console.log(`Deleting item with ID: ${selectedId}`);
+    // console.log(`Deleting item with ID: ${selectedId}`);
     setOpen(false); // Tutup modal setelah delete
   };
 
@@ -193,7 +193,7 @@ export function DataTableStock({ data, userRole, adjust }) {
     return data.filter(item => item.qty > 0);
   }, [data]);
   
-  console.log(filteredData);
+  // console.log(filteredData);
 
   const table = useReactTable({
     data: filteredData,

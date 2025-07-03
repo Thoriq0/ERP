@@ -189,14 +189,14 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="qty" value="Number of Products" />
+            <InputLabel htmlFor="qty" value="QTY Out" />
             {stockError && <p className="text-red-500 text-sm mb-1">{stockError}</p>}
             <TextInput
               id="qty"
               type="number"
               name="qty"
               className="mt-1 block w-full"
-              placeholder="Number of Outgoing Products"
+              placeholder="Qty out"
               value={values.qty}
               onChange={handleChange}
             />

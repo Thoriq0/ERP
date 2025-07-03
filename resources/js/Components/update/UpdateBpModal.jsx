@@ -54,7 +54,7 @@ export function UpdateBpModal({ userRole, open, onClose, bp }) {
 
     const rolePaths = {
       admin: `/admin/bp/${bp?.id}`,
-      wrhs: `/finance/bp/${bp?.id}`,
+      fnc: `/finance/bp/${bp?.id}`,
     };
 
     const userPath = rolePaths[userRole];

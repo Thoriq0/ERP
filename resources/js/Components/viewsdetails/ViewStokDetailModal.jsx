@@ -10,7 +10,7 @@ import {
 import { Button } from "../ui/button";
 
 export function ViewStokDetailModal({ open, onClose, stock, adjust }) {
-  
+  console.log(adjust)
   const adjustmentLogs = adjust.filter(
     (item) => item.product_id === stock?.product?.id
   );

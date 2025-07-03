@@ -123,6 +123,13 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
     //   enableHiding: false,
     // },
     {
+      id: "no",
+      header: () => <div className="text-center">No</div>,
+      cell: ({ row }) => (
+        <div className="text-center">{row.index + 1}</div>
+      ),
+    },
+    {
       accessorKey: "sku",
       header: "SKU",
       cell: ({ row }) => <div className="capitalize">{row.getValue("sku")}</div>,

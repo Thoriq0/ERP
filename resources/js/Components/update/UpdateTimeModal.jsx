@@ -20,7 +20,7 @@ export function UpdateTimeModal({ userRole, open, onClose, employee, time }) {
     note: "",
     dueto: [],
   });
-
+  console.log(userRole)
   // Inisialisasi data jika time tersedia
   useEffect(() => {
     if (time) {
@@ -66,9 +66,18 @@ export function UpdateTimeModal({ userRole, open, onClose, employee, time }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const updatePath = `/admin/time/${time.id}`; 
 
-    put(updatePath, {
+    const rolePaths = {
+      staff : `/staff/time/${time.id}`,
+      admin : `/admin/time/${time.id}`,
+      wrhs : `/wrhs/time/${time.id}`,
+      fnc : `/fnc/time/${time.id}`,
+      hr : `/hr/time/${time.id}`,
+    }
+
+    const userPath = rolePaths[userRole];
+
+    put(userPath, {
       ...data,
       dueto: JSON.stringify(data.dueto),
     }, {
@@ -82,12 +91,12 @@ export function UpdateTimeModal({ userRole, open, onClose, employee, time }) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] md:max-w-[600px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
-        <DialogHeader>
-          <DialogTitle>Update Data Cuti</DialogTitle>
-          <DialogDescription>
-            Perbarui catatan dan tanggal cuti karyawan.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogHeader>
+        <DialogTitle>Update Leave Data</DialogTitle>
+        <DialogDescription>
+          Update the notes and leave dates for the employee.
+        </DialogDescription>
+      </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">

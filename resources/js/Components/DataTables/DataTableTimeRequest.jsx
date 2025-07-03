@@ -42,13 +42,15 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds, use
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
+  
   const handleDelete = () => {
       if (!selectedId) return;
   
       // Mapping role endpoint
       const rolePaths = {
         admin: "/admin/time",
-        wrhs: "/hr/time",
+        hr: "/hr/time",
+        wrhs: "/wrhs/time"
       };
   
       const userPath = rolePaths[userRole];
@@ -73,6 +75,7 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds, use
       const rolePaths = {
         admin: "/admin/time/validate",
         wrhs: "/hr/time/validate",
+        hr: "/hr/time/validate",
       };
     
       const userPath = rolePaths[userRole];
@@ -145,7 +148,11 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds, use
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => <div className="capitalize bg-orange-400 p-2 rounded-md text-white text-center font-semibold">{row.getValue("status")}</div>,
+      cell: ({ row }) => row.getValue("status") == "validating" ? 
+      
+      <div className="capitalize bg-orange-400 p-2 rounded-md text-white text-center font-semibold">{row.getValue("status")}</div>
+      : 
+      <div className="capitalize bg-[#28A745] p-2 rounded-md text-white text-center font-semibold">{row.getValue("status")}</div>
     },
     {
       id: "actions",
@@ -220,7 +227,7 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds, use
                 employee={employee}
                 userRole={userRole}
       />
-      <h1 className="font-extrabold text-xl">(Title)</h1>
+      <h1 className="font-extrabold text-xl">Request Time-Off</h1>
       <div className="flex justify-between items-center py-4">
         
         <div className="flex items-center space-x-4 w-[50%]">
@@ -261,7 +268,7 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds, use
         </div>
         <div className="flex space-x-2">
             <ButtonModalCreateTimeRequest userRole={userRole} employee={employee} />
-            <Button className="bg-validateTimeRequest" onClick={oks}>
+            <Button className="bg-green-400 hover:bg-green-500" onClick={oks}>
                 Validate leave
             </Button>
             

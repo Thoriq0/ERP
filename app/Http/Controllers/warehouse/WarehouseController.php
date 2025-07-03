@@ -14,6 +14,7 @@ use App\Models\Shipment;
 use App\Models\Supplier;
 use App\Models\Attendance;
 use App\Models\LeaveQuota;
+use App\Models\AdjustStock;
 use Illuminate\Http\Request;
 use App\Exports\InboundExport;
 use App\Imports\InboundImport;
@@ -120,6 +121,7 @@ class WarehouseController extends Controller
         return inertia::render('features/Stock', [
             'title' => 'Inventory Stock',
             'stock' => Stock::with(['product.category', 'product.supplier'])->get(),
+            'adjust' => AdjustStock::all(),
         ]);
         // dd(Inbound::all());
     }

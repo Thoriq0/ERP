@@ -48,7 +48,8 @@ export function DataTableTimeRequestUser({data, userRole, employee, selectedIds,
       // Mapping role endpoint
       const rolePaths = {
         admin: "/admin/time",
-        wrhs: "/hr/time",
+        wrhs: "/wrhs/time",
+        hr: "/hr/time",
         fnc: "/fnc/time",
         staff: "/staff/time",
       };
@@ -74,7 +75,7 @@ export function DataTableTimeRequestUser({data, userRole, employee, selectedIds,
     const oks = () => {
       const rolePaths = {
         admin: "/admin/time/validate",
-        wrhs: "/hr/time/validate",
+        hr: "/hr/time/validate",
       };
     
       const userPath = rolePaths[userRole];
@@ -147,7 +148,11 @@ export function DataTableTimeRequestUser({data, userRole, employee, selectedIds,
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => <div className="capitalize bg-orange-400 p-2 rounded-md text-white text-center font-semibold">{row.getValue("status")}</div>,
+      cell: ({ row }) => row.getValue("status") == "validating" ? 
+      
+      <div className="capitalize bg-orange-400 p-2 rounded-md text-white text-center font-semibold">{row.getValue("status")}</div>
+      : 
+      <div className="capitalize bg-[#28A745] p-2 rounded-md text-white text-center font-semibold">{row.getValue("status")}</div>
     },
     {
       id: "actions",
