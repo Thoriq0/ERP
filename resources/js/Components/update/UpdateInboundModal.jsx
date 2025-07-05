@@ -37,7 +37,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
     label: prod.name,
   }));
 
-  const [picName, setPicName] = useState("Tidak Di Ketahui");
+  const [picName, setPicName] = useState("Unkonown");
 
   // Handle perubahan input pada select produk
   function handleSelectChange(name, selectedOption) {
@@ -85,7 +85,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
         product: { value: inbound.product_id, label: selectedProduct?.name ?? "" },
       });
 
-      setPicName(foundUser?.name ?? "Tidak Diketahui");
+      setPicName(foundUser?.name ?? "Unknown");
     }
   }, [inbound, productData]);
 
@@ -126,7 +126,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
       forceFormData: true,
       onError: (errors) => {
         setErrors(errors);
-        toast.error("Gagal memperbarui Data Inbound! ❌");
+        toast.error("Failed to update Inbound Data! ❌");
       },
     });
   }

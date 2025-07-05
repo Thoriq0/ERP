@@ -50,6 +50,7 @@ export default function UpdateProfileInformation({
                         required
                         isFocused
                         autoComplete="name"
+                        readOnly
                     />
 
                     <InputError className="mt-2" message={errors.name} />
@@ -80,6 +81,7 @@ export default function UpdateProfileInformation({
                         value={data.email}
                         onChange={(e) => setData('email', e.target.value)}
                         required
+                        readOnly
                         autoComplete="username"
                     />
 
@@ -94,13 +96,14 @@ export default function UpdateProfileInformation({
                         value={data.role}
                         onChange={(e) => setData('role', e.target.value)}
                         required
+                        readOnly
                         autoComplete="role"
                     />
 
                     <InputError className="mt-2" message={errors.role} />
                 </div>
 
-                {mustVerifyEmail && user.email_verified_at === null && (
+                {/* {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
                         <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
                             Your email address is unverified.
@@ -137,7 +140,7 @@ export default function UpdateProfileInformation({
                             Saved.
                         </p>
                     </Transition>
-                </div>
+                </div> */}
             </form>
         </section>
     );

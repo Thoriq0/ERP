@@ -100,7 +100,7 @@ export function UpdateTimeModal({ userRole, open, onClose, employee, time }) {
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <InputLabel htmlFor="note" value="Catatan" />
+            <InputLabel htmlFor="note" value="Notes" />
             <textarea
               id="note"
               className="w-full border p-2 rounded-md"
@@ -111,7 +111,7 @@ export function UpdateTimeModal({ userRole, open, onClose, employee, time }) {
           </div>
 
           <div className="mt-4">
-            <InputLabel value="Tanggal Cuti" />
+            <InputLabel value="Date of Leave" />
             {data.dueto.map((tanggal, index) => (
               <div key={index} className="flex items-center gap-2 mt-2">
                 <input
@@ -125,7 +125,7 @@ export function UpdateTimeModal({ userRole, open, onClose, employee, time }) {
                   className="bg-red-500 hover:bg-red-600 text-white"
                   onClick={() => handleRemoveDate(index)}
                 >
-                  Hapus
+                  Delete
                 </Button>
               </div>
             ))}
@@ -134,7 +134,7 @@ export function UpdateTimeModal({ userRole, open, onClose, employee, time }) {
               onClick={handleAddDate}
               className="mt-2 bg-blue-500 hover:bg-blue-600 text-white"
             >
-              Tambah Tanggal
+             Add Date
             </Button>
             {errors.dueto && <p className="text-red-500 text-sm">{errors.dueto}</p>}
           </div>
@@ -145,10 +145,10 @@ export function UpdateTimeModal({ userRole, open, onClose, employee, time }) {
               className="bg-gray-200 text-black border border-gray-400 mt-5 hover:bg-gray-300"
               onClick={onClose}
             >
-              Batal
+              Cancle
             </Button>
             <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white mt-5">
-              Simpan
+              Save
             </Button>
           </DialogFooter>
         </form>

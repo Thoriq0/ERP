@@ -91,7 +91,7 @@ useEffect(() => {
       forceFormData: true,
       onError: (errors) => {
         setErrors(errors);
-        toast.error("Gagal memperbarui Data Produk! ❌");
+        toast.error("Failed to update Data Product!❌");
       },
     });
   }

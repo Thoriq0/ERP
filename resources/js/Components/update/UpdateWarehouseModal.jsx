@@ -58,7 +58,7 @@ export function UpdateWarehouseModal({ userRole, open, onClose, warehouse }) {
       forceFormData: true,
       onError: (err) => {
         setErrors(err);
-        toast.error("Gagal memperbarui Data Kategori! ❌", { duration: 5000 });
+        toast.error("Failed to update Data Warehouse! ❌", { duration: 5000 });
       },
     });
   }

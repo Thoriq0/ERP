@@ -62,7 +62,7 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
       forceFormData: true,
       onError: (errors) => {
         setErrors(errors);
-        toast.error("Gagal memperbarui Data Supplier! ❌");
+        toast.error("Failed to update Data Supplier! ❌");
       },
     });
     
