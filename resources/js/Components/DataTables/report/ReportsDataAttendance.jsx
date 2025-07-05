@@ -83,8 +83,8 @@ export function ReportsDataAttendance({ data, user }) {
       header: "Name",
       cell: ({ row }) => (
         <div className="capitalize">
-          {row.getValue("name")?.length > 9
-            ? row.getValue("name").slice(0, 9) + "..."
+          {row.getValue("name")?.length > 50
+            ? row.getValue("name").slice(0, 50) + "..."
             : row.getValue("name")}
         </div>
       ),
@@ -94,8 +94,8 @@ export function ReportsDataAttendance({ data, user }) {
       header: "Role",
       cell: ({ row }) => (
         <div className="capitalize">
-          {row.getValue("role")?.length > 9
-            ? row.getValue("role").slice(0, 9) + "..."
+          {row.getValue("role")?.length > 14
+            ? row.getValue("role").slice(0, 14) + "..."
             : row.getValue("role")}
         </div>
       ),

@@ -17,6 +17,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
+import ButtonExportPdf from "../../ButtonExportPdf";
 import { Input } from "../../ui/input";
 import {
   Table,
@@ -29,10 +30,12 @@ import {
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 export function ReportsDataAttendanceUser({ data, user }) {
-    const { props } = usePage();
-    const currentUser = props.auth.user;
+  const { props } = usePage();
+  const currentUser = props.auth.user;
+  const downloadDate = new Date();
+  const [selectedMonth, setSelectedMonth] = useState("");
 
-    function groupAttendance(data, users) {
+  function groupAttendance(data, users) {
         const grouped = {};
 
         // Filter data hanya milik user yang sedang login
@@ -64,16 +67,35 @@ export function ReportsDataAttendanceUser({ data, user }) {
         });
 
         return Object.values(grouped);
-    }
+  }
 
+
+  function getUniqueMonthsOnly(data) {
+    const months = new Set();
+    data.forEach((item) => {
+      const [day, month] = item.date.split("/");
+      months.add(month.padStart(2, "0")); // "01", "02", ..., "12"
+    });
+    return Array.from(months).sort();
+  }
+
+  function filterByMonthOnly(data, month) {
+    if (!month) return data;
+    return data.filter((item) => {
+      const [day, mon] = item.date.split("/");
+      return mon.padStart(2, "0") === month;
+    });
+  }
+
+  
     const columns = [
     {
         accessorKey: "name",
         header: "Name",
         cell: ({ row }) => (
         <div className="capitalize">
-            {row.getValue("name")?.length > 9
-            ? row.getValue("name").slice(0, 9) + "..."
+            {row.getValue("name")?.length > 50
+            ? row.getValue("name").slice(0, 50) + "..."
             : row.getValue("name")}
         </div>
         ),
@@ -83,8 +105,8 @@ export function ReportsDataAttendanceUser({ data, user }) {
         header: "Role",
         cell: ({ row }) => (
         <div className="capitalize">
-            {row.getValue("role")?.length > 9
-            ? row.getValue("role").slice(0, 9) + "..."
+            {row.getValue("role")?.length > 14
+            ? row.getValue("role").slice(0, 14) + "..."
             : row.getValue("role")}
         </div>
         ),
@@ -105,12 +127,13 @@ export function ReportsDataAttendanceUser({ data, user }) {
         cell: ({ row }) => row.getValue("out"),
     },
     ];
-    
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
   const groupedData = groupAttendance(data, user);
+  const uniqueMonths = getUniqueMonthsOnly(groupedData);
+  const filteredData = filterByMonthOnly(groupedData, selectedMonth);
   const table = useReactTable({
     data: groupedData,
     columns,
@@ -131,56 +154,51 @@ export function ReportsDataAttendanceUser({ data, user }) {
 
   return (
     <div className="w-full">
-        <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4 w-[50%]">
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="border-solid border-2 border-primaryPurple">
-                <FiFilter size={24} />Filter
-                </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                {table
-                    .getAllColumns()
-                    .filter(
-                    (column) => column.getCanHide()
-                    )
-                    .map((column) => {
-                    return (
-                        <DropdownMenuCheckboxItem
-                        key={column.id}
-                        className="capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                            column.toggleVisibility(!!value)
-                        }
-                        >
-                        {column.id}
-                        </DropdownMenuCheckboxItem>
-                    )
-                    })}
-                </DropdownMenuContent>
-            </DropdownMenu>
-            <Input
-                placeholder="Search by Name, Date In, Supplier or Category"
-                value={table.getState().globalFilter || ""}
-                onChange={(event) => table.setGlobalFilter(event.target.value)}
-                className="max-w-xs"
-            />
-            </div>
-            <div className="flex space-x-2">
-                <Button className="bg-PurpleFive hover:bg-indigo-700" >
-                    Download
-                </Button>
-            </div>
+      <div className="flex justify-between items-center py-4">
+        <div className="flex items-center space-x-4 w-[50%]">
+
+          {uniqueMonths.length > 0 && (
+            <select
+              className="border rounded-md px-2 py-1"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+            >
+              <option value="">Semua Bulan</option>
+              {uniqueMonths.map((month) => {
+                const monthName = new Date(`2025-${month}-01`).toLocaleString("id-ID", {
+                  month: "long",
+                });
+                return (
+                  <option key={month} value={month}>
+                    {monthName.charAt(0).toUpperCase() + monthName.slice(1)}
+                  </option>
+                );
+              })}
+            </select>
+          )}
+          <Input
+            placeholder="Search by Name or other"
+            value={table.getState().globalFilter || ""}
+            onChange={(event) => table.setGlobalFilter(event.target.value)}
+            className="max-w-xs"
+          />
+        </div>
+        <div className="flex space-x-2">
+          <ButtonExportPdf attendance={filteredData} downloadDate={downloadDate} />
+        </div>
       </div>
+
       <div className="rounded-md border">
         <Table>
           <TableHeader className="bg-gray-200 text-black">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
                 ))}
               </TableRow>
             ))}
@@ -188,16 +206,25 @@ export function ReportsDataAttendanceUser({ data, user }) {
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>{row.getVisibleCells().map((cell) => <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>)}</TableRow>
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">No results.</TableCell>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No results.
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
+
       <div className="flex items-center space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}

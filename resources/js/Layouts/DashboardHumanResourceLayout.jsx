@@ -9,7 +9,7 @@ export default function DashboardHumanResourceLayout({ children, auth, ...props 
 
     const menuItems = [
         { name: "Dashboard", path: "/hr/dashboard", icon: <HiChartPie /> },
-        { name: "User Warehouse", path: "/hr/user", icon: <HiUser /> },
+        // { name: "User Warehouse", path: "/hr/user", icon: <HiUser /> },
         { name: "Employee", path: "/hr/employee", icon: <FaUserTie /> },
         { name: "Time Off Request", path: "/hr/time", icon: <MdAccessTime  /> },
         { name: "Attendance", path: "/hr/attendance", icon: <FaClipboardList  /> },

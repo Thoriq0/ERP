@@ -123,14 +123,14 @@ export default function Login({error, status, canResetPassword}) {
                     <PrimaryButton className="m-5" disabled={processing}>
                         Login
                     </PrimaryButton>
-                    <p className='text-white'>Don't have an account?   
+                    {/* <p className='text-white'>Don't have an account?   
                         <Link
                             href={route('register')}
                             className="rounded-md text-sm ml-2 text-white underline"
                         >
                             Sign Up
                         </Link>
-                    </p>
+                    </p> */}
                 </div>
             </form>
         </LoginLayout>
