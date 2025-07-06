@@ -35,11 +35,12 @@ export function ViewPaymentDetail({ open, onClose, payment, data }) {
     emoji = "⚠️"; // Due date dalam 3 hari ke depan
     }
     
-
+    
     // Get inbound code 
     const getInboundCode = payment?.account_payable?.inbound?.inbound_code
     // Get InboundBunlding
     const bundlingInbound = data.filter(item => item.account_payable?.inbound?.inbound_code);
+    // console.log(data)
     // Variabel ID Bundling Inbound
     let idFilterAp = [];
     // Lempar id dengan inboundCode yg sma
@@ -86,6 +87,7 @@ export function ViewPaymentDetail({ open, onClose, payment, data }) {
     // console.log("DATA", data)
     // console.log("COBA", coba)
     // console.log(bundlingInbound);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[500px] max-w-[370px] md:max-w-[750px] overflow-y-auto border border-gray-300 p-10 rounded-md custom-scrollbar">
@@ -174,7 +176,6 @@ export function ViewPaymentDetail({ open, onClose, payment, data }) {
             getInboundCode === null
             ? (
             <div className="mt-4 space-y-2">
-
                 <h3 className="text-end font-semibold">{emoji} {diffDays < 0 ? "OVERDUE" : "DUE SOON"}</h3>
                 <div className="mb-4 space-y-4 text-sm">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -272,10 +273,9 @@ export function ViewPaymentDetail({ open, onClose, payment, data }) {
                         <th className="py-2 text-right w-24">Amount</th>
                     </tr>
                 </thead>
-                
+                {/* {console.log(idFilterAp)} */}
                 <tbody>
                     {
-                        
                         data.
                         filter(item => idFilterAp.includes(item?.account_payable?.id))
                         .map((item, idx) => (

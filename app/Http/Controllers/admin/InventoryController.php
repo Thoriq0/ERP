@@ -13,10 +13,11 @@ use App\Models\Employee;
 use App\Models\Outbound;
 use App\Models\Shipment;
 use App\Models\Supplier;
+use App\Exports\DynamicInboundExport;
 use App\Models\Attendance;
-use App\Models\LeaveQuota;
 // use Illuminate\Support\Facades\DB;
 // use Illuminate\Support\Facades\Log;
+use App\Models\LeaveQuota;
 use App\Models\AdjustStock;
 use App\Models\BilledParty;
 use Illuminate\Support\Str;
@@ -45,9 +46,9 @@ class InventoryController extends Controller
     public function supplierStore(Request $request){
         $request->validate([
             'name' => 'required|string',
-            'contact' => 'required|integer',
+            'contact' => 'required|numeric',
             'address' => 'string',
-            'accountNumber' => 'required|integer',
+            'accountNumber' => 'required|numeric',
             'accountName' => 'required|string',
             'accountBankName' => 'required|string'
         ]);
@@ -71,9 +72,9 @@ class InventoryController extends Controller
     public function supplierUpdate(Request $request, Supplier $supplier){
         $request->validate([
             'name' => 'required|string',
-            'contact' => 'required|string',
+            'contact' => 'required|numeric',
             'address' => 'required|string',
-            'accountNumber' => 'required|integer',
+            'accountNumber' => 'required|numeric',
             'accountName' => 'required|string',
             'accountBankName' => 'required|string'
         ]);
@@ -1077,10 +1078,10 @@ class InventoryController extends Controller
         // dd($request->all());
         $request->validate([
             'bill_to' => 'required|string|max:255',
-            'contact_bill' => 'required|string|max:20',
+            'contact_bill' => 'required|numeric|max:20',
             'address_bill' => 'required|string',
             'email_bill' => 'required|email',
-            'account_bill' => 'required|string',
+            'account_bill' => 'required|numeric',
             'account_bill_name' => 'required|string',
             'account_bank_name' => 'required|string',
         ]);
@@ -1093,10 +1094,10 @@ class InventoryController extends Controller
     public function bpUpdate(Request $request, BilledParty $billedParty){
         $request->validate([
             'bill_to' => 'required|string|max:255',
-            'contact_bill' => 'required|string|max:20',
+            'contact_bill' => 'required|numeric|max:20',
             'address_bill' => 'required|string',
             'email_bill' => 'required|email',
-            'account_bill' => 'required|integer',
+            'account_bill' => 'required|numeric',
             'account_bill_name' => 'required|string',
             'account_bank_name' => 'required|string',
         ]);
@@ -1126,7 +1127,14 @@ class InventoryController extends Controller
     }
     public function exportInbound(Request $request){
 
-        return Excel::download(new InboundExport, 'data_inbound.xlsx');
+        $sheetsRequested = $request->input('sheets', []);
+        // dd($sheetsRequested);
+
+        if (empty($sheetsRequested)) {
+            return back()->with('error', 'Tidak ada sheet yang dipilih');
+        }
+        return Excel::download(new DynamicInboundExport($sheetsRequested), 'inbound_export.xlsx');
+        // return Excel::download(new InboundExport, 'data_inbound.xlsx');
 
     }
     public function exportProduct(Request $request){

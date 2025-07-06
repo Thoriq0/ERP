@@ -20,7 +20,7 @@ export function UpdateTimeModal({ userRole, open, onClose, employee, time }) {
     note: "",
     dueto: [],
   });
-  console.log(userRole)
+  // console.log(userRole)
   // Inisialisasi data jika time tersedia
   useEffect(() => {
     if (time) {

@@ -247,7 +247,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
 
 
           <div className="mt-4">
-            <InputLabel htmlFor="image" value="Mailing Letter" />
+            <InputLabel htmlFor="image" value="Attach Photo" />
             <input
               id="image"
               type="file"
@@ -257,6 +257,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
               className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               onChange={handleChange}
             />
+            <span className="text-gray-500 text-xs">- Maximum photo size: 2 MB (JPEG, PNG, JPG)</span>
             {errors.image && <p className="text-red-500 text-sm">{errors.image}</p>}
           </div>
 
@@ -271,6 +272,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
               className="block w-full rounded-md text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               onChange={handleChange}
             />
+            <span className="text-gray-500 text-xs">- Maximum document size: 5 MB (PDF)</span>
           </div>
 
           <DialogFooter>

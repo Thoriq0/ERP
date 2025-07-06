@@ -2,6 +2,9 @@
 
 namespace App\Exports;
 
+use App\Exports\UserSheet;
+use App\Exports\InboundValue;
+use App\Exports\ProductInboundSheet;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
@@ -11,9 +14,11 @@ class InboundExport implements WithMultipleSheets
     {
         return [
             new InboundSheet(),
+            new UserSheet(),
             // new SupplierSheet(),
             // new CategorySheet(),
-            // new ProductSheet(),
+            new ProductInboundSheet(),
+            new InboundValue(),
         ];
     }
 }

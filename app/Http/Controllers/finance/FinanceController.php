@@ -104,7 +104,7 @@ class FinanceController extends Controller
         ->with([
             'accountPayable:id,inbound_id,unit_price,tax,total_amount,due_date,status_payment,ap_code,item_description,discount,note,terms_condition,billed_party_id,status_inbound',
             'accountPayable.billedParty:id,bill_to,account_bill,account_bill_name,account_bank_name',
-            'accountPayable.inbound:id,product_id,qty',
+            'accountPayable.inbound:id,product_id,qty,inbound_code',
             'accountPayable.inbound.product:id,name,supplier_id',
             'accountPayable.inbound.product.supplier:id,name,contact,account_number,account_name,account_bank_name'
         ])

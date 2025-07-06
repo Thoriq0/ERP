@@ -2,12 +2,10 @@
 
 namespace App\Imports;
 
-use App\Models\Inbound;
-use App\Models\StagingInbound;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use App\Imports\InboundSheetImport;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class InboundImport implements ToModel, WithHeadingRow
+class InboundImport implements WithMultipleSheets
 {
     protected $user;
 
@@ -16,29 +14,12 @@ class InboundImport implements ToModel, WithHeadingRow
         $this->user = $user;
     }
 
-    public function model(array $row)
+    public function sheets(): array
     {
-        $inbound = Inbound::create([
-            'inbound_code' => $row['inbound_code'],
-            'product_id'   => $row['product_id'],
-            'qty'          => $row['qty'],
-            'pic'          => $row['pic'],
-            'created_by'   => $this->user->name ?? 'Unknown',
-            'qc_status'    => 'Checking',
-            'image'        => json_encode([]),
-            'pdf'          => json_encode([]),
-            'created_at'   => now(),
-            'updated_at'   => now(),
-        ]);
-
-        StagingInbound::create([
-            'inbound_id'   => $inbound->id,  
-            'status'       => 'validating',  
-            'stock_status' => 'On Hold',    
-            'payment_status' => 'unpaid',    
-        ]);
-
-        return $inbound; 
+        return [
+            'Inbound Template' => new InboundSheetImport($this->user),
+        ];
     }
 }
+
 

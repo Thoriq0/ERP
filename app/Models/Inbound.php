@@ -29,8 +29,13 @@ class Inbound extends Model
 
     // Relasi ke User (Many to One)
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'pic');
     }
+    // public function pic()
+    // {
+    //     return $this->belongsTo(User::class, 'pic');
+    // }
+
 
     use HasFactory;
 }
