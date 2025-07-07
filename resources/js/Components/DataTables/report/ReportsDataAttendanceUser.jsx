@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { usePage } from '@inertiajs/react';
 import {
   flexRender,
@@ -131,9 +131,9 @@ export function ReportsDataAttendanceUser({ data, user }) {
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
-  const groupedData = groupAttendance(data, user);
-  const uniqueMonths = getUniqueMonthsOnly(groupedData);
-  const filteredData = filterByMonthOnly(groupedData, selectedMonth);
+  const groupedData = useMemo(() => groupAttendance(data, user), [data, user]);
+  const uniqueMonths = useMemo(() => getUniqueMonthsOnly(groupedData), [groupedData]);
+  const filteredData = useMemo(() => filterByMonthOnly(groupedData, selectedMonth), [groupedData, selectedMonth]);
   const table = useReactTable({
     data: groupedData,
     columns,

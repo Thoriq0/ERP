@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,  useMemo  } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -73,9 +73,9 @@ export function ReportsDataAttendance({ data, user }) {
     });
   }
 
-  const groupedData = groupAttendance(data, user);
-  const uniqueMonths = getUniqueMonthsOnly(groupedData);
-  const filteredData = filterByMonthOnly(groupedData, selectedMonth);
+  const groupedData = useMemo(() => groupAttendance(data, user), [data, user]);
+  const uniqueMonths = useMemo(() => getUniqueMonthsOnly(groupedData), [groupedData]);
+  const filteredData = useMemo(() => filterByMonthOnly(groupedData, selectedMonth), [groupedData, selectedMonth]);
 
   const columns = [
     {

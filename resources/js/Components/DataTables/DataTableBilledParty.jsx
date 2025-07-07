@@ -291,7 +291,7 @@ export function DataTableBilledParty({data, userRole}) {
             </DropdownMenuContent>
         </DropdownMenu>
           <Input
-            placeholder="Search by Name, Date In, Supplier or Category"
+            placeholder="Search by Bill Party, Bank Name or Other"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
             className="max-w-xs"

@@ -12,7 +12,7 @@ export default function DashboardStaff({ children, auth, ...props }) {
     const menuItems = [
         { name: "Dashboard", path: "/staff/dashboard", icon: <HiChartPie /> },
         { name: "Attendance", path: "/staff/attandance", icon: <FaClipboardList /> },
-        { name: "Time Of Request", path: "/staff/time", icon: <MdAccessTime /> },
+        { name: "Time Off Request", path: "/staff/time", icon: <MdAccessTime /> },
         { name: "Reports Attendance", path: "/staff/reportattendance", icon: <FaFileAlt /> },
         { name: "Profil", path: "/staff/profile", icon: <HiUser /> },
     ];

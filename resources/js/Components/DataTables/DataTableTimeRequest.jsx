@@ -33,6 +33,7 @@ import {
 import { ButtonDialogDelete } from "../ButtonDialogDelete";
 import { ButtonModalCreateTimeRequest } from "../ButtonModalCreateTimeRequest";
 import { UpdateTimeModal } from "../update/UpdateTimeModal";
+import { ViewTimeOffRequestModal } from "../viewsdetails/ViewTimeOffRequestModal";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
@@ -42,6 +43,10 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds, use
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
+
+  // State untuk modal detail
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [selectedEmployeeDetail, setSelectedEmployeeDetail] = useState(null);
   
   const handleDelete = () => {
       if (!selectedId) return;
@@ -89,6 +94,13 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds, use
         },
       });
     }
+
+    // handle views details
+  const handleViewDetails = (employee) => {
+    setSelectedEmployeeDetail(employee);
+    setDetailModalOpen(true);
+  };
+
 
   const columns = [
     {
@@ -173,11 +185,16 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds, use
               <DropdownMenuSeparator />
     
               {/* Tampilkan tombol Update kalau status belum validated */}
-              {item.status !== 'validated' && (
+              {item.status !== 'Accepted' && (
                 <DropdownMenuItem onClick={() => handleUpdate(item)} className="cursor-pointer">
                   <FaEdit size={16} className="text-yellow-500" />Update
                 </DropdownMenuItem>
               )}
+
+              <DropdownMenuItem onClick={()=> handleViewDetails(item)} className="cursor-pointer">
+                <FaEye size={16}className="text-green-500" />
+                              View details
+              </DropdownMenuItem>
     
               <DropdownMenuItem
                 onClick={() => {
@@ -227,6 +244,11 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds, use
                 employee={employee}
                 userRole={userRole}
       />
+      <ViewTimeOffRequestModal 
+              open={detailModalOpen}
+              onClose={() => setDetailModalOpen(false)}
+              employee={selectedEmployeeDetail}
+      />
       <h1 className="font-extrabold text-xl">Request Time-Off</h1>
       <div className="flex justify-between items-center py-4">
         
@@ -260,7 +282,7 @@ export function DataTableTimeRequest({data, userRole, employee, selectedIds, use
             </DropdownMenuContent>
         </DropdownMenu>
           <Input
-            placeholder="Search by Name, Date In, Supplier or Category"
+            placeholder="Search by Name or Other"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
             className="max-w-xs"

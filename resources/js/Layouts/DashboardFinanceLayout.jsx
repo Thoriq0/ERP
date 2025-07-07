@@ -16,7 +16,7 @@ export default function DashboardFinanceLayout({ children, auth, ...props}) {
         { name: "Outcome", path: "/finance/outcome", icon: <FaArrowCircleDown  /> },
         { name: "Billed Party", path: "/finance/bp", icon: <FaArrowCircleDown  /> },
         { name: "Attendance", path: "/finance/attendance", icon: <FaClipboardList /> },
-        { name: "Time of Request", path: "/finance/time", icon: <MdAccessTime /> },
+        { name: "Time Off Request", path: "/finance/time", icon: <MdAccessTime /> },
         { name: "Reports Attendance", path: "/finance/reportattendance", icon: <FaFileAlt /> },
     ];
 

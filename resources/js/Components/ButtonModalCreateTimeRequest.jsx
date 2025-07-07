@@ -18,6 +18,7 @@ import DatePicker from "react-multi-date-picker";
 import Select from "react-select";
 
 export function ButtonModalCreateTimeRequest({ userRole, employee }) {
+  const [open, setOpen] = useState(false);
   const [values, setValues] = useState({
     name: "",
     note: "",
@@ -81,6 +82,7 @@ export function ButtonModalCreateTimeRequest({ userRole, employee }) {
           note: "",
           leave_dates: [],
         });
+        setOpen(false);
       },
       onError: (err) => {
         setErrors(err);
@@ -92,7 +94,7 @@ export function ButtonModalCreateTimeRequest({ userRole, employee }) {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-PurpleFive hover:bg-primaryPurple">Create</Button>
       </DialogTrigger>

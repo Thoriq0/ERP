@@ -298,7 +298,7 @@ export function DataTableInbound({ data, userRole, productData, roleName, user }
             </DropdownMenuContent>
           </DropdownMenu>
           <Input
-            placeholder="Search by Name, Date In, Supplier or Category"
+            placeholder="Search by Produt, Category or Other"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
             className="max-w-xs"

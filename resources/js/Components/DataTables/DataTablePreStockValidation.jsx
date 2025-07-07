@@ -420,7 +420,7 @@ export default function DataTablePrestock({ stagingData, userRole }) {
             </DropdownMenuContent>
           </DropdownMenu>
           <Input
-            placeholder="Search by Name, Date In"
+            placeholder="Search by Product Name or Other"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
             className="max-w-xs"

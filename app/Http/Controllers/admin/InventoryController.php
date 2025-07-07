@@ -1364,7 +1364,7 @@ class InventoryController extends Controller
                 'leave_quota' => $leaveQuota - $countDates
             ]);
             $query->update([
-                'status' => 'validated'
+                'status' => 'Accepted',
             ]);
         }
         return back()->with('success', 'Leave data is successfully validated! 🎉');

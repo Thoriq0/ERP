@@ -17,6 +17,7 @@ import { Textarea } from "flowbite-react";
 import DatePicker from "react-multi-date-picker";
 
 export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
+  const [open, setOpen] = useState(false);
   // State untuk form
   const [values, setValues] = useState({
     name: userName,
@@ -85,6 +86,7 @@ export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
           leave_dates: [],
           employee_id: employeeData.id,
         });
+        setOpen(false);
       },
       onError: (err) => {
         setErrors(err);
@@ -97,7 +99,7 @@ export function ButtonModalTimeRequest({userRole, userName, employeeData}) {
   
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-PurpleFive hover:bg-primaryPurple">Create</Button>
       </DialogTrigger>

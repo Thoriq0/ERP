@@ -12,7 +12,7 @@ export default function DashboardInventoryLayout({ children, auth, ...props }) {
     const menuItems = [
         { name: "Dashboard", path: "/wrhs/dashboard", icon: <HiChartPie /> },
         { name: "Attendance", path: "/wrhs/attendance", icon: <FaClipboardList /> },
-        { name: "Time of Request", path: "/wrhs/time", icon: <MdAccessTime /> },
+        { name: "Time Off Request", path: "/wrhs/time", icon: <MdAccessTime /> },
         { name: "Reports Attendance", path: "/wrhs/reportattendance", icon: <FaFileAlt /> },
     ];
 

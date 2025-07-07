@@ -250,7 +250,7 @@ export function DataTableStock({ data, userRole, adjust }) {
             </DropdownMenuContent>
           </DropdownMenu>
           <Input
-            placeholder="Search by Name, Date In, Supplier or Category"
+            placeholder="Search by Product, Supplier or Other"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
             className="max-w-xs"

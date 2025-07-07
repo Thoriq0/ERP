@@ -327,7 +327,7 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
             </DropdownMenuContent>
           </DropdownMenu>
           <Input
-            placeholder="Search by Name, Date In, Supplier or Category"
+            placeholder="Search by Invoice Code or Other"
             value={table.getState().globalFilter || ""}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
             className="max-w-xs"
