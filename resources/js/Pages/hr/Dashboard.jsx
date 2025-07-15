@@ -4,7 +4,7 @@ import { Head } from '@inertiajs/react';
 import React from 'react';
 import CountUp from 'react-countup';
 
-export default function DashboardInventory({auth, title, total_employee, total_pending_approval, total_approval_request, attendanceAvgChart}) {
+export default function DashboardInventory({auth, title, totalEmployee, totalPendigApproval, totalApprovalRequest, attendanceAvgChart}) {
     return (
         <DashboardHumanResource auth={auth}>
             <Head title="Dashboard" />
@@ -24,7 +24,7 @@ export default function DashboardInventory({auth, title, total_employee, total_p
                                     <h1 className='text-center text-xl font-semibold mt-10'>
                                         <CountUp 
                                             start={0}  
-                                            end={total_employee}
+                                            end={totalEmployee}
                                             duration={3}  
                                             separator=','
                                         />
@@ -47,7 +47,7 @@ export default function DashboardInventory({auth, title, total_employee, total_p
                                     <h1 className='text-center text-xl font-semibold mt-10'>
                                         <CountUp 
                                             start={0}  
-                                            end={total_pending_approval}
+                                            end={totalPendigApproval}
                                             duration={3}  
                                             separator=','
                                         />
@@ -62,7 +62,7 @@ export default function DashboardInventory({auth, title, total_employee, total_p
                                     <h1 className='text-center text-xl font-semibold mt-10'>
                                         <CountUp 
                                             start={0}  
-                                            end={total_approval_request}
+                                            end={totalApprovalRequest}
                                             duration={3}  
                                             separator=','
                                         />

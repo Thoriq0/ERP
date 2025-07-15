@@ -17,7 +17,7 @@ class HumanResourceController extends Controller
     public function view(){
         $totalEmployee = Employee::count();
         $totalPendigApproval = LeaveQuota::where('status', 'validating')->count();
-        $totalApprovalRequest = LeaveQuota::where('status', 'validated')->count();
+        $totalApprovalRequest = LeaveQuota::where('status', 'Accepted')->count();
 
         $columns = Schema::getColumnListing('attendances');
         if (!in_array('employee_id', $columns)) {
