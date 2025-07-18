@@ -93,6 +93,10 @@ export function ButtonModalInbound({ userRole, productData, roleName, user }) {
       setOpen(false);
       // toast.success(flash.success, { duration: 5000 });
     }
+
+    // if (flash.error) {
+    //   toast.error(flash.error, { duration: 5000 });
+    // }
   }, [flash]);
 
   // Handle submit

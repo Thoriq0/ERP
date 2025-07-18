@@ -460,13 +460,14 @@ export function ViewApDetailModal({ open, onClose, inbound, productData, apData,
           >
             Close
           </Button>
-          {item === 0 ? (
+          {/* {item === 0 ? (
+            
             <Button onClick={downloadInvoice} className="bg-primaryPurple border border-gray-400 mt-5 mx-auto w-3/4 md:w-[200px] hover:bg-PurpleFive">
             Download Invoice
             </Button>
           ) : (
             ''
-          )}
+          )} */}
         </DialogFooter>
       </DialogContent>
     </Dialog>

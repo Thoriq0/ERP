@@ -10,14 +10,16 @@ import {
 } from "./ui/dialog";
 import InputLabel from "./InputLabel";
 import TextInput from "./TextInput";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
+import { usePage } from "@inertiajs/react";
 import Select from "react-select";
 import { Textarea } from "flowbite-react";
 
 export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
   // State untuk form
+  const { flash } = usePage().props;
   const [values, setValues] = useState({
     product: null,
     qty: "",
@@ -27,6 +29,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
     image: null,
     document: null
   });
+  const [open, setOpen] = useState(false);
   
   // Untuk Disabled Feild
   const [supplierName, setSupplierName] = useState("");
@@ -48,6 +51,41 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
     value: user.id, 
     label: user.name 
   }));
+
+  useEffect(() => {
+    if (!open) {
+      setValues({
+        product: null,
+        qty: "",
+        receiver: "",
+        pic: null,
+        image: null,
+        document: null
+      });
+      setSupplierName("");
+    }
+  }, [open]);
+
+  useEffect(() => {
+      if (flash.success) {
+        setValues({
+          product: null,
+          qty: "",
+          receiver: "",
+          address: "",
+          pic: null,
+          image: null,
+          document: null
+        });
+        setSupplierName("");
+        setOpen(true);
+        // toast.success(flash.success, { duration: 5000 });
+      }
+  
+      // if (flash.error) {
+      //   toast.error(flash.error, { duration: 5000 });
+      // }
+    }, [flash]);
 
   // Handle perubahan input
   function handleChange(e) {
@@ -151,7 +189,7 @@ export function ButtonModalOutbound({ userRole, dataStocks, usr}) {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-PurpleFive hover:bg-primaryPurple">Create</Button>
       </DialogTrigger>

@@ -1,6 +1,5 @@
 "use client"
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -39,6 +38,7 @@ import { ViewProdukDetailModal } from "../viewsdetails/ViewProdukDetailModal";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
+import echo from "@/echo";
 
 export function DataTableProduct({ data, userRole, categoryData, supplierData }) {
   const [open, setOpen] = useState(false);
@@ -51,6 +51,32 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
   // State untuk modal detail
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [selectedProduk, setSelectedProduk] = useState(null);
+
+  useEffect(() => {
+    const channel = echo.channel('models');
+
+    channel.listen('.model.changed', (e) => {
+      if (e.model === 'product') {
+        setTimeout(() => {
+                    router.reload({ only: ['product'], preserveScroll: true });
+                }, 1700);
+      } 
+      else if (e.model === 'category') {
+        setTimeout(() => {
+          router.reload({ only: ['categories'], preserveScroll: true });
+                }, 1700);
+      }
+      else if (e.model === 'supplier') {
+        setTimeout(() => {
+          router.reload({ only: ['suppliers'], preserveScroll: true });
+                }, 1700);
+      }
+    });
+
+    return () => {
+      channel.stopListening('.model.changed');
+    };
+  }, []);
 
   const handleDelete = () => {
     if (!selectedId) return;
@@ -103,25 +129,6 @@ export function DataTableProduct({ data, userRole, categoryData, supplierData })
   };
 
   const columns = [
-    // {
-    //   id: "select",
-    //   header: ({ table }) => (
-    //     <Checkbox
-    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //       aria-label="Select all"
-    //     />
-    //   ),
-    //   cell: ({ row }) => (
-    //     <Checkbox
-    //       checked={row.getIsSelected()}
-    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-    //       aria-label="Select row"
-    //     />
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
     {
       id: "no",
       header: () => <div className="text-center">No</div>,

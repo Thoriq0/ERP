@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -40,6 +40,7 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { FaCopy, FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
+import echo from "@/echo";
 
 export function DataTableSupplier({data, userRole}) {
   const [open, setOpen] = useState(false);
@@ -56,6 +57,22 @@ export function DataTableSupplier({data, userRole}) {
   const [selectedSupplierViews, setSelectedSupplierViews] = useState(null);
 
   // console.log(userRole, "role get");
+
+  useEffect(() => {
+      const channel = echo.channel('models');
+  
+      channel.listen('.model.changed', (e) => {
+        if (e.model === 'supplier') {
+          setTimeout(() => {
+            router.reload({ only: ['supplier'], preserveScroll: true });
+        }, 1700);
+        } 
+      });
+  
+      return () => {
+        channel.stopListening('.model.changed');
+      };
+    }, []);
 
   function handleExport() {
       const rolePaths = {

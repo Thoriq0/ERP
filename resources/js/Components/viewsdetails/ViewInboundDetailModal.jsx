@@ -23,6 +23,7 @@ export function ViewInboundDetailModal({ open, onClose, inbound, productData, us
   
   const handleDownload = (file, type) => {
     const path = type === "image" ? `/images/inbounds/` : `/pdfs/inbounds/`;
+    // Broken
     const link = document.createElement("a");
     link.href = path + file;
     link.download = file;
@@ -57,7 +58,7 @@ export function ViewInboundDetailModal({ open, onClose, inbound, productData, us
       data: { fileName: fileToDelete, inboundId: inbound.id },
       onSuccess: () => {
         setConfirmDelete(false);
-        toast.success("File berhasil dihapus! 🗑️");
+        toast.success("File deleted successfully!");
       },
       onError: () => {
         toast.error("Gagal menghapus file! ❌");
@@ -142,7 +143,7 @@ export function ViewInboundDetailModal({ open, onClose, inbound, productData, us
 
           <div className="mt-4 space-y-3">
             <strong className="block">Files</strong>
-
+            {console.log(images)}
             {/* Images */}
             <div className="space-y-2">
               <strong className="block">Images</strong>

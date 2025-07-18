@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(12)->create();
+        // User::factory(12)->create();
         Category::factory(15)->create();
         Supplier::factory(15)->create();
         Product::factory(20)->create();
@@ -38,11 +38,11 @@ class DatabaseSeeder extends Seeder
 
         $users = [
             ['name' => 'admin', 'email' => 'admin@admin.com', 'role' => 'admin'],
-            ['name' => 'wrhs', 'email' => 'wrhs@wrhs.com', 'role' => 'wrhs'],
-            ['name' => 'fnc', 'email' => 'fnc@fnc.com', 'role' => 'fnc'],
-            ['name' => 'logistik', 'email' => 'logistik@logistik.com', 'role' => 'logistik'],
-            ['name' => 'hr', 'email' => 'hr@hr.com', 'role' => 'hr'],
-            ['name' => 'staff', 'email' => 'staff@staff.com', 'role' => 'staff'],
+            // ['name' => 'wrhs', 'email' => 'wrhs@wrhs.com', 'role' => 'wrhs'],
+            // ['name' => 'fnc', 'email' => 'fnc@fnc.com', 'role' => 'fnc'],
+            // ['name' => 'logistik', 'email' => 'logistik@logistik.com', 'role' => 'logistik'],
+            // ['name' => 'hr', 'email' => 'hr@hr.com', 'role' => 'hr'],
+            // ['name' => 'staff', 'email' => 'staff@staff.com', 'role' => 'staff'],
         ];
 
         foreach ($users as $user) {

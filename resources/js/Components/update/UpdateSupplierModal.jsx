@@ -23,7 +23,7 @@ export function UpdateSupplierModal({ userRole, open, onClose, supplier }) {
     accountName: supplier?.account_name || "",
     accountBankName: supplier?.account_bank_name || ""
   });
-  console.log(supplier)
+  // console.log(supplier)
 
   useEffect(() => {
     if (supplier) {

@@ -31,6 +31,7 @@ import toast from "react-hot-toast";
 import { router } from "@inertiajs/react";
 import { usePage } from "@inertiajs/react";
 import AdjustPrestockModal from "../AdjustPrestockModal";
+import echo from "@/echo";
 
 export default function DataTablePrestock({ stagingData, userRole }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -38,6 +39,32 @@ export default function DataTablePrestock({ stagingData, userRole }) {
 
   const [showAdjustModal, setShowAdjustModal] = useState(false);
   const [selectedProductsData, setSelectedProductsData] = useState([]);
+
+  useEffect(() => {
+      const channel = echo.channel('models');
+  
+      channel.listen('.model.changed', (e) => {
+        if (e.model === 'inbound') {
+          setTimeout(() => {
+                      router.reload({ only: ['inbound'], preserveScroll: true });
+                  }, 1700);
+        } 
+        else if (e.model === 'product') {
+          setTimeout(() => {  
+            router.reload({ only: ['products'], preserveScroll: true });
+                  }, 1700);
+        }
+        else if (e.model === 'staging_inbound') {
+          setTimeout(() => {
+            router.reload({ only: ['staging'], preserveScroll: true });
+                  }, 1700);
+        }
+      });
+  
+      return () => {
+        channel.stopListening('.model.changed');
+      };
+    }, []);
 
   useEffect(() => {
     if (flash?.success) {

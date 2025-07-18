@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { FiFilter } from "react-icons/fi";
+import echo from "@/echo";
 
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -47,6 +48,22 @@ export function DataTableInboundFail({data, userRole}) {
   // State untuk modal detail
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [selectedInbndfDetail, setSelectedInbndfDetail] = useState(null);
+
+  useEffect(() => {
+      const channel = echo.channel('models');
+  
+      channel.listen('.model.changed', (e) => {
+        if (e.model === 'adjust_prestock') {
+          setTimeout(() => {
+                      router.reload({ only: ['inbndf'], preserveScroll: true });
+                  }, 1700);
+        } 
+      });
+  
+      return () => {
+        channel.stopListening('.model.changed');
+      };
+    }, []);
 
   // console.log(userRole, "role get");
   function handleExport() {

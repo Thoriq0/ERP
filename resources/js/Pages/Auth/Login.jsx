@@ -106,7 +106,7 @@ export default function Login({error, status, canResetPassword}) {
                             Remember me
                         </span>
                     </label>
-                    <div className='mt-3 lg:mt-0'>
+                    {/* <div className='mt-3 lg:mt-0'>
                         {canResetPassword && (
                             <Link
                                 href={route('password.request')}
@@ -115,7 +115,7 @@ export default function Login({error, status, canResetPassword}) {
                                 Forgot your password?
                             </Link>
                         )} 
-                    </div>
+                    </div> */}
                 </div>
                 <div className='h-px bg-white my-3'></div>           
 

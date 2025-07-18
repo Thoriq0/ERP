@@ -13,11 +13,10 @@ use App\Models\Employee;
 use App\Models\Outbound;
 use App\Models\Shipment;
 use App\Models\Supplier;
-use App\Exports\DynamicInboundExport;
 use App\Models\Attendance;
+use App\Models\LeaveQuota;
 // use Illuminate\Support\Facades\DB;
 // use Illuminate\Support\Facades\Log;
-use App\Models\LeaveQuota;
 use App\Models\AdjustStock;
 use App\Models\BilledParty;
 use Illuminate\Support\Str;
@@ -37,6 +36,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DynamicInboundExport;
+use Illuminate\Support\Facades\Validator;
+use App\Events\ModelChanged;
 
 class InventoryController extends Controller
 {
@@ -53,7 +55,7 @@ class InventoryController extends Controller
             'accountBankName' => 'required|string'
         ]);
 
-        Supplier::create([
+        $supplier = Supplier::create([
             'name' => $request->name,
             'contact' => $request->contact,
             'address' => $request->address,
@@ -62,11 +64,18 @@ class InventoryController extends Controller
             'account_bank_name' => $request->accountBankName
         ]);
 
+        event(new ModelChanged('supplier', 'created', $supplier));
+        return redirect()->back();
     }
+
     public function supplierDestroy(Supplier $supplier){
         
+        $id = $supplier->id;
         $supplier->delete();
-        return redirect()->back();
+
+        // Trigger event broadcast, hanya kirim id karena data sudah dihapus
+        event(new ModelChanged('supplier', 'deleted', ['id' => $id]));
+
     }
 
     public function supplierUpdate(Request $request, Supplier $supplier){
@@ -87,7 +96,8 @@ class InventoryController extends Controller
             'account_name' => $request->accountName,
             'account_bank_name' => $request->accountBankName
         ]);
-    
+        
+        event(new ModelChanged('supplier', 'updated', $supplier));
         session()->flash('success', 'Data supplier saved successfully!');
         return redirect()->back();
     }
@@ -101,17 +111,20 @@ class InventoryController extends Controller
             'sku' => 'required|string'
         ]);
 
-        Product::create([
+        $product = Product::create([
             'name' => $request->name,
             'category_id' => $request->category,
             'supplier_id' => $request->supplier,
             'sku' => $request->sku
         ]);
-
+        event(new ModelChanged('product', 'created', $product));
+        return redirect()->back();
     }
     public function productDestroy(Product $product){
         
+        $id = $product->id;
         $product->delete();
+        event(new ModelChanged('product', 'deleted', ['id' => $id]));
         return redirect()->back();
     }
 
@@ -129,7 +142,9 @@ class InventoryController extends Controller
             'supplier_id' => $request->supplier_id,
             'sku' => $request->sku
         ]);
-    
+
+        event(new ModelChanged('product', 'updated', $product));
+
         session()->flash('success', 'Data Product saved successfully! 🎉');
         return redirect()->back();
     }
@@ -140,14 +155,17 @@ class InventoryController extends Controller
             'name' => 'required|string',
         ]);
 
-        Category::create([
+        $category = Category::create([
             'name' => $request->name,
         ]);
-
+        event(new ModelChanged('category', 'created', $category));
+        return redirect()->back();
     }
     public function categoryDestroy(Category $category){
-        
+        $id = $category->id;
         $category->delete();
+
+        event(new ModelChanged('category', 'deleted', ['id' => $id]));
         return redirect()->back();
     }
 
@@ -159,7 +177,8 @@ class InventoryController extends Controller
         $category->update([
             'name' => $request->name,
         ]);
-    
+        
+        event(new ModelChanged('category', 'updated', $category));
         session()->flash('success', 'Data Category saved successfully! 🎉');
         return redirect()->back();
     }
@@ -167,14 +186,22 @@ class InventoryController extends Controller
     // ==== INBOUND ====
     public function inboundStore(Request $request){
         // dd($request->all());
-        $request->validate([
-            'product' => 'required|exists:products,id',
-            'qty' => 'required|integer',
-            'pic' => 'required|exists:users,id',
-            'created' => 'required|string',
-            'image.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'document.*' => 'nullable|mimes:pdf|max:5120'
-        ]);
+        try {
+            $request->validate([
+                'product' => 'required|exists:products,id',
+                'qty' => 'required|integer',
+                'pic' => 'required|exists:users,id',
+                'created' => 'required|string',
+                'image.*' => 'nullable|image|mimes:jpeg,png,jpg|max:15360',
+                'document.*' => 'nullable|mimes:pdf|max:15360'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // dd($e->errors());
+            return back()
+            ->withErrors($e->errors())
+            ->withInput()
+            ->with('error', 'Validation failed, please check the uploaded file again!');
+        }
         
         $imageNames = [];
         $pdfNames = [];
@@ -187,7 +214,8 @@ class InventoryController extends Controller
                             strtolower(str_replace(' ', '-', $request->pic)) . '-' .
                             date('d-m-Y-H-i-s') . '-' . uniqid() . '.' . $extension;
 
-                $image->move(public_path('images/inbounds'), $imageName);
+                $image->move(public_path('images/inbounds'), $imageName); 
+                // Change The path  // /home/globaled/public_html/images/inbounds
                 $imageNames[] = $imageName;
             }
         }
@@ -201,6 +229,7 @@ class InventoryController extends Controller
                             date('d-m-Y-H-i-s') . '-' . uniqid() . '.' . $pdf->extension();
         
                 $pdf->move(public_path('pdfs/inbounds'), $pdfName);
+                // Change The path // /home/globaled/public_html/pdfs/inbounds
                 $pdfNames[] = $pdfName; // Simpan nama file PDF dalam array
             }
         }
@@ -215,14 +244,18 @@ class InventoryController extends Controller
             'pdf' => json_encode($pdfNames)
         ]);
 
-        StagingInbound::create([
+        event(new ModelChanged('inbound', 'created', $inbound));
+
+        $staging = StagingInbound::create([
             'inbound_id' => $inbound->id,
             'status' => 'validating',
             'stock_status' => 'On Hold',
             'payment_status' => 'unpaid',
         ]);
 
-        return redirect()->back()->with('success', 'Inbound saved successfully! 🎉');;
+        event(new ModelChanged('staging_inbound', 'created', $staging));
+
+        return redirect()->back()->with('success', 'Inbound saved successfully! 🎉');
     }
 
 
@@ -311,6 +344,21 @@ class InventoryController extends Controller
         }
     }
 
+    event(new ModelChanged('account_payable', 'created', [
+        'ap_codes' => AccountPayable::whereIn('inbound_id', $inboundIds)->pluck('ap_code'),
+        'inbound_ids' => $inboundIds
+    ]));
+    
+    event(new ModelChanged('staging_inbound', 'updated', [
+        'ids' => $request->selected_products,
+        'status' => 'validated'
+    ]));
+    
+    event(new ModelChanged('inbound', 'updated', [
+        'ids' => $inboundIds,
+        'qc_status' => 'check'
+    ]));
+
     return redirect()->back()->with('success', 'Stock validated & invoice created successfully!');
     }
 
@@ -344,6 +392,15 @@ class InventoryController extends Controller
                 'note' => $adjustment['note'],
             ]);
         }
+
+        event(new ModelChanged('inbound', 'updated', [
+            'updated_ids' => collect($adjustments)->pluck('inboundId')
+        ]));
+        
+        event(new ModelChanged('adjust_prestock', 'created', [
+            'count' => count($adjustments)
+        ]));
+
         return back()->with('success', 'The stock was adjusted successfully');
     }
 
@@ -438,7 +495,10 @@ class InventoryController extends Controller
             }
         }
 
+        $id = $inbound->id;
         $inbound->delete();
+
+        event(new ModelChanged('inbound', 'deleted', ['id' => $id]));
         return redirect()->back();
     }
 
@@ -466,6 +526,7 @@ class InventoryController extends Controller
             
             // PATH FILE
             $filePath = public_path("pdfs/inbounds/{$fileName}");
+            // Change The path // /home/globaled/public_html/pdfs/inbounds
 
             // CHECK AND DELETE
             if (file_exists($filePath)) {
@@ -483,6 +544,7 @@ class InventoryController extends Controller
             $outboundFind->update(['image' => $updatedImgJson]);
 
             $filePath = public_path("images/inbounds/{$fileName}");
+            // Change The path // /home/globaled/public_html/images/inbounds
             if (file_exists($filePath)) {
                 File::delete($filePath);
             } else {
@@ -517,6 +579,7 @@ class InventoryController extends Controller
             
             // PATH FILE
             $filePath = public_path("pdfs/outbounds/{$fileName}");
+            // Change The path // /home/globaled/public_html/pdfs/outbounds
 
             // CHECK AND DELETE
             if (file_exists($filePath)) {
@@ -534,6 +597,7 @@ class InventoryController extends Controller
             $outboundFind->update(['image' => $updatedImgJson]);
 
             $filePath = public_path("images/outbounds/{$fileName}");
+            // Change The path // /home/globaled/public_html/images/outbounds
             if (file_exists($filePath)) {
                 File::delete($filePath);
             } else {
@@ -566,6 +630,7 @@ class InventoryController extends Controller
                             date('d-m-Y-H-i-s') . '-' . uniqid() . '.' . $extension;
 
                 $image->move(public_path('images/inbounds'), $imageName);
+                // Change The path // /home/globaled/public_html/images/inbounds
                 $imageNames[] = $imageName;
             }
         }
@@ -579,6 +644,7 @@ class InventoryController extends Controller
                             date('d-m-Y-H-i-s') . '-' . uniqid() . '.' . $pdf->extension();
         
                 $pdf->move(public_path('pdfs/inbounds'), $pdfName);
+                // Change The path // /home/globaled/public_html/pdfs/inbounds
                 $pdfNames[] = $pdfName; // Simpan nama file PDF dalam array
             }
         }
@@ -603,21 +669,34 @@ class InventoryController extends Controller
         // Simpan semua perubahan ke database
         $inbound->save();
 
+        event(new ModelChanged('inbound', 'updated', [
+            'id' => $inbound->id,
+            'updated_fields' => ['product_id', 'qty', 'image', 'pdf']
+        ]));
+
         return redirect()->back()->with('success', 'Inbound data updated successfully! 🎉');
     }
 
     // ==== OUTBOUND ====
     public function outboundStore(Request $request) {
         // dd($request->all());
-        $request->validate([
-            'product' => 'required|exists:products,id',
-            'qty' => 'required|integer|min:1',
-            'receiver' => 'required|string',
-            'address' => 'required|string',
-            'pic' => 'required|string',
-            'image.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'document.*' => 'nullable|mimes:pdf|max:5120'
-        ]);
+        try {
+            $request->validate([
+                'product' => 'required|exists:products,id',
+                'qty' => 'required|integer|min:1',
+                'receiver' => 'required|string',
+                'address' => 'required|string',
+                'pic' => 'required|string',
+                'image.*' => 'nullable|image|mimes:jpeg,png,jpg|max:10248',
+                'document.*' => 'nullable|mimes:pdf|max:15320'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // dd($e->errors());
+            return back()
+            ->withErrors($e->errors())
+            ->withInput()
+            ->with('error', 'Validation failed, please check the uploaded file again!');
+        }
         
         // Ambil data produk
         $product = Product::findOrFail($request->product);
@@ -648,6 +727,7 @@ class InventoryController extends Controller
                             date('d-m-Y-H-i-s') . '-' . uniqid() . '.' . $extension;
                 
                 $image->move(public_path('images/outbounds'), $imageName);
+                // Change The Path // /home/globaled/public_html/images/outbounds
                 $imageNames[] = $imageName;
             }
         }
@@ -659,6 +739,7 @@ class InventoryController extends Controller
                             date('d-m-Y-H-i-s') . '-' . uniqid() . '.' . $pdf->extension();
                 
                 $pdf->move(public_path('pdfs/outbounds'), $pdfName);
+                // Change The Path // /home/globaled/public_html/pdfs/outbounds
                 $pdfNames[] = $pdfName; 
             }
         }
@@ -684,7 +765,7 @@ class InventoryController extends Controller
         ]);
 
     
-        return redirect()->back()->with(['message' => 'Item successfully removed']);
+        return redirect()->back()->with('success', 'Outbound saved successfully! 🎉');
     }
 
     public function outboundUpdate(Request $request, Outbound $outbound){
@@ -823,6 +904,15 @@ class InventoryController extends Controller
             'terms_condition' => $request->terms_condition,
             'billed_party_id' => $request->bp,
         ]);
+
+        event(new ModelChanged('account_payable', 'created', [
+            'ap_code' => $ap_code,
+            'status_inbound' => false,
+            'item_description' => json_encode($request->items),
+            'total_amount' => $request->total_amount,
+            'due_date' => $request->due_date,
+            'status_payment' => $request->status_payment
+        ]));
 
         return redirect()->back()->with('success', 'Account Payable successfully created! 🎉');
     }
@@ -1047,10 +1137,16 @@ class InventoryController extends Controller
                     'payment_code' => str_replace('INV', 'PAID', $payment['ap_code']),
                     'status_payment' => 'paid'
                 ]);
+
                 AccountPayable::where('id', $payment['account_payable_id'])
                     ->update([
                         'status_payment' => 'paid'
                     ]);
+                
+                event(new ModelChanged('account_payable', 'updated', [
+                    'id' => $payment['account_payable_id'],
+                    'status_payment' => 'paid'
+                ]));
 
                 Expense::create([
                     'payment_id' => $payment['payment_id'],
@@ -1064,6 +1160,11 @@ class InventoryController extends Controller
                         ->update([
                             'payment_status' => 'paid'
                         ]);
+
+                    event(new ModelChanged('staging_inbound', 'updated', [
+                        'inbound_id' => $payment['inbound_id'],
+                        'payment_status' => 'paid'
+                    ]));
                 }
             }
             
@@ -1078,7 +1179,7 @@ class InventoryController extends Controller
         // dd($request->all());
         $request->validate([
             'bill_to' => 'required|string|max:255',
-            'contact_bill' => 'required|numeric|max:20',
+            'contact_bill' => 'required|numeric',
             'address_bill' => 'required|string',
             'email_bill' => 'required|email',
             'account_bill' => 'required|numeric',
@@ -1094,7 +1195,7 @@ class InventoryController extends Controller
     public function bpUpdate(Request $request, BilledParty $billedParty){
         $request->validate([
             'bill_to' => 'required|string|max:255',
-            'contact_bill' => 'required|numeric|max:20',
+            'contact_bill' => 'required|numeric',
             'address_bill' => 'required|string',
             'email_bill' => 'required|email',
             'account_bill' => 'required|numeric',
@@ -1215,7 +1316,7 @@ class InventoryController extends Controller
 
         $birthDate = Carbon::parse($request->dateOfBirth);
         $passwordDefault = $birthDate->format('dm y'); // contoh: 160775
-        $passwordDefault = str_replace(' ', '', $passwordDefault); // hilangkan spasi kalau ada
+        $passwordDefault = str_replace(' ', '', $passwordDefault);
         // dd($uniqueNumber);
         // Simpan data user berdasarkan employee
         // dd($passwordDefault);
@@ -1389,7 +1490,7 @@ class InventoryController extends Controller
     
         $image = str_replace('data:image/jpeg;base64,', '', $imageData);
         $image = str_replace(' ', '+', $image);
-        $imagePath = public_path("images/attandance");
+        $imagePath = public_path("images/attandance"); // change into /home/globaled/public_html/images/attandance
     
         // pastiin folder-nya ada
         if (!File::exists($imagePath)) {

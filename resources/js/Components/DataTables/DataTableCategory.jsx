@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -41,6 +41,7 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
+import echo from "@/echo";
 
 export function DataTableCategory({data, userRole}) {
   // modal delete
@@ -56,6 +57,23 @@ export function DataTableCategory({data, userRole}) {
   const [selectedCategoryDetail, setSelectedCategoryDetail] = useState(null);
 
   // console.log(userRole, "role get");
+
+  useEffect(() => {
+      const channel = echo.channel('models');
+      // console.log(channel)
+      channel.listen('.model.changed', (e) => {
+        if (e.model === 'category') {
+          setTimeout(() => {
+            router.reload({ only: ['category'], preserveScroll: true });
+          }, 1700);
+          // console.log(e)
+        } 
+      });
+  
+      return () => {
+        channel.stopListening('.model.changed');
+      };
+    }, []);
 
   function handleExport() {
     const rolePaths = {
@@ -74,6 +92,7 @@ export function DataTableCategory({data, userRole}) {
   }
 
   const handleDelete = () => {
+    console.log("RUNNING handleDelete", selectedId, open);
     if (!selectedId) return;
 
     // Mapping role endpoint
@@ -87,6 +106,7 @@ export function DataTableCategory({data, userRole}) {
     router.delete(`${userPath}/${selectedId}`, {
       onSuccess: () => {
         toast.success("Category successfully deleted! 🗑️", { duration: 5000 });
+        setSelectedId(null);
       },
       onError: (err) => {
         console.error(err);

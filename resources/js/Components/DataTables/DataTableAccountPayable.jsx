@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -37,6 +37,7 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { FaEdit, FaEye, FaTrash, FaCopy } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
+import echo from "@/echo";
 
 export default function DataTableAccountPayable({ data, userRole, productData, apData, bp }) {
   
@@ -50,6 +51,32 @@ export default function DataTableAccountPayable({ data, userRole, productData, a
   // select data inbound dan modal
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [selectedInbound, setSelectedInbound] = useState(null);
+
+  useEffect(() => {
+      const channel = echo.channel('models');
+  
+      channel.listen('.model.changed', (e) => {
+        if (e.model === 'account_payable') {
+          setTimeout(() => {
+                      router.reload({ only: ['ap'], preserveScroll: true });
+                  }, 1700);
+        } 
+        else if (e.model === 'product') {
+          setTimeout(() => {
+            router.reload({ only: ['products'], preserveScroll: true });
+                  }, 1700);
+        }
+        else if (e.model === 'inbound') {
+          setTimeout(() => {
+            router.reload({ only: ['inbound'], preserveScroll: true });
+                  }, 1700);
+        }
+      });
+  
+      return () => {
+        channel.stopListening('.model.changed');
+      };
+    }, []);
 
   const handleDelete = () => {
     if (!selectedId) return;

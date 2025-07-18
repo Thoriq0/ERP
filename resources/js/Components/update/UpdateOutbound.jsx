@@ -58,7 +58,7 @@ export function UpdateOutboundModal({ userRole, open, onClose, outbound, product
     e.preventDefault();
 
     const rolePaths = {
-      admin: `/admin/outbound/`,
+      admin: `/admin/outbound`,
       wrhs: `/wrhs/outbound`,
     };
 

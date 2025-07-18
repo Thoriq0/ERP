@@ -139,7 +139,8 @@ export function ButtonModalUsrwrhs() {
               <option value="admin">Admin</option>
               <option value="fnc">Finance</option>
               <option value="hr">Human Resource</option>
-              <option value="wrhs">Warehouse</option>
+              <option value="wrhs">Warehouse Operator</option>
+              <option value="staff">Staff General</option>
             </select>
             {errors.role && <p className="text-red-500 text-sm">{errors.role}</p>}
           </div>

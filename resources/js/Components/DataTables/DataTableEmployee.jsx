@@ -207,10 +207,6 @@ export function DataTableEmployee({data, userRole}) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-                <FaCopy size={16} className="text-blue-500 "/>
-                Copy payment ID
-              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={()=> handleUpdate(item)}
               className="cursor-pointer">

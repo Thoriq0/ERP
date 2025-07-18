@@ -121,7 +121,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
     });
 
     const userPath = rolePaths[userRole];
-    console.log([...formData.entries()]);
+    // console.log([...formData.entries()]);
     post(userPath, formData, {
       forceFormData: true,
       onError: (errors) => {
@@ -142,7 +142,7 @@ export function UpdateInboundModal({ userRole, open, onClose, inbound, productDa
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          {data.qcs === 'checking' || data.qcs === 'Checking' || data.qcs === 'CHECKING' || data.qcs === 'check' || data.qcs === 'Check' || data.qcs === 'CHECK' ? (
+          {data.qcs === 'checking' || data.qcs === 'Checking' || data.qcs === 'CHECKING' || data.qcs === 'checking' || data.qcs === 'Checking' || data.qcs === 'CHECKING' ? (
             <>
             <div className="mt-4">
               <InputLabel htmlFor="product_id" value="Product" />

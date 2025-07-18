@@ -126,12 +126,11 @@ export function UpdateUserModal({open, onClose, userSelected, users }) {
                 onChange={(e) => setData("role", e.target.value)}
             >
                 <option value="">-- Pilih Role --</option>
+                <option value="admin">Admin</option>
                 <option value="fnc">Finance</option>
-                <option value="wrhs">Warehouse</option>
-                <option value="admin">Super Admin</option>
-                <option value="hr">Humas Resource</option>
-                <option value="logistik">Logistik</option>
-                <option value="staff">Staff</option>
+                <option value="wrhs">Warehouse Operator</option>
+                <option value="hr">Human Resource</option>
+                <option value="staff">Staff General</option>
             </select>
             {errors.role && <p className="text-red-500 text-sm">{errors.role}</p>}
             </div>

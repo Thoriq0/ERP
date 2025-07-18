@@ -143,7 +143,7 @@ export function ViewOutboundDetailModal({ open, onClose, outbound, productData, 
                     🖼️ {file}
                   </span>
                   <Button className="bg-red-500 text-white px-2 py-1" onClick={() => confirmDeleteFile(file)}>
-                    Hapus
+                    Delete
                   </Button>
                 </div>
               ))
@@ -192,7 +192,7 @@ export function ViewOutboundDetailModal({ open, onClose, outbound, productData, 
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex justify-end space-x-2">
-            <Button className="bg-gray-300 text-black hover:bg-gray-400" onClick={() => setConfirmDelete(false)}>Cancle</Button>
+            <Button className="bg-gray-300 text-black hover:bg-gray-400" onClick={() => setConfirmDelete(false)}>Cancel</Button>
             <Button className="bg-red-500 text-white hover:bg-red-600" onClick={() => {handleDeleteFile();onClose(); setConfirmDelete(false);}}>Yes, Delete</Button>
           </DialogFooter>
         </DialogContent>
